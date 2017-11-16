@@ -11,7 +11,7 @@
 #include "sbr/client.h"
 #include "sbr/error.h"
 #include "smtp.h"
-#include "h/mts.h"
+#include "sbr/mts.h"
 #include "h/signals.h"
 #include "h/utils.h"
 #include "h/netsec.h"

@@ -26,7 +26,7 @@
 #include "sbr/error.h"
 #include <fcntl.h>
 #include "h/signals.h"
-#include "h/mts.h"
+#include "sbr/mts.h"
 #include "h/done.h"
 #include "h/utils.h"
 #include "sbr/m_maildir.h"

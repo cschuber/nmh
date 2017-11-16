@@ -7,7 +7,7 @@
 
 #include "h/mh.h"
 #include "client.h"
-#include "h/mts.h"
+#include "mts.h"
 #include "h/utils.h"
 #include <fcntl.h>
 #include <sys/socket.h>

@@ -31,7 +31,7 @@
 #include "sbr/error.h"
 #include "h/fmt_scan.h"
 #include "h/tws.h"
-#include "h/mts.h"
+#include "sbr/mts.h"
 #include "h/done.h"
 #include "h/utils.h"
 #include "sbr/m_maildir.h"

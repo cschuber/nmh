@@ -18,7 +18,7 @@
 #include "error.h"
 #include "h/signals.h"
 #include "h/utils.h"
-#include "h/mts.h"
+#include "mts.h"
 #include "lock_file.h"
 #include "m_mktemp.h"
 

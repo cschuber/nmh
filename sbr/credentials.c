@@ -12,7 +12,7 @@
 #include "context_find.h"
 #include "error.h"
 #include "h/utils.h"
-#include "h/mts.h"
+#include "mts.h"
 #include "m_maildir.h"
 
 struct nmh_creds {
