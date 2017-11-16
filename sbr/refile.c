@@ -7,6 +7,7 @@
  */
 
 #include "h/mh.h"
+#include "pidwait.h"
 #include "refile.h"
 #include "getcpy.h"
 #include "context_save.h"

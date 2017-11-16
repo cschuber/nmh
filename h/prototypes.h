@@ -14,5 +14,3 @@ char *etcpath(char *) NONNULL(1);
  */
 
 struct msgs_array;
-
-int pidwait (pid_t, int);

@@ -6,6 +6,7 @@
  */
 
 #include "h/mh.h"
+#include "sbr/pidwait.h"
 #include "sbr/charstring.h"
 #include "sbr/fmt_new.h"
 #include "sendsbr.h"

@@ -6,6 +6,7 @@
  */
 
 #include "h/mh.h"
+#include "sbr/pidwait.h"
 #include "whatnowproc.h"
 #include "sbr/m_name.h"
 #include "sbr/m_gmprot.h"

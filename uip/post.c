@@ -6,6 +6,7 @@
  */
 
 #include "h/mh.h"
+#include "sbr/pidwait.h"
 #include "sbr/dtime.h"
 #include "sbr/m_getfld.h"
 #include "sbr/getarguments.h"

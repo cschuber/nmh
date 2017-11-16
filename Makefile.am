@@ -413,6 +413,7 @@ noinst_HEADERS = \
     sbr/oauth_prof.h \
     sbr/path.h \
     sbr/pidstatus.h \
+    sbr/pidwait.h \
     sbr/print_help.h \
     sbr/print_sw.h \
     sbr/print_version.h \

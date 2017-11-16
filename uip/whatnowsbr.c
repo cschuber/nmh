@@ -38,6 +38,7 @@
  */
 
 #include "h/mh.h"
+#include "sbr/pidwait.h"
 #include "whatnowsbr.h"
 #include "sendsbr.h"
 #include "annosbr.h"

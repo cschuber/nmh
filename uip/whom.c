@@ -6,6 +6,7 @@
  */
 
 #include "h/mh.h"
+#include "sbr/pidwait.h"
 #include "distsbr.h"
 #include "sbr/getarguments.h"
 #include "sbr/smatch.h"
