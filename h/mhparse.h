@@ -349,51 +349,6 @@ char *content_charset (CT);
 void reverse_alternative_parts (CT);
 
 /*
- * Given a list of messages, display information about them on standard
- * output.
- *
- * Arguments are:
- *
- * cts		- An array of CT elements of messages that need to be
- *		  displayed.  Array is terminated by a NULL.
- * headsw	- If 1, display a column header.
- * sizesw	- If 1, display the size of the part.
- * verbosw	- If 1, display verbose information
- * debugsw	- If 1, turn on debugging for the output.
- * disposw	- If 1, display MIME part disposition information.
- *
- */
-void list_all_messages(CT *cts, int headsw, int sizesw, int verbosw,
-		       int debugsw, int disposw);
-
-/*
- * List the content information of a single MIME part on stdout.
- *
- * Arguments are:
- *
- * ct		- MIME Content structure to display.
- * toplevel	- If set, we're at the top level of a message
- * realsize	- If set, determine the real size of the content
- * verbose	- If set, output verbose information
- * debug	- If set, turn on debugging for the output
- * dispo	- If set, display MIME part disposition information.
- *
- * Returns OK on success, NOTOK otherwise.
- */
-int list_content(CT ct, int toplevel, int realsize, int verbose, int debug,
-		 int dispo);
-
-/*
- * Display content-appropriate information on MIME parts, descending recursively
- * into multipart content if appropriate.  Uses list_content() for displaying
- * generic information.
- *
- * Arguments and return value are the same as list_content().
- */
-int list_switch(CT ct, int toplevel, int realsize, int verbose, int debug,
-		int dispo);
-
-/*
  * Given a linked list of parameters, build an output string for them.  This
  * string is designed to be concatenated on an already-built header.
  *
