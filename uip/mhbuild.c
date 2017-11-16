@@ -21,6 +21,7 @@
 #include "h/tws.h"
 #include "h/mime.h"
 #include "h/mhparse.h"
+#include "mhbuildsbr.h"
 #include "mhlistsbr.h"
 #include "h/done.h"
 #include "h/utils.h"

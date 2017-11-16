@@ -452,6 +452,7 @@ noinst_HEADERS = \
     uip/annosbr.h \
     uip/distsbr.h \
     uip/forwsbr.h \
+    uip/mhbuildsbr.h \
     uip/mhfree.h \
     uip/mhlistsbr.h \
     uip/mhlsbr.h \
