@@ -22,6 +22,7 @@
 #include <unistd.h>
 
 #include "h/oauth.h"
+#include "oauth_prof.h"
 #include "h/utils.h"
 #include "m_maildir.h"
 
