@@ -16,7 +16,7 @@
 #include "h/mh.h"
 #include "context_find.h"
 #include "error.h"
-#include "h/signals.h"
+#include "signals.h"
 #include "h/utils.h"
 #include "mts.h"
 #include "lock_file.h"

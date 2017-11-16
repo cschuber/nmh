@@ -346,7 +346,6 @@ noinst_HEADERS = \
     h/nmh.h \
     h/oauth.h \
     h/prototypes.h \
-    h/signals.h \
     h/tws.h \
     h/utils.h \
     mts/smtp/smtp.h \
@@ -441,6 +440,7 @@ noinst_HEADERS = \
     sbr/seq_setprev.h \
     sbr/seq_setunseen.h \
     sbr/showfile.h \
+    sbr/signals.h \
     sbr/smatch.h \
     sbr/snprintb.h \
     sbr/ssequal.h \

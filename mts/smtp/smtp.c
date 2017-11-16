@@ -12,7 +12,7 @@
 #include "sbr/error.h"
 #include "smtp.h"
 #include "sbr/mts.h"
-#include "h/signals.h"
+#include "sbr/signals.h"
 #include "h/utils.h"
 #include "h/netsec.h"
 

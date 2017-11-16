@@ -24,7 +24,7 @@
 #include "sbr/arglist.h"
 #include "sbr/error.h"
 #include <fcntl.h>
-#include "h/signals.h"
+#include "sbr/signals.h"
 #include "h/addrsbr.h"
 #include "h/aliasbr.h"
 #include "h/dropsbr.h"

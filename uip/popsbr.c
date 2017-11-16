@@ -14,7 +14,7 @@
 #include "h/netsec.h"
 
 #include "popsbr.h"
-#include "h/signals.h"
+#include "sbr/signals.h"
 #include "sbr/base64.h"
 
 #define	TRM	"."

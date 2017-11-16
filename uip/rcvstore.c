@@ -25,7 +25,7 @@
 #include "sbr/seq_add.h"
 #include "sbr/error.h"
 #include <fcntl.h>
-#include "h/signals.h"
+#include "sbr/signals.h"
 #include "sbr/mts.h"
 #include "h/done.h"
 #include "h/utils.h"

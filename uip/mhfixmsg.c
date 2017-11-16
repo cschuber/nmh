@@ -37,7 +37,7 @@
 #include "h/mhparse.h"
 #include "h/done.h"
 #include "h/utils.h"
-#include "h/signals.h"
+#include "sbr/signals.h"
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"
 #include "sbr/mime_type.h"

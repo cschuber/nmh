@@ -16,7 +16,7 @@
 #include "print_help.h"
 #include "error.h"
 #include "h/utils.h"
-#include "h/signals.h"
+#include "signals.h"
 #include "m_mktemp.h"
 #include "makedir.h"
 #include <fcntl.h>

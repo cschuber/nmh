@@ -31,7 +31,7 @@
 #include "h/addrsbr.h"
 #include "h/fmt_scan.h"
 #include "h/fmt_compile.h"
-#include "h/signals.h"
+#include "sbr/signals.h"
 #include <setjmp.h>
 #include <fcntl.h>
 #include "h/aliasbr.h"

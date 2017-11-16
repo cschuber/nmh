@@ -61,7 +61,7 @@
 #include "h/dropsbr.h"
 #include "popsbr.h"
 #include "h/fmt_scan.h"
-#include "h/signals.h"
+#include "sbr/signals.h"
 #include "h/tws.h"
 #include "sbr/mts.h"
 #include "h/done.h"
