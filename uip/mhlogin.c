@@ -20,6 +20,7 @@
 #include "h/done.h"
 #include "h/utils.h"
 #include "h/oauth.h"
+#include "sbr/oauth_prof.h"
 #include "sbr/lock_file.h"
 
 #define MHLOGIN_SWITCHES \

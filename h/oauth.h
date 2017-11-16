@@ -210,16 +210,6 @@ void
 mh_oauth_cred_free(mh_oauth_cred *cred);
 
 /*
- * Return the null-terminated file name for storing this service's OAuth tokens.
- *
- * Accesses global m_defs via context_find.
- *
- * Never returns NULL.
- */
-char *
-mh_oauth_cred_fn(const char *svc_name);
-
-/*
  * Serialize OAuth tokens to file.
  *
  * On error, return false.
@@ -248,11 +238,3 @@ mh_oauth_cred_load(FILE *fp, mh_oauth_ctx *ctx, const char *user);
 const char *
 mh_oauth_sasl_client_response(size_t *res_len,
                               const char *user, const mh_oauth_cred *cred);
-
-/*
- * Retrieve the various entries for the OAuth mechanism
- */
-
-bool
-mh_oauth_get_service_info(const char *svc_name, mh_oauth_service_info *svcinfo,
-			  char *errbuf, size_t errbuflen);
