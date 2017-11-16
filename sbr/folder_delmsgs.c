@@ -6,6 +6,7 @@
  */
 
 #include "h/mh.h"
+#include "pidwait.h"
 #include "m_name.h"
 #include "seq_save.h"
 #include "m_backup.h"
