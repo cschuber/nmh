@@ -59,7 +59,7 @@ copy_svc(mh_oauth_service_info *to, const mh_oauth_service_info *from)
 }
 
 /* Return profile component node name for a service parameter. */
-char *
+static char *
 mh_oauth_node_name_for_svc(const char *base_name, const char *svc)
 {
     /* TODO: s/_/-/g ? */
