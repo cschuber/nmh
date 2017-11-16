@@ -356,6 +356,7 @@ noinst_HEADERS = \
     sbr/atooi.h \
     sbr/base64.h \
     sbr/brkstring.h \
+    sbr/charstring.h \
     sbr/check_charset.h \
     sbr/client.h \
     sbr/concat.h \

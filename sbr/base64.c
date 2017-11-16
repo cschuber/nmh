@@ -6,6 +6,7 @@
  */
 
 #include "h/mh.h"
+#include "charstring.h"
 #include "error.h"
 #include "h/mime.h"
 #include <inttypes.h>

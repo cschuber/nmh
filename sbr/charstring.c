@@ -7,6 +7,7 @@
  */
 
 #include "h/mh.h"
+#include "charstring.h"
 #include "h/utils.h"
 
 #ifdef MULTIBYTE_SUPPORT

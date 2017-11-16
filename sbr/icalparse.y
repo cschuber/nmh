@@ -34,6 +34,7 @@
     */
 
 #include "h/mh.h"
+#include "charstring.h"
 #include "sbr/error.h"
 #include "h/icalendar.h"
 #include "h/utils.h"

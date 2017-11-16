@@ -40,6 +40,7 @@
  */
 
 #include "h/mh.h"
+#include "charstring.h"
 #include "getcpy.h"
 #include "error.h"
 #include "h/addrsbr.h"
