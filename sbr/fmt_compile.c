@@ -47,7 +47,7 @@
 #include "h/tws.h"
 #include "h/fmt_scan.h"
 #include "h/fmt_compile.h"
-#include "h/mts.h"
+#include "mts.h"
 #include "h/utils.h"
 #include "terminal.h"
 

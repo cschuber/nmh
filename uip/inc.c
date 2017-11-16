@@ -63,7 +63,7 @@
 #include "h/fmt_scan.h"
 #include "h/signals.h"
 #include "h/tws.h"
-#include "h/mts.h"
+#include "sbr/mts.h"
 #include "h/done.h"
 #include "sbr/lock_file.h"
 #include "sbr/m_maildir.h"

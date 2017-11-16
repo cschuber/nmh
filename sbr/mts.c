@@ -13,7 +13,7 @@
 
 #define nmhetcdir(file) NMHETCDIR#file
 
-#include "h/mts.h"
+#include "mts.h"
 #include <pwd.h>
 #include <sys/socket.h>
 #include <netdb.h>
