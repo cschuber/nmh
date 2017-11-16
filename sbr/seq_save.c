@@ -12,7 +12,7 @@
 #include "context_del.h"
 #include "seq_list.h"
 #include "error.h"
-#include "h/signals.h"
+#include "signals.h"
 #include "lock_file.h"
 #include "m_mktemp.h"
 

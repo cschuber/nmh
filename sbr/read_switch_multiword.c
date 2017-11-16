@@ -11,7 +11,7 @@
 #include "brkstring.h"
 #include "ambigsw.h"
 #include "print_sw.h"
-#include "h/signals.h"
+#include "signals.h"
 #include <setjmp.h>
 
 static char ansbuf[BUFSIZ];

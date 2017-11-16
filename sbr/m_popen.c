@@ -10,7 +10,7 @@
 #include "pidwait.h"
 #include "arglist.h"
 #include "error.h"
-#include "h/signals.h"
+#include "signals.h"
 #include "m_popen.h"
 
 static	int m_pid = NOTOK;	/* Process we're waiting for */

@@ -21,7 +21,7 @@
 #include "sbr/print_version.h"
 #include "sbr/print_help.h"
 #include "sbr/error.h"
-#include "h/signals.h"
+#include "sbr/signals.h"
 #include <setjmp.h>
 #include "h/fmt_scan.h"
 #include "h/tws.h"

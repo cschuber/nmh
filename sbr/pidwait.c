@@ -7,7 +7,7 @@
 
 #include "h/mh.h"
 #include "pidwait.h"
-#include "h/signals.h"
+#include "signals.h"
 
 int
 pidwait (pid_t id, int sigsok)
