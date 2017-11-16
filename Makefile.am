@@ -457,6 +457,7 @@ noinst_HEADERS = \
     uip/mhmisc.h \
     uip/mhoutsbr.h \
     uip/mhshowsbr.h \
+    uip/mhstoresbr.h \
     uip/picksbr.h \
     uip/popsbr.h \
     uip/replsbr.h \

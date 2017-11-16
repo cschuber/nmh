@@ -492,16 +492,6 @@ char *get_param(PM first, const char *name, char replace, int fetchonly);
  */
 char *get_param_value(PM pm, char replace);
 
-/*
- * mhstore
- * Put it here because it uses the CT typedef.
- */
-typedef struct mhstoreinfo *mhstoreinfo_t;
-mhstoreinfo_t mhstoreinfo_create(CT *, char *, const char *, int, int);
-int mhstoreinfo_files_not_clobbered(const mhstoreinfo_t) PURE;
-void mhstoreinfo_free(mhstoreinfo_t);
-void store_all_messages (mhstoreinfo_t);
-
 extern bool skip_mp_cte_check;
 extern bool suppress_bogus_mp_content_warning;
 extern bool bogus_mp_content;
