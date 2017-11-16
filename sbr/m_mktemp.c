@@ -9,6 +9,7 @@
 #include "concat.h"
 #include "r1bindex.h"
 #include "h/utils.h"
+#include <signal.h>
 #include "signals.h"
 #include "m_maildir.h"
 #include "m_mktemp.h"

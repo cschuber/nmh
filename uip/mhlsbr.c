@@ -28,6 +28,7 @@
 #include "sbr/print_help.h"
 #include "sbr/arglist.h"
 #include "sbr/error.h"
+#include <signal.h>
 #include "sbr/signals.h"
 #include "h/addrsbr.h"
 #include "h/fmt_scan.h"

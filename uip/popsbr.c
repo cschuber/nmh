@@ -14,6 +14,7 @@
 #include "h/netsec.h"
 
 #include "popsbr.h"
+#include <signal.h>
 #include "sbr/signals.h"
 #include "sbr/base64.h"
 

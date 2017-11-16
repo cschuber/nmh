@@ -10,6 +10,7 @@
 #include "pidwait.h"
 #include "arglist.h"
 #include "error.h"
+#include <signal.h>
 #include "signals.h"
 #include "m_popen.h"
 

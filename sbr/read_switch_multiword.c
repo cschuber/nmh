@@ -11,6 +11,7 @@
 #include "brkstring.h"
 #include "ambigsw.h"
 #include "print_sw.h"
+#include <signal.h>
 #include "signals.h"
 #include <setjmp.h>
 

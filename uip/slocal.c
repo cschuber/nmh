@@ -35,6 +35,7 @@
 #include "sbr/print_help.h"
 #include "sbr/error.h"
 #include "h/dropsbr.h"
+#include <signal.h>
 #include "sbr/signals.h"
 #include <setjmp.h>
 #include "h/tws.h"

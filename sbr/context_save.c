@@ -14,6 +14,7 @@
 #include "h/mh.h"
 #include "context_save.h"
 #include "error.h"
+#include <signal.h>
 #include "signals.h"
 #include "lock_file.h"
 

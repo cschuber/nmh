@@ -8,6 +8,7 @@
 #include "h/mh.h"
 #include "push.h"
 #include "error.h"
+#include <signal.h>
 #include "signals.h"
 #include "h/done.h"
 #include "m_mktemp.h"
