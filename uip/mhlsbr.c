@@ -6,6 +6,7 @@
  */
 
 #include "h/mh.h"
+#include "sbr/charstring.h"
 #include "sbr/fmt_new.h"
 #include "mhlsbr.h"
 #include "sbr/m_getfld.h"

@@ -9,6 +9,7 @@
  */
 
 #include "h/mh.h"
+#include "charstring.h"
 #include "fmt_addr.h"
 #include "dtime.h"
 #include "strindex.h"
