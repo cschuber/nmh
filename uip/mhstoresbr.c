@@ -25,6 +25,7 @@
 #include "h/fmt_scan.h"
 #include "h/mime.h"
 #include "h/mhparse.h"
+#include "mhstoresbr.h"
 #include "h/utils.h"
 #include "mhmisc.h"
 #include "mhshowsbr.h"

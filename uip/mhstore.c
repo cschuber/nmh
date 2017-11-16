@@ -31,6 +31,7 @@
 #include "h/tws.h"
 #include "h/mime.h"
 #include "h/mhparse.h"
+#include "mhstoresbr.h"
 #include "h/done.h"
 #include "h/utils.h"
 #include "mhmisc.h"
