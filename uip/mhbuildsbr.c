@@ -1976,7 +1976,7 @@ setup_attach_content(CT ct, char *filename)
  * 'attachment' and 'inline' are allowed.  Default to
  * 'attachment'.
  */
-void
+static void
 set_disposition (CT ct)
 {
     if (ct->c_dispo_type == NULL) {
@@ -2007,7 +2007,7 @@ set_disposition (CT ct)
  * 1: content contains 8-bit characters
  * -1: ignore content and use user's locale to determine charset
  */
-void
+static void
 set_charset (CT ct, int contains8bit)
 {
     if (ct->c_type == CT_TEXT) {
@@ -2046,7 +2046,7 @@ set_charset (CT ct, int contains8bit)
  * are matched by a pseudoheader.  Except don't descend into
  * message parts.
  */
-void
+static void
 expand_pseudoheaders (CT ct, struct multipart *m, const char *infile,
                       const convert_list *convert_head)
 {
@@ -2122,7 +2122,7 @@ expand_pseudoheaders (CT ct, struct multipart *m, const char *infile,
 /*
  * Expand a single pseudoheader.  It's for the specified type.
  */
-void
+static void
 expand_pseudoheader (CT ct, CT *text_plain_ct, struct multipart *m,
                      const char *infile, const char *type,
                      const char *argstring)
