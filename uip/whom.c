@@ -20,6 +20,7 @@
 #include "sbr/error.h"
 #include "h/done.h"
 #include "h/utils.h"
+#include <signal.h>
 #include "sbr/signals.h"
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"

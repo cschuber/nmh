@@ -7,6 +7,7 @@
 
 #include "h/mh.h"
 #include "pidwait.h"
+#include <signal.h>
 #include "signals.h"
 
 int

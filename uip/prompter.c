@@ -18,6 +18,7 @@
 #include "sbr/print_help.h"
 #include "sbr/error.h"
 #include <fcntl.h>
+#include <signal.h>
 #include "sbr/signals.h"
 #include "h/done.h"
 #include "h/utils.h"
