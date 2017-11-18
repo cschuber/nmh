@@ -28,7 +28,7 @@
 #include "sbr/signals.h"
 #include "h/addrsbr.h"
 #include "h/aliasbr.h"
-#include "h/dropsbr.h"
+#include "dropsbr.h"
 #include "h/mime.h"
 #include "sbr/done.h"
 #include "h/utils.h"
