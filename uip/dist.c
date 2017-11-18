@@ -33,7 +33,7 @@
 #include "h/utils.h"
 #include "sbr/m_maildir.h"
 #include <fcntl.h>
-#include "h/done.h"
+#include "sbr/done.h"
 #include "forwsbr.h"
 
 #define DIST_SWITCHES \

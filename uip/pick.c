@@ -27,7 +27,7 @@
 #include "sbr/seq_add.h"
 #include "sbr/error.h"
 #include "h/tws.h"
-#include "h/done.h"
+#include "sbr/done.h"
 #include "h/utils.h"
 #include "sbr/m_maildir.h"
 

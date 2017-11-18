@@ -35,7 +35,7 @@
 #include "h/fmt_compile.h"
 #include "h/utils.h"
 #include "h/addrsbr.h"
-#include "h/done.h"
+#include "sbr/done.h"
 #include "sbr/m_maildir.h"
 #include "sbr/terminal.h"
 

@@ -17,7 +17,7 @@
 #include "sbr/error.h"
 #include "h/fmt_scan.h"
 #include "h/fmt_compile.h"
-#include "h/done.h"
+#include "sbr/done.h"
 #include "h/utils.h"
 
 #define FMTDUMP_SWITCHES \

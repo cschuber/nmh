@@ -33,7 +33,7 @@
 #include "h/mime.h"
 #include "h/mhparse.h"
 #include "mhstoresbr.h"
-#include "h/done.h"
+#include "sbr/done.h"
 #include "h/utils.h"
 #include "mhmisc.h"
 #include "sbr/m_maildir.h"

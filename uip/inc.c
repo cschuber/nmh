@@ -65,7 +65,7 @@
 #include "sbr/signals.h"
 #include "h/tws.h"
 #include "sbr/mts.h"
-#include "h/done.h"
+#include "sbr/done.h"
 #include "sbr/lock_file.h"
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"

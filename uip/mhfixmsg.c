@@ -35,7 +35,7 @@
 #include "h/fmt_scan.h"
 #include "h/mime.h"
 #include "h/mhparse.h"
-#include "h/done.h"
+#include "sbr/done.h"
 #include "h/utils.h"
 #include <signal.h>
 #include "sbr/signals.h"

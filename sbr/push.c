@@ -10,7 +10,7 @@
 #include "error.h"
 #include <signal.h>
 #include "signals.h"
-#include "h/done.h"
+#include "done.h"
 #include "m_mktemp.h"
 
 

@@ -18,7 +18,7 @@
 #include "sbr/print_version.h"
 #include "sbr/print_help.h"
 #include "sbr/error.h"
-#include "h/done.h"
+#include "sbr/done.h"
 #include "h/utils.h"
 #include "sbr/m_maildir.h"
 #include "sbr/makedir.h"

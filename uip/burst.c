@@ -30,7 +30,7 @@
 #include "sbr/error.h"
 #include "h/utils.h"
 #include "h/mhparse.h"
-#include "h/done.h"
+#include "sbr/done.h"
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"
 #include "mhfree.h"

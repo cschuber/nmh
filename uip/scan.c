@@ -32,7 +32,7 @@
 #include "h/fmt_scan.h"
 #include "h/tws.h"
 #include "sbr/mts.h"
-#include "h/done.h"
+#include "sbr/done.h"
 #include "h/utils.h"
 #include "sbr/m_maildir.h"
 #include "sbr/terminal.h"
