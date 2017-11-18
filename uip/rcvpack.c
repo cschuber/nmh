@@ -13,7 +13,7 @@
 #include "sbr/print_version.h"
 #include "sbr/print_help.h"
 #include "sbr/error.h"
-#include "h/dropsbr.h"
+#include "dropsbr.h"
 #include "h/tws.h"
 #include "sbr/mts.h"
 #include "sbr/done.h"

@@ -28,7 +28,7 @@
 #include "sbr/print_help.h"
 #include "sbr/error.h"
 #include <fcntl.h>
-#include "h/dropsbr.h"
+#include "dropsbr.h"
 #include "sbr/done.h"
 #include "h/utils.h"
 #include "sbr/m_maildir.h"
