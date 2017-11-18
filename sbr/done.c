@@ -6,6 +6,7 @@
  */
 
 #include "h/mh.h"
+#include "done.h"
 #include "error.h"
 
 static void (*altexit)(int) NORETURN = exit;

@@ -1,9 +1,8 @@
-/* done.h -- allow calls to exit(3) to be redirected
+/* done.h -- terminate the program
  *
  * This code is Copyright (c) 2017, by the authors of nmh.  See the
  * COPYRIGHT file in the root directory of the nmh distribution for
- * complete copyright information.
- */
+ * complete copyright information. */
 
-void set_done(void (*new)(int) NORETURN);
-void done(int status) NORETURN;
+void set_done(void (*)(int) NORETURN);
+void done(int) NORETURN;
