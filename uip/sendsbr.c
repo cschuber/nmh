@@ -35,7 +35,7 @@
 #include "sbr/signals.h"
 #include <setjmp.h>
 #include <fcntl.h>
-#include "h/aliasbr.h"
+#include "aliasbr.h"
 #include "h/mime.h"
 #include "h/tws.h"
 #include "h/utils.h"

@@ -9,7 +9,7 @@
 #include "sbr/concat.h"
 #include "sbr/vfgets.h"
 #include "sbr/getcpy.h"
-#include "h/aliasbr.h"
+#include "aliasbr.h"
 #include "h/addrsbr.h"
 #include "h/utils.h"
 #include <pwd.h>

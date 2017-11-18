@@ -332,7 +332,6 @@ noinst_LIBRARIES = \
 ##
 noinst_HEADERS = \
     h/addrsbr.h \
-    h/aliasbr.h \
     h/fmt_compile.h \
     h/fmt_scan.h \
     h/icalendar.h \
@@ -451,6 +450,7 @@ noinst_HEADERS = \
     sbr/vector.h \
     sbr/vfgets.h \
     thirdparty/jsmn/jsmn.h \
+    uip/aliasbr.h \
     uip/annosbr.h \
     uip/distsbr.h \
     uip/dropsbr.h \
