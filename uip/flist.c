@@ -31,7 +31,7 @@
 #include "sbr/seq_getnum.h"
 #include "sbr/error.h"
 #include "h/utils.h"
-#include "h/done.h"
+#include "sbr/done.h"
 #include "sbr/m_maildir.h"
 
 /*

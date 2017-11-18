@@ -29,7 +29,7 @@
 #include "sbr/error.h"
 #include <fcntl.h>
 #include "h/dropsbr.h"
-#include "h/done.h"
+#include "sbr/done.h"
 #include "h/utils.h"
 #include "sbr/m_maildir.h"
 

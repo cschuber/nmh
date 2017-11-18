@@ -19,7 +19,7 @@
 #include "h/netsec.h"
 #include <stdarg.h>
 #include <sys/time.h>
-#include "h/done.h"
+#include "sbr/done.h"
 #include "sbr/base64.h"
 
 #define IMAPTEST_SWITCHES \

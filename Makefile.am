@@ -333,7 +333,6 @@ noinst_LIBRARIES = \
 noinst_HEADERS = \
     h/addrsbr.h \
     h/aliasbr.h \
-    h/done.h \
     h/dropsbr.h \
     h/fmt_compile.h \
     h/fmt_scan.h \
@@ -372,6 +371,7 @@ noinst_HEADERS = \
     sbr/ctype-checked.h \
     sbr/datetime.h \
     sbr/discard.h \
+    sbr/done.h \
     sbr/dtime.h \
     sbr/encode_rfc2047.h \
     sbr/error.h \

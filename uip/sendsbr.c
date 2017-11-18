@@ -50,7 +50,7 @@
 #include "h/oauth.h"
 #include "sbr/oauth_prof.h"
 #endif
-#include "h/done.h"
+#include "sbr/done.h"
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"
 #include "sbr/message_id.h"

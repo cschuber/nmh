@@ -20,7 +20,7 @@
 #include "error.h"
 #include "h/utils.h"
 #include "m_maildir.h"
-#include "h/done.h"
+#include "done.h"
 
 
 /* Does not return NULL. */
