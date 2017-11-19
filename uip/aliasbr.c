@@ -58,6 +58,12 @@ akvisible (void)
 }
 
 
+struct adr {
+    char *ad_text;		/* text of this address in list        */
+    struct adr *ad_next;	/* next adr in list                    */
+    char ad_local;		/* text is local (check for expansion) */
+};
+
 char *
 akresult (struct aka *ak)
 {
