@@ -335,7 +335,6 @@ noinst_HEADERS = \
     h/fmt_compile.h \
     h/fmt_scan.h \
     h/icalendar.h \
-    h/mf.h \
     h/mh.h \
     h/mhparse.h \
     h/mime.h \
@@ -405,6 +404,7 @@ noinst_HEADERS = \
     sbr/maildir_read_and_sort.h \
     sbr/makedir.h \
     sbr/message_id.h \
+    sbr/mf.h \
     sbr/mime_type.h \
     sbr/mts.h \
     sbr/oauth_prof.h \
