@@ -331,7 +331,6 @@ noinst_LIBRARIES = \
 ## them, but that might change in the future.
 ##
 noinst_HEADERS = \
-    h/addrsbr.h \
     h/fmt_compile.h \
     h/fmt_scan.h \
     h/icalendar.h \
@@ -345,6 +344,7 @@ noinst_HEADERS = \
     h/tws.h \
     h/utils.h \
     mts/smtp/smtp.h \
+    sbr/addrsbr.h \
     sbr/ambigsw.h \
     sbr/arglist.h \
     sbr/atooi.h \

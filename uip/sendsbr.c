@@ -28,7 +28,7 @@
 #include "sbr/pidstatus.h"
 #include "sbr/arglist.h"
 #include "sbr/error.h"
-#include "h/addrsbr.h"
+#include "sbr/addrsbr.h"
 #include "h/fmt_scan.h"
 #include "h/fmt_compile.h"
 #include <signal.h>

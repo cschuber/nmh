@@ -15,7 +15,7 @@
 #include "sbr/print_version.h"
 #include "sbr/print_help.h"
 #include "sbr/error.h"
-#include "h/addrsbr.h"
+#include "sbr/addrsbr.h"
 #include "aliasbr.h"
 #include "sbr/mts.h"
 #include "sbr/done.h"
