@@ -9,7 +9,7 @@
 #include "charstring.h"
 #include "fmt_addr.h"
 #include "addrsbr.h"
-#include "h/fmt_scan.h"
+#include "fmt_scan.h"
 #include "h/utils.h"
 
 static char *buf;		/* our current working buffer  */

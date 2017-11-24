@@ -15,7 +15,7 @@
 #include "sbr/print_version.h"
 #include "sbr/print_help.h"
 #include "sbr/error.h"
-#include "h/fmt_scan.h"
+#include "sbr/fmt_scan.h"
 #include "h/fmt_compile.h"
 #include "sbr/done.h"
 #include "h/utils.h"

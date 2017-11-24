@@ -31,7 +31,7 @@
 #include "sbr/print_help.h"
 #include "sbr/seq_getnum.h"
 #include "sbr/error.h"
-#include "h/fmt_scan.h"
+#include "sbr/fmt_scan.h"
 #include "h/fmt_compile.h"
 #include "h/utils.h"
 #include "sbr/addrsbr.h"

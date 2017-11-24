@@ -332,7 +332,6 @@ noinst_LIBRARIES = \
 ##
 noinst_HEADERS = \
     h/fmt_compile.h \
-    h/fmt_scan.h \
     h/icalendar.h \
     h/mh.h \
     h/mhparse.h \
@@ -378,6 +377,7 @@ noinst_HEADERS = \
     sbr/fmt_addr.h \
     sbr/fmt_new.h \
     sbr/fmt_rfc2047.h \
+    sbr/fmt_scan.h \
     sbr/folder_addmsg.h \
     sbr/folder_delmsgs.h \
     sbr/folder_free.h \

@@ -45,7 +45,7 @@
 #include "error.h"
 #include "addrsbr.h"
 #include "h/tws.h"
-#include "h/fmt_scan.h"
+#include "fmt_scan.h"
 #include "h/fmt_compile.h"
 #include "mts.h"
 #include "h/utils.h"
