@@ -1,15 +1,12 @@
-/* addrsbr.h -- definitions for the address parsing system
- */
-
-#define	UUCPHOST	(-1)
-#define	LOCALHOST	0
-#define	NETHOST		1
-#define	BADHOST		2
+/* addrsbr.h -- parse addresses 822-style
+ *
+ * This code is Copyright (c) 2017, by the authors of nmh.  See the
+ * COPYRIGHT file in the root directory of the nmh distribution for
+ * complete copyright information. */
 
 /*
  * The email structure used by nmh to define an email address
  */
-
 struct mailname {
     struct mailname *m_next;	/* Linked list linkage; available for */
 				/* application use */
@@ -26,17 +23,11 @@ struct mailname {
     char *m_note;		/* Note (post-address comment) */
 };
 
-/*
- * See notes for auxformat() below.
- */
-
-#define	adrformat(m) auxformat ((m), 1)
-
-/*
- *  prototypes
- */
-void mnfree(struct mailname *);
-bool ismymbox(struct mailname *);
+/* Values for mailname's m_type. */
+#define	UUCPHOST	(-1)
+#define	LOCALHOST	0
+#define	NETHOST		1
+#define	BADHOST		2
 
 /*
  * Enable Email Address Internationalization, which requires
@@ -59,26 +50,7 @@ void enable_eai(void);
  * the header, NULL is returned and the parser's internal state is
  * reset.
  */
-
-char *getname(const char *header);
-
-/*
- * Format an email address given a struct mailname.
- *
- * This function takes a pointer to a struct mailname and returns a pointer
- * to a static buffer holding the resulting email address.
- *
- * It is worth noting that group names are NOT handled, so if you want to
- * do something with groups you need to handle it externally to this function.
- *
- * Arguments include:
- *
- * mp		- Pointer to mailname structure
- * extras	- If true, include the personal name and/or note in the
- *		  address.  Otherwise, omit it.
- */
-
-char *auxformat(struct mailname *mp, int extras);
+char *getname(const char *);
 
 /*
  * Parse an email address into it's components.
@@ -105,5 +77,27 @@ char *auxformat(struct mailname *mp, int extras);
  * addresses.  This functionality was removed for nmh 1.5, and eventually
  * all of the code that used this argument was garbage collected.
  */
-struct mailname *getm(char *str, char *dfhost, int dftype, char *eresult,
-		      size_t eresultsize);
+struct mailname *getm(char *, char *, int, char *, size_t);
+
+void mnfree(struct mailname *);
+
+/*
+ * Format an email address given a struct mailname.
+ *
+ * This function takes a pointer to a struct mailname and returns a pointer
+ * to a static buffer holding the resulting email address.
+ *
+ * It is worth noting that group names are NOT handled, so if you want to
+ * do something with groups you need to handle it externally to this function.
+ *
+ * Arguments include:
+ *
+ * mp		- Pointer to mailname structure
+ * extras	- If true, include the personal name and/or note in the
+ *		  address.  Otherwise, omit it.
+ */
+char *auxformat(struct mailname *, int);
+
+#define	adrformat(m) auxformat((m), 1)
+
+bool ismymbox(struct mailname *);
