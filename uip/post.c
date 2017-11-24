@@ -26,7 +26,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include "sbr/signals.h"
-#include "h/addrsbr.h"
+#include "sbr/addrsbr.h"
 #include "aliasbr.h"
 #include "dropsbr.h"
 #include "h/mime.h"

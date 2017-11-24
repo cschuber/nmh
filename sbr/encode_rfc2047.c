@@ -10,7 +10,7 @@
 #include "check_charset.h"
 #include "error.h"
 #include "h/mhparse.h"
-#include "h/addrsbr.h"
+#include "addrsbr.h"
 #include "h/utils.h"
 #include "base64.h"
 #include "unquote.h"
