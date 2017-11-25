@@ -10,6 +10,7 @@
 #include "error.h"
 #include "h/mime.h"
 #include <inttypes.h>
+#include "base64.h"
 
 static const char nib2b64[0x40+1] =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
