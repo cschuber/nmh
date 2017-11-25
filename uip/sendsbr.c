@@ -29,7 +29,7 @@
 #include "sbr/arglist.h"
 #include "sbr/error.h"
 #include "sbr/addrsbr.h"
-#include "h/fmt_compile.h"
+#include "sbr/fmt_compile.h"
 #include "sbr/fmt_scan.h"
 #include <signal.h>
 #include "sbr/signals.h"

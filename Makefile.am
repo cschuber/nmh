@@ -331,7 +331,6 @@ noinst_LIBRARIES = \
 ## them, but that might change in the future.
 ##
 noinst_HEADERS = \
-    h/fmt_compile.h \
     h/icalendar.h \
     h/mh.h \
     h/mhparse.h \
@@ -375,6 +374,7 @@ noinst_HEADERS = \
     sbr/ext_hook.h \
     sbr/fdcompare.h \
     sbr/fmt_addr.h \
+    sbr/fmt_compile.h \
     sbr/fmt_new.h \
     sbr/fmt_rfc2047.h \
     sbr/fmt_scan.h \

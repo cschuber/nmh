@@ -19,7 +19,7 @@
 #include "h/icalendar.h"
 #include "sbr/datetime.h"
 #include "sbr/icalparse.h"
-#include "h/fmt_compile.h"
+#include "sbr/fmt_compile.h"
 #include "sbr/fmt_scan.h"
 #include "sbr/addrsbr.h"
 #include "sbr/mts.h"
