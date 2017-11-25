@@ -13,6 +13,7 @@
 #include "sbr/getcpy.h"
 #include "sbr/error.h"
 #include <fcntl.h>
+#include "h/fmt_compile.h"
 #include "sbr/fmt_scan.h"
 #include "h/tws.h"
 #include "h/utils.h"

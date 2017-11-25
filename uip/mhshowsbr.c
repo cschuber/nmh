@@ -24,6 +24,7 @@
 #include "h/tws.h"
 #include "h/mime.h"
 #include "h/mhparse.h"
+#include "h/fmt_compile.h"
 #include "sbr/fmt_scan.h"
 #include "sbr/done.h"
 #include "h/utils.h"

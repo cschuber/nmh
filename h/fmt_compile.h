@@ -1,6 +1,75 @@
 /* fmt_compile.h -- format types
  */
 
+/*
+ * This structure describes an "interesting" component.  It holds
+ * the name & text from the component (if found) and one piece of
+ * auxiliary info.  The structure for a particular component is located
+ * by (open) hashing the name and using it as an index into the ptr array
+ * "wantcomp".  All format entries that reference a particular component
+ * point to its comp struct (so we only have to do component specific
+ * processing once.  e.g., parse an address.).
+ *
+ * In previous implementations "wantcomp" was made available to other
+ * functions, but now it's private and is accessed via functions.
+ */
+struct comp {
+    char        *c_name;	/* component name (in lower case) */
+    char        *c_text;	/* component text (if found)      */
+    struct comp *c_next;	/* hash chain linkage             */
+    short        c_flags;	/* misc. flags (from fmt_scan)    */
+    short        c_type;	/* type info   (from fmt_compile) */
+    union {
+	struct tws *c_u_tws;
+	struct mailname *c_u_mn;
+    } c_un;
+    int          c_refcount;	/* Reference count                */
+};
+
+#define c_tws c_un.c_u_tws
+#define c_mn  c_un.c_u_mn
+
+/*
+ * c_flags bits
+ */
+#define	CF_TRUE       (1<<0)	/* usually means component is present */
+#define	CF_PARSED     (1<<1)	/* address/date has been parsed */
+#define	CF_DATEFAB    (1<<2)	/* datefield fabricated */
+#define CF_TRIMMED    (1<<3)	/* Component has been trimmed */
+
+#define CF_BITS       "\020\01TRUE\02PARSED\03CF_DATEFAB\04TRIMMED"
+
+/*
+ * c_type bits
+ */
+#define	CT_ADDR       (1<<0)	/* referenced as address    */
+#define	CT_DATE       (1<<1)	/* referenced as date       */
+
+#define CT_BITS       "\020\01ADDR\02DATE"
+
+/*
+ * This structure defines one formatting instruction.
+ */
+struct format {
+    unsigned char f_type;
+    char          f_fill;
+    short         f_width;	/* output field width   */
+    union {
+	struct comp *f_u_comp;	/* associated component */
+	char        *f_u_text;	/* literal text         */
+	char         f_u_char;	/* literal character    */
+	int          f_u_value;	/* literal value        */
+    } f_un;
+    short         f_flags;	/* misc. flags          */
+};
+
+#define f_skip f_width		/* instr to skip (false "if") */
+
+#define f_comp  f_un.f_u_comp
+#define f_text  f_un.f_u_text
+#define f_char  f_un.f_u_char
+#define f_value f_un.f_u_value
+
 /* types that output text */
 #define FT_COMP          1       /* the text of a component                 */
 #define FT_COMPF         2       /* comp text, filled                       */
@@ -110,3 +179,135 @@
 #define FT_V_AMATCH      96      /* V = 1 if "str" starts with literal */
 
 #define IF_FUNCS FT_S_NULL       /* start of "if" functions */
+
+/*
+ * f_flags bits
+ */
+
+#define FF_STRALLOC	(1<<0)	/* String has been allocated */
+#define FF_COMPREF	(1<<1)	/* Component reference */
+
+/*
+ * Compile a format string into a set of format instructions.  Arguments are:
+ *
+ * fstring	- The format string (the "source code").
+ * fmt		- Returns an allocated array of "struct fmt" elements.  Each
+ *		  struct fmt is one format instruction interpreted by the
+ *		  format engine.
+ * reset	- If set to true, the format compiler will reset the
+ *		  component hash table.  The component hash table contains
+ *		  all of the references to message components referred to in
+ *		  the format instructions.  If you have multiple format
+ *		  strings that you want to compile and operate on the
+ *		  same message, this should be set to false.
+ *
+ * Returns the total number of components referenced by all format instructions
+ * since the last reset of the hash table.
+ */
+int fmt_compile (char *fstring, struct format **fmt, int reset);
+
+/*
+ * Free a format structure and/or component hash table.  Arguments are:
+ *
+ * format	- An array of format structures allocated by fmt_compile,
+ *		  or NULL.
+ * reset	- If true, reset and remove all references in the component
+ *		  hash table.
+ */
+void fmt_free (struct format *fmt, int reset);
+
+/*
+ * Free all of the component text structures in the component hash table
+ */
+void fmt_freecomptext(void);
+
+/*
+ * Search for a component structure in the component hash table.  Arguments are:
+ *
+ * component	- The name of the component to search for.  By convention
+ *		  all component names used in format strings are lower case,
+ *		  but for backwards compatibility this search is done in
+ *		  a case-SENSITIVE manner.
+ *
+ * This function returns a "struct comp" corresponding to the named component,
+ * or NULL if the component is not found in the hash table.
+ */
+struct comp *fmt_findcomp(char *component) PURE;
+
+/*
+ * Search for a component structure in the component hash table.
+ *
+ * Identical to fmd_findcomp(), but is case-INSENSITIVE.
+ */
+struct comp *fmt_findcasecomp(char *component) PURE;
+
+/*
+ * Add a component entry to the component hash table
+ *
+ * component	- The name of the component to add to the hash table.
+ *
+ * If the component is already in the hash table, this function will do
+ * nothing.  Returns 1 if a component was added, 0 if it already existed.
+ */
+int fmt_addcompentry(char *component);
+
+/*
+ * Add a string to a component hash table entry.  Arguments are:
+ *
+ * component	- The name of the component to add text to.  The component
+ *		  is searched for in a case-INSENSITIVE manner (note that
+ *		  this is different than fmt_findcomp()).  If the component
+ *		  is not found in the hash table, this function will silently
+ *		  return.
+ * text		- The text to add to a component hash table entry.  Note that
+ *                if the last character of the existing component
+ *                text is a newline AND it is marked as an address
+ *                component (the the CT_ADDR flag is set) existing
+ *                component buffer is a newline, it will be separated
+ *                from previous text by ",\n\t"; otherwise if the last
+ *                character of the previous text is a newline it will
+ *                simply be separated by a "\t".  This unusual processing
+ *		  is designed to handle the case where you have multiple
+ *		  headers with the same name (e.g.: multiple "cc:" headers,
+ *		  even though that isn't technically allowed in the RFCs).
+ *
+ * This function is designed to be called when you start processing a new
+ * component.  The function returns the integer value of the hash table
+ * bucket corresponding to this component.  If there was no entry found
+ * in the component hash table, this function will return -1.
+ */
+int fmt_addcomptext(char *component, char *text);
+
+/*
+ * Append to an existing component.  Arguments are:
+ *
+ * bucket	- The hash table bucket corresponding to this component,
+ *		  as returned by fmt_addcomp().  If -1, this function will
+ *		  return with no actions performed.
+ * component	- The component to append text to.  Like fmt_addcomp, the
+ *		  component is searched case-INSENSITIVELY.
+ * text		- The text to append to the component.  No special processing
+ *		  is done.
+ *
+ * This function is designed to be called when you are processing continuation
+ * lines on the same header (state == FLDPLUS).
+ */
+void fmt_appendcomp(int bucket, char *component, char *text);
+
+/*
+ * Iterate over the complete hash table of component structures.
+ *
+ * Arguments are:
+ *
+ * comp		- Pointer to the current component structure.  The next
+ *		  component in the hash table after this component.  To
+ *		  start (or restart) the iteration of the hash table
+ *		  this argument should be NULL.
+ * bucket	- Pointer to hash bucket.  Will be managed by this function,
+ *		  the caller should not modify this value.
+ *
+ * Returns the next component in the hash table.  This value should be
+ * passed into the next call to fmt_nextcomp().  Returns NULL at the end
+ * of the hash table.
+ */
+struct comp *fmt_nextcomp(struct comp *comp, unsigned int *bucket);
