@@ -8,6 +8,7 @@
 #include "h/mh.h"
 #include "seq_nameok.h"
 #include "error.h"
+#include "seq_del.h"
 
 
 /*
