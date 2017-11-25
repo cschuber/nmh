@@ -8,6 +8,7 @@
 #include "h/mh.h"
 #include "error.h"
 #include "h/utils.h"
+#include "context_foil.h"
 
 /*
  * Foil search of users .mh_profile
