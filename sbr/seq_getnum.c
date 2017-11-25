@@ -7,6 +7,7 @@
  */
 
 #include "h/mh.h"
+#include "seq_getnum.h"
 
 
 int
