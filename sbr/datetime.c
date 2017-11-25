@@ -11,6 +11,7 @@
 #include "error.h"
 #include "h/icalendar.h"
 #include "datetime.h"
+#include "h/fmt_compile.h"
 #include "fmt_scan.h"
 #include "h/tws.h"
 #include "h/utils.h"

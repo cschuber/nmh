@@ -17,6 +17,7 @@
 #include "sbr/error.h"
 #include "sbr/done.h"
 #include "h/utils.h"
+#include "h/fmt_compile.h"
 #include "sbr/fmt_scan.h"
 #include "h/tws.h"
 #include "sbr/terminal.h"

@@ -18,9 +18,9 @@
 #include "context_find.h"
 #include "error.h"
 #include "addrsbr.h"
-#include "fmt_scan.h"
 #include "h/tws.h"
 #include "h/fmt_compile.h"
+#include "fmt_scan.h"
 #include "h/utils.h"
 #include "unquote.h"
 
@@ -40,7 +40,8 @@ struct mailname fmt_mnull = { NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0,
  * static prototypes
  */
 static int match (char *, char *) PURE;
-
+static void cpnumber(charstring_t, int, int, char, size_t);
+static void cptrimmed(charstring_t, char *, int, char, size_t);
 
 /*
  * test if string "sub" appears anywhere in
@@ -76,7 +77,7 @@ match (char *str, char *sub)
  * on the left if width is positive, else the right.
  * Left-padding uses fill.  It is either ' ' or '0'.
  * Right-padding is always with space. */
-void
+static void
 cpnumber(charstring_t dest, int num, int width, char fill, size_t max)
 {
     if (width == 0 || width == INT_MIN) {
@@ -136,7 +137,7 @@ cpnumber(charstring_t dest, int num, int width, char fill, size_t max)
  * size of wid characters. if wid is negative, the string is right
  * aligned no more than max characters are copied
  */
-void
+static void
 cptrimmed(charstring_t dest, char *str, int wid, char fill, size_t max)
 {
     int remaining;     /* remaining output width available */

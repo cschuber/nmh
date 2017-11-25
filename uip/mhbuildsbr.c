@@ -39,6 +39,7 @@
 #include <fcntl.h>
 #include "sbr/mts.h"
 #include "h/tws.h"
+#include "h/fmt_compile.h"
 #include "sbr/fmt_scan.h"
 #include "h/mime.h"
 #include "h/mhparse.h"
