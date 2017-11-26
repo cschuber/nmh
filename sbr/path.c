@@ -6,11 +6,13 @@
  */
 
 #include "h/mh.h"
+#include <pwd.h>
 #include "ssequal.h"
 #include "getfolder.h"
 #include "path.h"
 #include "utils.h"
 #include "m_maildir.h"
+#include "context_read.h"
 
 #define	CWD	"./"
 #define	DOT	"."
@@ -171,4 +173,71 @@ compath (char *f)
                 continue;
         }
     }
+}
+
+
+/*
+ * Find the location of a format or configuration
+ * file, and return its absolute pathname.
+ *
+ * 1) If already absolute pathname, then leave unchanged.
+ * 2) Next, if it begins with ~user, then expand it.
+ * 3) Next, check in nmh Mail directory.
+ * 4) Next, check in nmh `etc' directory.
+ *
+ * Does not return NULL.
+ */
+char *
+etcpath (char *file)
+{
+    static char epath[PATH_MAX];
+    char *cp;
+    char *pp;
+    struct passwd *pw;
+
+    context_read();
+
+    switch (*file) {
+	case '/': 
+	    /* If already absolute pathname, return it */
+	    return file;
+
+	case '~': 
+	    /* Expand ~username */
+	    if ((cp = strchr(pp = file + 1, '/')))
+		*cp++ = '\0';
+	    if (*pp == '\0') {
+		pp = mypath;
+	    } else {
+		if ((pw = getpwnam (pp)))
+		    pp = pw->pw_dir;
+		else {
+		    if (cp)
+			*--cp = '/';
+		    goto try_it;
+		}
+	    }
+
+	    snprintf (epath, sizeof(epath), "%s/%s", pp, FENDNULL(cp));
+	    if (cp)
+		*--cp = '/';
+
+	    if (access (epath, R_OK) != NOTOK)
+		return epath;
+
+            /* FALLTHRU */
+try_it:
+	default: 
+	    /* Check nmh Mail directory */
+	    if (access ((cp = m_mailpath (file)), R_OK) != NOTOK) {
+		/* Will leak because caller doesn't know cp was
+		   dynamically allocated. */
+		return cp;
+	    }
+            free (cp);
+    }
+
+    /* Check nmh `etc' directory */
+    snprintf (epath, sizeof(epath), NMHETCDIR "/%s", file);
+    return access(epath, R_OK) != NOTOK ? epath : file;
 }

@@ -40,6 +40,7 @@
 #include <setjmp.h>
 #include <sys/types.h>
 #include "sbr/terminal.h"
+#include "sbr/path.h"
 
 /*
  * MAJOR BUG:
