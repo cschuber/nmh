@@ -9,8 +9,8 @@
 #include "r1bindex.h"
 #include "brkstring.h"
 #include "error.h"
-#include "arglist.h"
 #include "utils.h"
+#include "arglist.h"
 
 /*
  * Split up a command into an appropriate array to pass to execvp()

@@ -8,6 +8,7 @@
 
 #include "h/mh.h"
 #include "pidwait.h"
+#include "utils.h"
 #include "arglist.h"
 #include "error.h"
 #include <signal.h>

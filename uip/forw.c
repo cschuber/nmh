@@ -32,12 +32,12 @@
 #include "sbr/path.h"
 #include "sbr/print_version.h"
 #include "sbr/print_help.h"
+#include "sbr/utils.h"
 #include "sbr/arglist.h"
 #include "sbr/error.h"
 #include <fcntl.h>
 #include "h/tws.h"
 #include "sbr/done.h"
-#include "sbr/utils.h"
 #include "sbr/m_maildir.h"
 #include "forwsbr.h"
 

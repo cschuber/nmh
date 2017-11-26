@@ -8,9 +8,3 @@
  * prototype from config.h
  */
 char *etcpath(char *) NONNULL(1);
-
-/*
- * prototypes from the nmh subroutine library
- */
-
-struct msgs_array;
