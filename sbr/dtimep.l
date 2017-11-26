@@ -13,7 +13,7 @@
 #include "h/nmh.h"
 #include "h/mh.h"
 #include "sbr/dtime.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "h/tws.h"
 
   /* Since we're looking at a string at a time, don't worry about

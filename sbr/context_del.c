@@ -8,7 +8,7 @@
 #include "h/mh.h"
 #include "context_del.h"
 #include "error.h"
-#include "h/utils.h"
+#include "utils.h"
 
 /*
  * Delete a key/value pair from the context/profile list.

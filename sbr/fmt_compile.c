@@ -48,7 +48,7 @@
 #include "fmt_compile.h"
 #include "fmt_scan.h"
 #include "mts.h"
-#include "h/utils.h"
+#include "utils.h"
 #include "terminal.h"
 
 #ifdef HAVE_SYS_TIME_H

@@ -11,7 +11,7 @@
 #include "credentials.h"
 #include "context_find.h"
 #include "error.h"
-#include "h/utils.h"
+#include "utils.h"
 #include "mts.h"
 #include "m_maildir.h"
 

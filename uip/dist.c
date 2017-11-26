@@ -30,7 +30,7 @@
 #include "sbr/print_version.h"
 #include "sbr/print_help.h"
 #include "sbr/error.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "sbr/m_maildir.h"
 #include <fcntl.h>
 #include "sbr/done.h"

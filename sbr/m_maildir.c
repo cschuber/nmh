@@ -9,7 +9,7 @@
 #include "getfolder.h"
 #include "context_find.h"
 #include "path.h"
-#include "h/utils.h"
+#include "utils.h"
 #include "m_maildir.h"
 
 #define	CWD	"./"

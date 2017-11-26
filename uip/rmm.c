@@ -22,7 +22,7 @@
 #include "sbr/print_help.h"
 #include "sbr/error.h"
 #include "sbr/done.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "sbr/m_maildir.h"
 
 #define RMM_SWITCHES \

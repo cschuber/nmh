@@ -340,7 +340,6 @@ noinst_HEADERS = \
     h/oauth.h \
     h/prototypes.h \
     h/tws.h \
-    h/utils.h \
     mts/smtp/smtp.h \
     sbr/addrsbr.h \
     sbr/ambigsw.h \
@@ -447,6 +446,7 @@ noinst_HEADERS = \
     sbr/trimcpy.h \
     sbr/unquote.h \
     sbr/uprf.h \
+    sbr/utils.h \
     sbr/vector.h \
     sbr/vfgets.h \
     thirdparty/jsmn/jsmn.h \

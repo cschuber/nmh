@@ -28,7 +28,7 @@
 #include "h/mime.h"
 #include "h/mhparse.h"
 #include "mhstoresbr.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "mhmisc.h"
 #include "mhshowsbr.h"
 #include "sbr/m_maildir.h"

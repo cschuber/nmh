@@ -37,7 +37,7 @@
 #include "charstring.h"
 #include "sbr/error.h"
 #include "h/icalendar.h"
-#include "h/utils.h"
+#include "utils.h"
 
 static char *append (contentline *, const char *, const size_t);
 static void new_content_line (contentline **);

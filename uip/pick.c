@@ -28,7 +28,7 @@
 #include "sbr/error.h"
 #include "h/tws.h"
 #include "sbr/done.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "sbr/m_maildir.h"
 
 #define PICK_SWITCHES \

@@ -38,7 +38,7 @@
 #include "aliasbr.h"
 #include "h/mime.h"
 #include "h/tws.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "sbr/mts.h"
 
 #ifdef HAVE_SYS_TIME_H

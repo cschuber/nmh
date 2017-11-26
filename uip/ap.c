@@ -20,7 +20,7 @@
 #include "sbr/fmt_scan.h"
 #include "sbr/mts.h"
 #include "sbr/done.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "sbr/terminal.h"
 
 #define	NADDRS	100

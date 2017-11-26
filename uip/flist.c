@@ -30,7 +30,7 @@
 #include "sbr/print_help.h"
 #include "sbr/seq_getnum.h"
 #include "sbr/error.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "sbr/done.h"
 #include "sbr/m_maildir.h"
 

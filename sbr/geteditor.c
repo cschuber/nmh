@@ -8,7 +8,7 @@
 #include "h/mh.h"
 #include "geteditor.h"
 #include "context_find.h"
-#include "h/utils.h"
+#include "utils.h"
 
 static char *default_editor = NULL;
 

@@ -10,7 +10,7 @@
 #include "m_atoi.h"
 #include "folder_read.h"
 #include "error.h"
-#include "h/utils.h"
+#include "utils.h"
 #include "m_maildir.h"
 
 /* We allocate the `mi' array 1024 elements at a time */

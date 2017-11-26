@@ -9,7 +9,7 @@
 #include "concat.h"
 #include "readconfig.h"
 #include "error.h"
-#include "h/utils.h"
+#include "utils.h"
 #include "h/tws.h"
 #include "mime_type.h"
 

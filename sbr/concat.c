@@ -8,7 +8,7 @@
 
 #include "h/mh.h"
 #include "concat.h"
-#include "h/utils.h"
+#include "utils.h"
 
 
 /* concat returns a non-NULL malloc'd pointer to the catenation of the

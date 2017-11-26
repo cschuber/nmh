@@ -12,7 +12,7 @@
 #include "context_find.h"
 #include "seq_getnum.h"
 #include "error.h"
-#include "h/utils.h"
+#include "utils.h"
 
 /*
  * error codes for sequence

@@ -9,7 +9,7 @@
 #include "getarguments.h"
 #include "context_find.h"
 #include "brkstring.h"
-#include "h/utils.h"
+#include "utils.h"
 
 char **
 getarguments (char *invo_name, int argc, char **argv, int check_context)

@@ -8,7 +8,7 @@
 #include "h/mh.h"
 #include "folder_realloc.h"
 #include "error.h"
-#include "h/utils.h"
+#include "utils.h"
 
 /*
  * Reallocate some of the space in the folder

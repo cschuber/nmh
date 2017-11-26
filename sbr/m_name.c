@@ -8,7 +8,7 @@
 #include <limits.h>
 #include "h/mh.h"
 #include "m_name.h"
-#include "h/utils.h"
+#include "utils.h"
 
 #define STR(s) #s
 #define SIZE(n) (sizeof STR(n)) /* Includes NUL. */

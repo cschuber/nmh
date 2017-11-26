@@ -21,7 +21,7 @@
 #include "h/tws.h"
 #include "fmt_compile.h"
 #include "fmt_scan.h"
-#include "h/utils.h"
+#include "utils.h"
 #include "unquote.h"
 
 #ifdef HAVE_SYS_TIME_H

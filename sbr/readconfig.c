@@ -13,7 +13,7 @@
 #include "getcpy.h"
 #include "readconfig.h"
 #include "error.h"
-#include "h/utils.h"
+#include "utils.h"
 
 static void checkconfig();
 

@@ -8,7 +8,7 @@
 #include "h/mh.h"
 #include "vfgets.h"
 #include "error.h"
-#include "h/utils.h"
+#include "utils.h"
 
 #define	QUOTE	'\\'
 

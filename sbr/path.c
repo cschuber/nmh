@@ -9,7 +9,7 @@
 #include "ssequal.h"
 #include "getfolder.h"
 #include "path.h"
-#include "h/utils.h"
+#include "utils.h"
 #include "m_maildir.h"
 
 #define	CWD	"./"

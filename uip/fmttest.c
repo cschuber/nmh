@@ -33,7 +33,7 @@
 #include "sbr/error.h"
 #include "sbr/fmt_compile.h"
 #include "sbr/fmt_scan.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "sbr/addrsbr.h"
 #include "sbr/done.h"
 #include "sbr/m_maildir.h"

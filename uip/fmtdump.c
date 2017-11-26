@@ -18,7 +18,7 @@
 #include "sbr/fmt_compile.h"
 #include "sbr/fmt_scan.h"
 #include "sbr/done.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 
 #define FMTDUMP_SWITCHES \
     X("form formatfile", 0, FORMSW) \

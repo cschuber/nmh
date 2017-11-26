@@ -31,7 +31,7 @@
 #include "sbr/error.h"
 #include "sbr/crawl_folders.h"
 #include "sbr/done.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "sbr/lock_file.h"
 #include "sbr/m_maildir.h"
 

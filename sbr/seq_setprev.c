@@ -10,7 +10,7 @@
 #include "context_find.h"
 #include "brkstring.h"
 #include "seq_add.h"
-#include "h/utils.h"
+#include "utils.h"
 
 /*
  * Add all the messages currently SELECTED to
