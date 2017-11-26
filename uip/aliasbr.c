@@ -12,6 +12,7 @@
 #include "aliasbr.h"
 #include "sbr/addrsbr.h"
 #include "sbr/utils.h"
+#include "sbr/path.h"
 #include <pwd.h>
 
 static int akvis;

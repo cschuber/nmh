@@ -10,6 +10,7 @@
 #include "getcpy.h"
 #include "error.h"
 #include "utils.h"
+#include "path.h"
 
 #define QUOTE '\\'
 

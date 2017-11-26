@@ -6,3 +6,4 @@
 
 char *pluspath(char *);
 char *path(char *, int);
+char *etcpath(char *) NONNULL(1);
