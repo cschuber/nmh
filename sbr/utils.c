@@ -443,6 +443,13 @@ to_upper(char *s)
 }
 
 
+/*
+ * program initialization
+ *
+ * argv0        - argv[0], presumably the program name
+ * read_context - whether to read the context
+ * check_version - if read_context, whether to check the version, and issue warning message if non-existent or old
+ */
 int
 nmh_init(const char *argv0, bool read_context, bool check_version)
 {
@@ -525,6 +532,8 @@ nmh_init(const char *argv0, bool read_context, bool check_version)
  * Check stored version, and return 1 if out-of-date or non-existent.
  * Because the output of "mhparam version" is prefixed with "nmh-",
  * use that prefix here.
+ *
+ * older        - 0 for difference comparison, 1 for only if older
  */
 int
 nmh_version_changed (int older)
@@ -585,7 +594,14 @@ contains8bit(const char *start, const char *end)
 
 
 /*
- * See if input has any 8-bit bytes.
+ * See if file has any 8-bit bytes.
+ * Arguments include:
+ *
+ * fd    	- file descriptor
+ * eightbit	- address of result, will be set to 1 if the file contains
+ *                any 8-bit bytes, 0 otherwise.
+ *
+ * Returns OK on success, NOTOK on read failure.
  */
 int
 scan_input (int fd, int *eightbit)
@@ -608,7 +624,7 @@ scan_input (int fd, int *eightbit)
 
 
 /*
- * Convert an int to a char string.
+ * Returns string representation of int, in static memory.
  */
 char *
 m_str(int value)
@@ -618,7 +634,10 @@ m_str(int value)
 
 
 /*
- * Convert an int to a char string, of limited width if > 0.
+ * Returns string representation of an int, in static memory.  If width
+ * == 0, does not limit the width.  If width > 0 and value will not fit
+ * in field of that size, including any negative sign but excluding
+ * terminating null, then returns "?".
  */
 #define STR(s) #s
 /* SIZE(n) includes NUL.  n must just be digits, not an equation. */
