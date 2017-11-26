@@ -6,7 +6,7 @@
  */
 
 #include "h/mh.h"
-#include "h/utils.h"
+#include "utils.h"
 
 #include <sys/ioctl.h>
 

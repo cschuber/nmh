@@ -127,7 +127,7 @@ build_template(const char *directory, const char *prefix, const char *suffix)
 #include "sbr/print_help.h"
 #include "sbr/error.h"
 #include "sbr/done.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 
 #if HAVE_MKSTEMPS
 #   define MHFIXMSG_SWITCHES \

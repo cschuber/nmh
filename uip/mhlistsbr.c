@@ -15,7 +15,7 @@
 #include "h/mime.h"
 #include "h/mhparse.h"
 #include "mhlistsbr.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "mhmisc.h"
 
 /*

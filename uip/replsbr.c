@@ -23,7 +23,7 @@
 #include "sbr/fmt_compile.h"
 #include "sbr/fmt_scan.h"
 #include "sbr/done.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include <sys/file.h>
 #include "replsbr.h"
 

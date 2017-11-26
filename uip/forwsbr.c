@@ -16,7 +16,7 @@
 #include "sbr/fmt_compile.h"
 #include "sbr/fmt_scan.h"
 #include "h/tws.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "sbr/m_mktemp.h"
 #include "forwsbr.h"
 

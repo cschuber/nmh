@@ -8,7 +8,7 @@
 #include "h/mh.h"
 #include "concat.h"
 #include "r1bindex.h"
-#include "h/utils.h"
+#include "utils.h"
 #include <signal.h>
 #include "signals.h"
 #include "m_maildir.h"

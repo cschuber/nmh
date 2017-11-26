@@ -9,7 +9,7 @@
 #include "sbr/credentials.h"
 #include "sbr/client.h"
 #include "sbr/error.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "h/oauth.h"
 #include "h/netsec.h"
 

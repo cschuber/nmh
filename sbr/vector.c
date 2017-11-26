@@ -17,7 +17,7 @@
  */
 
 #include "h/mh.h"
-#include "h/utils.h"
+#include "utils.h"
 
 /* The default size of a struct bvector's bits, measured in bits.
  * The struct's tiny member is used for storage. */

@@ -8,7 +8,7 @@
 #include "h/mh.h"
 #include "fmt_rfc2047.h"
 #include "check_charset.h"
-#include "h/utils.h"
+#include "utils.h"
 #ifdef HAVE_ICONV
 #  include <iconv.h>
 #endif

@@ -24,7 +24,7 @@
 #include "mhbuildsbr.h"
 #include "mhlistsbr.h"
 #include "sbr/done.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"
 #include "mhfree.h"

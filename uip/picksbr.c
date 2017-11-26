@@ -16,7 +16,7 @@
 #include "sbr/ambigsw.h"
 #include "sbr/error.h"
 #include "h/tws.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 
 #ifdef HAVE_SYS_TIME_H
 # include <sys/time.h>

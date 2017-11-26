@@ -8,7 +8,7 @@
 #include "h/mh.h"
 #include "dtime.h"
 #include "h/nmh.h"
-#include "h/utils.h"
+#include "utils.h"
 #include "h/tws.h"
 #include <time.h>
 

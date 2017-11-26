@@ -15,7 +15,7 @@
 #include "context_find.h"
 #include "print_help.h"
 #include "error.h"
-#include "h/utils.h"
+#include "utils.h"
 #include <signal.h>
 #include "signals.h"
 #include "m_mktemp.h"

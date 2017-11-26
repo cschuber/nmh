@@ -11,7 +11,7 @@
 #include "addrsbr.h"
 #include "fmt_compile.h"
 #include "fmt_scan.h"
-#include "h/utils.h"
+#include "utils.h"
 
 static char *buf;		/* our current working buffer  */
 static char *bufend;		/* end of working buffer       */

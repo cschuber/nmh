@@ -26,7 +26,7 @@
 #include "h/tws.h"
 #include "h/mime.h"
 #include "h/mhparse.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "mhmisc.h"
 #include "sbr/m_mktemp.h"
 #include "mhfree.h"

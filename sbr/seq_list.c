@@ -10,7 +10,7 @@
 #include "m_name.h"
 #include "seq_list.h"
 #include "seq_getnum.h"
-#include "h/utils.h"
+#include "utils.h"
 
 /* allocate this much buffer space at a time */
 #define MAXBUFFER 1024

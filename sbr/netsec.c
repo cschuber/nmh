@@ -10,7 +10,7 @@
 #include "credentials.h"
 #include "getcpy.h"
 #include "brkstring.h"
-#include "h/utils.h"
+#include "utils.h"
 #include "h/netsec.h"
 #include "h/oauth.h"
 #include <stdarg.h>

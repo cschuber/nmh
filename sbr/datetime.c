@@ -14,7 +14,7 @@
 #include "fmt_compile.h"
 #include "fmt_scan.h"
 #include "h/tws.h"
-#include "h/utils.h"
+#include "utils.h"
 #include "unquote.h"
 
 /*

@@ -71,7 +71,7 @@
 #include "sbr/error.h"
 #include <fcntl.h>
 #include "h/mime.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #ifdef OAUTH_SUPPORT
 #include "h/oauth.h"
 #endif

@@ -19,7 +19,7 @@
 #include "aliasbr.h"
 #include "sbr/mts.h"
 #include "sbr/done.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 
 #define ALI_SWITCHES \
     X("alias aliasfile", 0, ALIASW) \

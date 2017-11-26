@@ -7,7 +7,7 @@
  */
 
 #include "h/mh.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "h/mime.h"
 #include "h/mhparse.h"
 #include "sbr/m_mktemp.h"

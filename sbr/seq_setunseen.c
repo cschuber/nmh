@@ -13,7 +13,7 @@
 #include "seq_getnum.h"
 #include "seq_del.h"
 #include "seq_add.h"
-#include "h/utils.h"
+#include "utils.h"
 
 /*
  * We scan through the folder and act upon all messages

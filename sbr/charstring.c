@@ -8,7 +8,7 @@
 
 #include "h/mh.h"
 #include "charstring.h"
-#include "h/utils.h"
+#include "utils.h"
 
 #ifdef MULTIBYTE_SUPPORT
 #  define NMH_MAX_CHARWIDTH MB_CUR_MAX

@@ -27,7 +27,7 @@
 #include "sbr/fmt_compile.h"
 #include "sbr/fmt_scan.h"
 #include "sbr/done.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 #include "mhmisc.h"
 #include "mhshowsbr.h"
 #include "sbr/m_mktemp.h"

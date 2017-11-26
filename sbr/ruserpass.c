@@ -26,7 +26,7 @@
 #include "ruserpass.h"
 #include "credentials.h"
 #include "error.h"
-#include "h/utils.h"
+#include "utils.h"
 #include <pwd.h>
 
 static FILE *cfile;

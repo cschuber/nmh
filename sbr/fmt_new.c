@@ -9,7 +9,7 @@
 #include "fmt_new.h"
 #include "getcpy.h"
 #include "error.h"
-#include "h/utils.h"
+#include "utils.h"
 
 #define QUOTE '\\'
 

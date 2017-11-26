@@ -18,7 +18,7 @@
 #include "sbr/error.h"
 #include "sbr/mts.h"
 #include "sbr/done.h"
-#include "h/utils.h"
+#include "sbr/utils.h"
 
 #define MHPARAM_SWITCHES \
     X("components", 0, COMPSW) \
