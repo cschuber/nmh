@@ -11,8 +11,6 @@
 #include "error.h"
 #include "utils.h"
 
-#define nmhetcdir(file) NMHETCDIR#file
-
 #include "mts.h"
 #include <pwd.h>
 #include <sys/socket.h>
@@ -74,7 +72,7 @@ char *pophost    = "";
 /*
  * Global MailDelivery file
  */
-char *maildelivery = nmhetcdir(/maildelivery);
+char *maildelivery = NMHETCDIR "/maildelivery";
 
 
 /*
