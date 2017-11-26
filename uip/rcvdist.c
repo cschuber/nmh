@@ -20,6 +20,7 @@
 #include "sbr/pidstatus.h"
 #include "sbr/print_version.h"
 #include "sbr/print_help.h"
+#include "sbr/utils.h"
 #include "sbr/arglist.h"
 #include "sbr/error.h"
 #include "sbr/fmt_compile.h"
@@ -27,7 +28,6 @@
 #include "h/tws.h"
 #include "sbr/mts.h"
 #include "sbr/done.h"
-#include "sbr/utils.h"
 #include "sbr/m_mktemp.h"
 
 #define RCVDIST_SWITCHES \

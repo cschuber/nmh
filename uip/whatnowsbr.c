@@ -67,11 +67,11 @@
 #include "sbr/path.h"
 #include "sbr/print_version.h"
 #include "sbr/print_help.h"
+#include "sbr/utils.h"
 #include "sbr/arglist.h"
 #include "sbr/error.h"
 #include <fcntl.h>
 #include "h/mime.h"
-#include "sbr/utils.h"
 #ifdef OAUTH_SUPPORT
 #include "h/oauth.h"
 #endif

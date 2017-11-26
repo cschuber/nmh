@@ -29,10 +29,10 @@
 #include "sbr/print_help.h"
 #include "sbr/seq_getnum.h"
 #include "sbr/seq_add.h"
+#include "sbr/utils.h"
 #include "sbr/arglist.h"
 #include "sbr/error.h"
 #include "sbr/done.h"
-#include "sbr/utils.h"
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"
 #include <fcntl.h>

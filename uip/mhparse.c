@@ -19,6 +19,7 @@
 #include "sbr/getcpy.h"
 #include "sbr/context_find.h"
 #include "sbr/pidstatus.h"
+#include "sbr/utils.h"
 #include "sbr/arglist.h"
 #include "sbr/error.h"
 #include <fcntl.h>
@@ -26,7 +27,6 @@
 #include "h/tws.h"
 #include "h/mime.h"
 #include "h/mhparse.h"
-#include "sbr/utils.h"
 #include "mhmisc.h"
 #include "sbr/m_mktemp.h"
 #include "mhfree.h"

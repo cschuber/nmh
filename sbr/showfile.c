@@ -10,6 +10,7 @@
 #include "showfile.h"
 #include "r1bindex.h"
 #include "context_save.h"
+#include "utils.h"
 #include "arglist.h"
 #include "error.h"
 

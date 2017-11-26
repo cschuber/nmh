@@ -15,6 +15,7 @@
 #include "sbr/getcpy.h"
 #include "sbr/context_find.h"
 #include "sbr/pidstatus.h"
+#include "sbr/utils.h"
 #include "sbr/arglist.h"
 #include "sbr/error.h"
 #include <fcntl.h>
@@ -27,7 +28,6 @@
 #include "sbr/fmt_compile.h"
 #include "sbr/fmt_scan.h"
 #include "sbr/done.h"
-#include "sbr/utils.h"
 #include "mhmisc.h"
 #include "mhshowsbr.h"
 #include "sbr/m_mktemp.h"

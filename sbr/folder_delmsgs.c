@@ -13,9 +13,9 @@
 #include "ext_hook.h"
 #include "folder_delmsgs.h"
 #include "context_save.h"
+#include "utils.h"
 #include "arglist.h"
 #include "error.h"
-#include "utils.h"
 #include "m_mktemp.h"
 
 /*

@@ -15,6 +15,7 @@
 #include "sbr/ambigsw.h"
 #include "sbr/print_version.h"
 #include "sbr/print_help.h"
+#include "sbr/utils.h"
 #include "sbr/arglist.h"
 #include "sbr/error.h"
 #include <fcntl.h>
@@ -23,7 +24,6 @@
 #include "h/mime.h"
 #include "h/mhparse.h"
 #include "sbr/done.h"
-#include "sbr/utils.h"
 #include "sbr/m_mktemp.h"
 #include "sbr/base64.h"
 

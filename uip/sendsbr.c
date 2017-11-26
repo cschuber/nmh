@@ -26,6 +26,7 @@
 #include "sbr/context_find.h"
 #include "sbr/brkstring.h"
 #include "sbr/pidstatus.h"
+#include "sbr/utils.h"
 #include "sbr/arglist.h"
 #include "sbr/error.h"
 #include "sbr/addrsbr.h"
@@ -38,7 +39,6 @@
 #include "aliasbr.h"
 #include "h/mime.h"
 #include "h/tws.h"
-#include "sbr/utils.h"
 #include "sbr/mts.h"
 
 #ifdef HAVE_SYS_TIME_H
