@@ -506,5 +506,3 @@ extern char *version_num;
 extern char *version_str;
 extern char *whatnowproc;
 extern char *whomproc;
-
-#include "prototypes.h"

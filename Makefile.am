@@ -338,7 +338,6 @@ noinst_HEADERS = \
     h/netsec.h \
     h/nmh.h \
     h/oauth.h \
-    h/prototypes.h \
     h/tws.h \
     mts/smtp/smtp.h \
     sbr/addrsbr.h \
