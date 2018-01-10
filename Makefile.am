@@ -337,7 +337,6 @@ noinst_HEADERS = \
     h/mime.h \
     h/netsec.h \
     h/nmh.h \
-    h/oauth.h \
     h/tws.h \
     mts/smtp/smtp.h \
     sbr/addrsbr.h \
@@ -405,6 +404,7 @@ noinst_HEADERS = \
     sbr/mf.h \
     sbr/mime_type.h \
     sbr/mts.h \
+    sbr/oauth.h \
     sbr/oauth_prof.h \
     sbr/path.h \
     sbr/pidstatus.h \

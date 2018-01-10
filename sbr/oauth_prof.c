@@ -21,7 +21,7 @@
 #include <strings.h>
 #include <unistd.h>
 
-#include "h/oauth.h"
+#include "oauth.h"
 #include "oauth_prof.h"
 #include "utils.h"
 #include "m_maildir.h"

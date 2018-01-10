@@ -73,7 +73,7 @@
 #include <fcntl.h>
 #include "h/mime.h"
 #ifdef OAUTH_SUPPORT
-#include "h/oauth.h"
+#include "sbr/oauth.h"
 #endif
 #include "sbr/done.h"
 #include "sbr/m_maildir.h"

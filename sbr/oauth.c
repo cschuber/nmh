@@ -27,7 +27,7 @@
 #include <curl/curl.h>
 #include "thirdparty/jsmn/jsmn.h"
 
-#include "h/oauth.h"
+#include "oauth.h"
 #include "oauth_prof.h"
 #include "utils.h"
 #include "lock_file.h"

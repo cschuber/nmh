@@ -10,7 +10,7 @@
 #include "sbr/client.h"
 #include "sbr/error.h"
 #include "sbr/utils.h"
-#include "h/oauth.h"
+#include "sbr/oauth.h"
 #include "h/netsec.h"
 
 #include "popsbr.h"
