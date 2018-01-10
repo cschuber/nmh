@@ -96,145 +96,21 @@ struct mh_oauth_service_info {
     char *scope;
 };
 
-/*
- * Do the complete dance for XOAUTH2 as used by POP3 and SMTP.
- *
- * Load tokens for svc from disk, refresh if necessary, and return the
- * client response in client_response and client_response_len.
- *
- * If refreshing, writes freshened tokens to disk.
- *
- * Exits via adios on any error.
- *
- * Always returns OK for now, but in the future could return NOTOK on error.
- */
-
-int
-mh_oauth_do_xoauth(const char *user, const char *svc, unsigned char **oauth_res,
-		   size_t *oauth_res_len, FILE *log);
-
-/*
- * Allocate and initialize a new OAuth context.
- *
- * Caller must call mh_oauth_free(ctx) when finished, even on error.
- *
- * svc_name must point to a null-terminated string identifying the service
- * provider.  Support for "gmail" is built-in; anything else must be defined in
- * the user's profile.  The profile can also override "gmail" settings.
- *
- * Accesses global m_defs via context_find.
- *
- * On error, return false and set an error in ctx; ctx is always allocated.
- */
-bool
-mh_oauth_new(mh_oauth_ctx **ctx, const char *svc_name);
-
-/*
- * Free all resources associated with ctx.
- */
-void
-mh_oauth_free(mh_oauth_ctx *ctx);
-
-/*
- * Return null-terminated human-readable name of the service, e.g. "Gmail".
- *
- * Never returns NULL.
- */
-const char *
-mh_oauth_svc_display_name(const mh_oauth_ctx *ctx) PURE;
-
-/*
- * Enable logging for subsequent operations on ctx.
- *
- * log must not be closed until after mh_oauth_free.
- *
- * For all HTTP requests, the request is logged with each line prefixed with
- * "< ", and the response with "> ".  Other messages are prefixed with "* ".
- */
-void
-mh_oauth_log_to(FILE *log, mh_oauth_ctx *ctx);
-
-/*
- * Return the error code after some function indicated an error.
- *
- * Must not be called if an error was not indicated.
- */
-mh_oauth_err_code
-mh_oauth_get_err_code(const mh_oauth_ctx *ctx) PURE;
-
-/*
- * Return null-terminated error message after some function indicated an error.
- *
- * Never returns NULL, but must not be called if an error was not indicated.
- */
-const char *
-mh_oauth_get_err_string(mh_oauth_ctx *ctx);
-
-/*
- * Return the null-terminated URL the user needs to visit to authorize access.
- *
- * URL may be invalidated by subsequent calls to mh_oauth_get_authorize_url,
- * mh_oauth_authorize, or mh_oauth_refresh.
- *
- * On error, return NULL.
- */
-const char *
-mh_oauth_get_authorize_url(mh_oauth_ctx *ctx);
-
-/*
- * Exchange code provided by the user for access (and maybe refresh) token.
- *
- * On error, return NULL.
- */
-mh_oauth_cred *
-mh_oauth_authorize(const char *code, mh_oauth_ctx *ctx);
-
-/*
- * Refresh access (and maybe refresh) token if refresh token present.
- *
- * On error, return false and leave cred untouched.
- */
-bool
-mh_oauth_refresh(mh_oauth_cred *cred);
-
-/*
- * Return whether access token is present and not expired at time T.
- */
-bool
-mh_oauth_access_token_valid(time_t t, const mh_oauth_cred *cred) PURE;
-
-/*
- * Free all resources associated with cred.
- */
-void
-mh_oauth_cred_free(mh_oauth_cred *cred);
-
-/*
- * Serialize OAuth tokens to file.
- *
- * On error, return false.
- */
-bool
-mh_oauth_cred_save(FILE *fp, mh_oauth_cred *cred, const char *user);
-
-/*
- * Load OAuth tokens from file.
- *
- * Calls m_getfld2(), which writes to stderr with advise().
- *
- * On error, return NULL.
- */
-mh_oauth_cred *
-mh_oauth_cred_load(FILE *fp, mh_oauth_ctx *ctx, const char *user);
-
-/*
- * Return null-terminated SASL client response for XOAUTH2 from access token.
- *
- * Store the length in res_len.
- *
- * Must not be called except after successful mh_oauth_access_token_valid or
- * mh_oauth_refresh call; i.e. must have a valid access token.
- */
-const char *
-mh_oauth_sasl_client_response(size_t *res_len,
-                              const char *user, const mh_oauth_cred *cred);
+int mh_oauth_do_xoauth(const char *user, const char *svc,
+    unsigned char **oauth_res, size_t *oauth_res_len, FILE *log);
+bool mh_oauth_new(mh_oauth_ctx **ctx, const char *svc_name);
+void mh_oauth_free(mh_oauth_ctx *ctx);
+const char *mh_oauth_svc_display_name(const mh_oauth_ctx *ctx) PURE;
+void mh_oauth_log_to(FILE *log, mh_oauth_ctx *ctx);
+mh_oauth_err_code mh_oauth_get_err_code(const mh_oauth_ctx *ctx) PURE;
+const char *mh_oauth_get_err_string(mh_oauth_ctx *ctx);
+const char *mh_oauth_get_authorize_url(mh_oauth_ctx *ctx);
+mh_oauth_cred *mh_oauth_authorize(const char *code, mh_oauth_ctx *ctx);
+bool mh_oauth_refresh(mh_oauth_cred *cred);
+bool mh_oauth_access_token_valid(time_t t, const mh_oauth_cred *cred) PURE;
+void mh_oauth_cred_free(mh_oauth_cred *cred);
+bool mh_oauth_cred_save(FILE *fp, mh_oauth_cred *cred, const char *user);
+mh_oauth_cred *mh_oauth_cred_load(FILE *fp, mh_oauth_ctx *ctx,
+    const char *user);
+const char *mh_oauth_sasl_client_response(size_t *res_len,
+    const char *user, const mh_oauth_cred *cred);
