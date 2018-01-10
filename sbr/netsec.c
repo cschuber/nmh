@@ -12,7 +12,7 @@
 #include "brkstring.h"
 #include "utils.h"
 #include "h/netsec.h"
-#include "h/oauth.h"
+#include "oauth.h"
 #include <stdarg.h>
 #include <sys/select.h>
 #include "base64.h"

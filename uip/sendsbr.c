@@ -47,7 +47,7 @@
 #include <time.h>
 
 #ifdef OAUTH_SUPPORT
-#include "h/oauth.h"
+#include "sbr/oauth.h"
 #include "sbr/oauth_prof.h"
 #endif
 #include "sbr/done.h"
