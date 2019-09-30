@@ -253,8 +253,8 @@ main (int argc, char **argv)
     if (pophost && *pophost)
 	host = pophost;
 
-    sasl = false;
-    chgflag = noisy = noverify = true;
+    sasl = noverify = false;
+    chgflag = noisy = true;
     while ((cp = *argp++)) {
 	if (*cp == '-') {
 	    switch (smatch (++cp, switches)) {
