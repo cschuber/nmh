@@ -39,8 +39,6 @@ struct mailname fmt_mnull = { NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0,
  * static prototypes
  */
 static int match (char *, char *) PURE;
-static char *get_x400_friendly (char *, char *, int);
-static int get_x400_comp (char *, char *, char *, int);
 
 
 /*
@@ -356,50 +354,6 @@ cpstripped (charstring_t dest, size_t max, char *str)
 static char *lmonth[] = { "January",  "February","March",   "April",
 			  "May",      "June",    "July",    "August",
 			  "September","October", "November","December" };
-
-static char *
-get_x400_friendly (char *mbox, char *buffer, int buffer_len)
-{
-    char given[BUFSIZ], surname[BUFSIZ];
-
-    if (mbox == NULL)
-	return NULL;
-    if (*mbox == '"')
-	mbox++;
-    if (*mbox != '/')
-	return NULL;
-
-    if (get_x400_comp (mbox, "/PN=", buffer, buffer_len)) {
-	for (mbox = buffer; (mbox = strchr(mbox, '.')); )
-	    *mbox++ = ' ';
-
-	return buffer;
-    }
-
-    if (!get_x400_comp (mbox, "/S=", surname, sizeof(surname)))
-	return NULL;
-
-    if (get_x400_comp (mbox, "/G=", given, sizeof(given)))
-	snprintf (buffer, buffer_len, "%s %s", given, surname);
-    else
-	snprintf (buffer, buffer_len, "%s", surname);
-
-    return buffer;
-}
-
-static int
-get_x400_comp (char *mbox, char *key, char *buffer, int buffer_len)
-{
-    int	idx;
-    char *cp;
-
-    if ((idx = stringdex (key, mbox)) < 0
-	    || !(cp = strchr(mbox += idx + strlen (key), '/')))
-	return 0;
-
-    snprintf (buffer, buffer_len, "%*.*s", (int)(cp - mbox), (int)(cp - mbox), mbox);
-    return 1;
-}
 
 struct format *
 fmt_scan (struct format *format, charstring_t scanlp, int width, int *dat,
@@ -975,8 +929,7 @@ fmt_scan (struct format *format, charstring_t scanlp, int width, int *dat,
 				break;
 	            }
                     str = memmove(buffer, str, strlen(str) + 1);
-	        } else if (!(str = get_x400_friendly (mn->m_mbox,
-				buffer, sizeof(buffer)))) {
+	        } else {
 	unfriendly:
 		  switch (mn->m_type) {
 		    case LOCALHOST:
