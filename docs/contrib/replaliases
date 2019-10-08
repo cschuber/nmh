@@ -54,7 +54,7 @@ rt() {
 #### replace $EDITOR above with the name of your editor.  Without that
 #### profile entry, enter "e[dit] $EDITOR" at the What now? prompt.
 rtm() {
-    rt -editor mhbuild "$@"
+    rt "$@" -editor mhbuild
 }
 
 
