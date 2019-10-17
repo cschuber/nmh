@@ -445,7 +445,21 @@ pop_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 
 	if (line == NULL)
 	    return NOTOK;
-	if (len < 2 || (len == 2 && strcmp(line, "+ ") != 0)) {
+
+	/*
+	 * If we get an -ERR reply, bubble that back up
+	 */
+
+	if (has_prefix(line, "-ERR")) {
+	    netsec_err(errstr, "%s", line);
+	    return NOTOK;
+	}
+
+	/*
+	 * Make sure we get someting back a valid response
+	 */
+
+	if (!has_prefix(line, "+ ")) {
 	    netsec_err(errstr, "Invalid format for SASL response");
 	    return NOTOK;
 	}
