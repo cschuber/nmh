@@ -67,9 +67,11 @@ but feeds the message directly to it, using
 This replaces the old, undocumented
 .B spost
 mechanism and retains some of its limitations, such as lack of
-support for the
-.B \-whom
-switch and \*(lqDcc:\*(rq header field.
+support for the \*(lqDcc:\*(rq header field, as described in the
+.B send
+and
+.B post
+manual pages.
 .RE
 .PP
 .BR localname :
@@ -313,6 +315,7 @@ None
 .SH "SEE ALSO"
 .IR mh\-mts (8),
 .IR post (8)
+.IR send (8)
 .SH DEFAULTS
 As listed above.  The path of the mail transport configuration file can
 be changed with the MHMTSCONF environment variable and augmented with the

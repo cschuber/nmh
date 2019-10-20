@@ -760,7 +760,12 @@ main (int argc, char **argv)
 
     /* If we are doing a "whom" check */
     if (whomsw) {
-	/* This won't work with MTS_SENDMAIL_PIPE. */
+        /* Note that this will call sendmail directly using SMTP, just like
+           sendmail/smtp, even if the sendmail/pipe mts is specified.
+           It doesn't use sendmail -bv, which spost(8) used to do, because:
+             Notice: -bv may give misleading output for non-privileged user
+           and because -bv works differently with postfix.
+           And see the BUGS section of the whom(1) man page re. -check. */
         verify_all_addresses (1, eai, envelope, oauth_flag, auth_svc);
 	done (0);
     }
@@ -769,10 +774,9 @@ main (int argc, char **argv)
 	make_bcc_file (dashstuff);
 	if (msgflags & MVIS) {
 	    if (sm_mts != MTS_SENDMAIL_PIPE) {
-		/* It would be nice to have support to call
-		   verify_all_addresses with MTS_SENDMAIL_PIPE, but
-		   that might require running sendmail as root.  Note
-		   that spost didn't verify addresses. */
+                /* Addresses aren't verified here with sendmail/pipe because
+                   spost didn't.  They could be because verify_all_address()
+                   uses SMTP, see above. */
 		verify_all_addresses (verbose, eai, envelope, oauth_flag,
                                       auth_svc);
 	    }
@@ -1026,8 +1030,7 @@ putfmt (char *name, char *str, int *eai, FILE *out)
 			   aliases and put them in Bcc:, but then
 			   they'd have the Blind-Carbon-Copy
 			   indication. */
-			die(			       "blind lists not compatible with"
-			       " sendmail/pipe");
+			die("blind lists not compatible with sendmail/pipe");
 		    }
 
 		    grp = true;
