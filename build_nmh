@@ -122,7 +122,7 @@ download_sources() {
     [ "$verbose" -eq 0 ]  &&  git_opts=--quiet
     [ "$branch" = master ]  ||
       git_opts="${git_opts:+$git_opts }--branch $branch"
-    if "$gitdir"/git clone --depth 1 $git_opts "git://$gitrepo/nmh.git" >&3
+    if "$gitdir"/git clone $git_opts "git://$gitrepo/nmh.git" >&3
     then
       directory=nmh
       cd "$directory"  ||  die "failed to clone $directory"
