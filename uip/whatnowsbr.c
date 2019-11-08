@@ -43,7 +43,11 @@
 #include "annosbr.h"
 #include "sbr/m_getfld.h"
 #include "sbr/getarguments.h"
+#ifdef READLINE_SUPPORT
 #include "sbr/read_switch_multiword_via_readline.h"
+#else /* ! READLINE_SUPPORT */
+#include "sbr/read_switch_multiword.h"
+#endif /* READLINE_SUPPORT */
 #include "sbr/concat.h"
 #include "sbr/showfile.h"
 #include "sbr/smatch.h"
