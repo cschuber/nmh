@@ -421,11 +421,6 @@ password obtained by interactively prompting the user
 .PD
 .RE
 .PP
-The password for POP service when the
-.B \-sasl
-switch is used with one of these programs is the login name on the
-local machine.
-.PP
 With a
 .RI \*(lqfile: netrc \*(rq
 .B credentials
