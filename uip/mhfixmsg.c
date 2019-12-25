@@ -2740,22 +2740,19 @@ convert_charsets (CT ct, char *dest_charset, int *message_mods)
     switch (ct->c_type) {
     case CT_TEXT:
         if (ct->c_subtype == TEXT_PLAIN) {
+            char *const ct_charset = content_charset (ct);
+
             status = convert_charset (ct, dest_charset, message_mods);
             if (status == OK) {
                 if (verbosw) {
-                    char *ct_charset = content_charset (ct);
-
                     report (NULL, ct->c_partno, ct->c_file,
                             "convert %s to %s", ct_charset, dest_charset);
-                    free (ct_charset);
                 }
             } else {
-                char *ct_charset = content_charset (ct);
-
                 report ("iconv", ct->c_partno, ct->c_file,
                         "failed to convert %s to %s", ct_charset, dest_charset);
-                free (ct_charset);
             }
+            free (ct_charset);
         }
         break;
 

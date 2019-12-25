@@ -54,3 +54,4 @@ BUG FIXES
   (or zero) attendees match a user's mailbox.
 - Fixed inc(1) and %(me) function escape to not obey Local-Mailbox profile
   component.
+- Fixed source charset in mhfixmsg textcharset verbose output.

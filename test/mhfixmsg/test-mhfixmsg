@@ -866,10 +866,29 @@ EOF
 
 if test "$ICONV_ENABLED" -eq 1; then
   run_prog mhfixmsg last -textcharset utf-8 -outfile "$actual" 2>&1
-  check "$expected" "$actual"
+  check "$expected" "$actual" 'keep first'
 else
   echo "$0: skipping -textcharset check because nmh was built without iconv"
   rm -f "$expected"
+fi
+
+
+# check -textcharset -verbose
+start_test "-textcharset -verbose"
+cat >"$expected.err" <<EOF
+mhfixmsg: 17 part 1, decode text/plain; charset="iso-8859-1"; name="square.txt"
+mhfixmsg: 17 part 1, convert iso-8859-1 to utf-8
+EOF
+
+if test "$ICONV_ENABLED" -eq 1; then
+  run_prog mhfixmsg last -textcharset utf-8 -outfile "$actual" -verbose \
+           2>"$actual.err"
+  check "$expected" "$actual"
+  check "$expected.err" "$actual.err"
+else
+    echo "$0: skipping -textcharset -verbose check because nmh was built " \
+         "without iconv"
+  rm -f "$expected" "$expected.err"
 fi
 
 
