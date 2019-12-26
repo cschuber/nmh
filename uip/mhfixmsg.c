@@ -551,6 +551,11 @@ main (int argc, char **argv)
                     (void) m_backup (file);
                 }
             }
+            if (outfp) {
+                /* close fp opened by the m_mktemp2() call in mhfixmsgsbr() */
+                fclose (outfp);
+                outfp = NULL;
+            }
         }
     } else {
         status = 1;
