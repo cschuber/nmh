@@ -21,10 +21,16 @@ extern long timezone;
 #define DTZ_BUFFER_SIZE (sizeof "+3579139459")
 
 /*
+ * 1 if leap year, 0 otherwise.
+ */
+#define	isleapyear01(y)	\
+	(((y) % 4) ? 0 : (((y) % 100) ? 1 : (((y) % 400) ? 0 : 1)))
+
+/*
  * The number of days in the year, accounting for leap years
  */
 #define	dysize(y)	\
-	(((y) % 4) ? 365 : (((y) % 100) ? 366 : (((y) % 400) ? 365 : 366)))
+	(365 + isleapyear01(y))
 
 char *tw_moty[] = {
     "Jan", "Feb", "Mar", "Apr",
@@ -45,8 +51,13 @@ char *tw_ldotw[] = {
     "Saturday",  NULL
 };
 
-static int dmsize[] = {
-    31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+static int dmsize[][12] = {
+    { /* Not a leap year */
+        31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+    },
+    { /* Leap year: February = 29 */
+        31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+    }
 };
 
 
@@ -314,6 +325,16 @@ dtimezone(int offset, int flags)
 
 
 /*
+ * Last day of month (1-12) in given year.
+ */
+
+int
+dmlastday(int year, int mon)
+{
+    return dmsize[isleapyear01 (year)][mon - 1];
+}
+
+/*
  * Convert nmh time structure for local "broken-down"
  * time to calendar time (clock value).  This routine
  * is based on the gtime() routine written by Steven Shafer
@@ -323,7 +344,7 @@ dtimezone(int offset, int flags)
 time_t
 dmktime (struct tws *tw)
 {
-    int i, sec, min, hour, mday, mon, year;
+    int i, sec, min, hour, mday, mon, year, *msize;
     time_t result;
 
     if (tw->tw_clock != 0)
@@ -347,10 +368,9 @@ dmktime (struct tws *tw)
 
     for (i = 1970; i < year; i++)
 	result += dysize (i);
-    if (dysize (year) == 366 && mon >= 3)
-	result++;
+    msize = dmsize[isleapyear01 (year)];
     while (--mon)
-	result += dmsize[mon - 1];
+	result += msize[mon - 1];
     result += mday - 1;
     result *= 24; /* Days to hours. */
     result += hour;

@@ -288,14 +288,15 @@ rrule_clock (const char *rrule, const char *starttime, const char *zone,
         int specific_day = 1; /* BYDAY integer (prefix) */
         char buf[32];
         int day;
+        int end_of_week;
 
         if ((cp = nmh_strcasestr (rrule, "BYDAY="))) {
             cp += 6;
             /* BYDAY integers must be ASCII. */
-            if (*cp == '+') { ++cp; } /* +n specific day; don't support '-' */
-            else if (*cp == '-') { goto fail; }
+            if (*cp == '+') { ++cp; } /* +n specific day */
+            else if (*cp == '-') { ++cp; specific_day = -1; }
 
-            if (isdigit ((unsigned char) *cp)) { specific_day = *cp++ - 0x30; }
+            if (isdigit ((unsigned char) *cp)) { specific_day *= *cp++ - 0x30; }
 
             if (! strncasecmp (cp, "SU", 2)) { wday = 0; }
             else if (! strncasecmp (cp, "MO", 2)) { wday = 1; }
@@ -309,12 +310,13 @@ rrule_clock (const char *rrule, const char *starttime, const char *zone,
             month = atoi (cp + 8);
         }
 
-        for (day = 1; day <= 7; ++day) {
+        end_of_week = specific_day > 0 ? 7 * specific_day :
+                dmlastday(year, month) + 7 * (1 + specific_day);
+        for (day = end_of_week - 6; day <= end_of_week; ++day) {
             /* E.g, 11-01-2014 02:00:00-0400 */
             snprintf (buf, sizeof buf, "%02d-%02d-%04u %.2s:%.2s:%.2s%s",
-                      month, day + 7 * (specific_day-1), year,
-                      starttime, starttime + 2, starttime + 4,
-                      zone ? zone : "0000");
+                      month, day, year, starttime, starttime + 2,
+                      starttime + 4, zone ? zone : "0000");
             if ((tws = dparsetime (buf))) {
                 if (! (tws->tw_flags & (TW_SEXP|TW_SIMP))) { set_dotw (tws); }
 
@@ -325,7 +327,7 @@ rrule_clock (const char *rrule, const char *starttime, const char *zone,
             }
         }
 
-        if (day <= 7) {
+        if (day <= end_of_week) {
             clock = tws->tw_clock;
         }
     }

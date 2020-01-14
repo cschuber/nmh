@@ -16,6 +16,7 @@ char *dtimenow(int);
 char *dtime(time_t *, int);
 char *dasctime(struct tws *, int);
 char *dtimezone(int, int);
+int dmlastday(int, int);
 time_t dmktime(struct tws *);
 void set_dotw(struct tws *);
 int twsort(struct tws *, struct tws *);
