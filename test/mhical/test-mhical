@@ -30,92 +30,6 @@ actual="$MH_TEST_DIR/test-mhical$$.actual"
 actual_err="$MH_TEST_DIR/test-mhical$$.actual_err"
 
 
-# check timezone boundary at transition from daylight saving time, -2SU
-start_test "timezone boundary at transition from daylight saving time, -2SU"
-# Specifically looking at "second last Sunday of the month" type transitions.
-cat >"$expected" <<'EOF'
-Summary: BST to GMT
-At: Sat, 22 Oct 1994 23:33 +0000
-To: Sun, 23 Oct 1994 07:34
-EOF
-
-cat >"$MH_TEST_DIR/test1.ics" <<'EOF'
-BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:test-mhical
-BEGIN:VTIMEZONE
-TZID:London
-BEGIN:STANDARD
-TZNAME:GMT
-DTSTART:19931018T020000
-TZOFFSETFROM:+0100
-TZOFFSETTO:+0000
-RRULE:FREQ=YEARLY;BYDAY=-2SU;BYMONTH=10
-END:STANDARD
-BEGIN:DAYLIGHT
-TZNAME:BST
-DTSTART:19810329T010000
-TZOFFSETFROM:+0000
-TZOFFSETTO:+0100
-RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=3
-END:DAYLIGHT
-END:VTIMEZONE
-BEGIN:VEVENT
-DTSTAMP:19941002T115852Z
-DTSTART;TZID=London:19941022T233300
-DTEND;TZID=London:19941023T073400
-Summary: BST to GMT
-END:VEVENT
-END:VCALENDAR
-EOF
-
-TZ=GMT mhical <"$MH_TEST_DIR/test1.ics" >"$MH_TEST_DIR/test1.txt"
-check "$expected" "$MH_TEST_DIR/test1.txt"
-
-
-# check timezone boundary at transition to daylight saving time, -1SU
-start_test "timezone boundary at transition to daylight saving time, -1SU"
-# Specifically looking at "last Sunday of the month" type transitions.
-cat >"$expected" <<'EOF'
-Summary: GMT to BST
-At: Sat, 27 Mar 1982 23:31 +0000
-To: Sun, 28 Mar 1982 07:32
-EOF
-
-cat >"$MH_TEST_DIR/test1.ics" <<'EOF'
-BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:test-mhical
-BEGIN:VTIMEZONE
-TZID:London
-BEGIN:STANDARD
-TZNAME:GMT
-DTSTART:19781025T030000
-TZOFFSETFROM:+0100
-TZOFFSETTO:+0000
-RRULE:FREQ=YEARLY;UNTIL=19811025T010000Z;BYDAY=-1SU;BYMONTH=10
-END:STANDARD
-BEGIN:DAYLIGHT
-TZNAME:BST
-DTSTART:19810329T010000
-TZOFFSETFROM:+0000
-TZOFFSETTO:+0100
-RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=3
-END:DAYLIGHT
-END:VTIMEZONE
-BEGIN:VEVENT
-DTSTAMP:19820302T115852Z
-DTSTART;TZID=London:19820327T233100
-DTEND;TZID=London:19820328T073200
-Summary: GMT to BST
-END:VEVENT
-END:VCALENDAR
-EOF
-
-TZ=GMT mhical <"$MH_TEST_DIR/test1.ics" >"$MH_TEST_DIR/test1.txt"
-check "$expected" "$MH_TEST_DIR/test1.txt"
-
-
 # check -help
 start_test "-help"
 cat >"$expected" <<EOF
@@ -1067,6 +981,94 @@ check "$expected_err" "$actual_err"
 # check null input
 start_test "null input"
 check_exit '-eq 0' mhical </dev/null
+
+
+# check timezone boundary at transition from daylight saving time, -2SU
+start_test "timezone boundary at transition from daylight saving time, -2SU"
+# Specifically looking at "second last Sunday of the month" type transitions.
+cat >"$expected" <<'EOF'
+Summary: BST to GMT
+At: Sat, 22 Oct 1994 23:33 +0000
+To: Sun, 23 Oct 1994 07:34
+EOF
+
+cat >"$MH_TEST_DIR/test1.ics" <<'EOF'
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:test-mhical
+BEGIN:VTIMEZONE
+TZID:London
+BEGIN:STANDARD
+TZNAME:GMT
+DTSTART:19931018T020000
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0000
+RRULE:FREQ=YEARLY;BYDAY=-2SU;BYMONTH=10
+END:STANDARD
+BEGIN:DAYLIGHT
+TZNAME:BST
+DTSTART:19810329T010000
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0100
+RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=3
+END:DAYLIGHT
+END:VTIMEZONE
+BEGIN:VEVENT
+DTSTAMP:19941002T115852Z
+DTSTART;TZID=London:19941022T233300
+DTEND;TZID=London:19941023T073400
+Summary: BST to GMT
+END:VEVENT
+END:VCALENDAR
+EOF
+
+TZ=GMT mhical <"$MH_TEST_DIR/test1.ics" >"$MH_TEST_DIR/test1.txt"
+check "$expected" "$MH_TEST_DIR/test1.txt"
+rm -f "$MH_TEST_DIR/test1.ics"
+
+
+# check timezone boundary at transition to daylight saving time, -1SU
+start_test "timezone boundary at transition to daylight saving time, -1SU"
+# Specifically looking at "last Sunday of the month" type transitions.
+cat >"$expected" <<'EOF'
+Summary: GMT to BST
+At: Sat, 27 Mar 1982 23:31 +0000
+To: Sun, 28 Mar 1982 07:32
+EOF
+
+cat >"$MH_TEST_DIR/test1.ics" <<'EOF'
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:test-mhical
+BEGIN:VTIMEZONE
+TZID:London
+BEGIN:STANDARD
+TZNAME:GMT
+DTSTART:19781025T030000
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0000
+RRULE:FREQ=YEARLY;UNTIL=19811025T010000Z;BYDAY=-1SU;BYMONTH=10
+END:STANDARD
+BEGIN:DAYLIGHT
+TZNAME:BST
+DTSTART:19810329T010000
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0100
+RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=3
+END:DAYLIGHT
+END:VTIMEZONE
+BEGIN:VEVENT
+DTSTAMP:19820302T115852Z
+DTSTART;TZID=London:19820327T233100
+DTEND;TZID=London:19820328T073200
+Summary: GMT to BST
+END:VEVENT
+END:VCALENDAR
+EOF
+
+TZ=GMT mhical <"$MH_TEST_DIR/test1.ics" >"$MH_TEST_DIR/test1.txt"
+check "$expected" "$MH_TEST_DIR/test1.txt"
+rm -f "$MH_TEST_DIR/test1.ics"
 
 
 finish_test
