@@ -150,6 +150,7 @@ TESTS = \
     test/repl/test-trailing-newline \
     test/scan/test-header-parsing \
     test/scan/test-scan \
+    test/scan/test-scan-file \
     test/scan/test-scan-multibyte \
     test/send/test-sendfrom \
     test/sequences/test-flist \
@@ -403,6 +404,7 @@ noinst_HEADERS = \
     sbr/m_name.h \
     sbr/m_popen.h \
     sbr/m_rand.h \
+    sbr/maildir_read_and_sort.h \
     sbr/makedir.h \
     sbr/message_id.h \
     sbr/mime_type.h \
@@ -1120,6 +1122,7 @@ sbr_libmh_a_SOURCES = \
     sbr/m_name.c \
     sbr/m_popen.c \
     sbr/m_rand.c \
+    sbr/maildir_read_and_sort.c \
     sbr/makedir.c \
     sbr/message_id.c \
     sbr/mf.c \

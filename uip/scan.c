@@ -35,6 +35,7 @@
 #include "h/utils.h"
 #include "sbr/m_maildir.h"
 #include "sbr/terminal.h"
+#include "sbr/maildir_read_and_sort.h"
 
 #define SCAN_SWITCHES \
     X("clear", 0, CLRSW) \
@@ -64,7 +65,7 @@ main (int argc, char **argv)
 {
     bool clearflag = false;
     bool hdrflag = false;
-    int ontty;
+    int ontty = 0;
     int width = -1;
     bool revflag = false;
     int i, state, msgnum;
@@ -91,13 +92,13 @@ main (int argc, char **argv)
     while ((cp = *argp++)) {
 	if (*cp == '-') {
 	    switch (smatch (++cp, switches)) {
-		case AMBIGSW: 
+		case AMBIGSW:
 		    ambigsw (cp, switches);
 		    done (1);
-		case UNKWNSW: 
+		case UNKWNSW:
 		    die("-%s unknown", cp);
 
-		case HELPSW: 
+		case HELPSW:
 		    snprintf (buf, sizeof(buf), "%s [+folder] [msgs] [switches]",
 			invo_name);
 		    print_help (buf, switches, 1);
@@ -106,32 +107,32 @@ main (int argc, char **argv)
 		    print_version(invo_name);
 		    done (0);
 
-		case CLRSW: 
+		case CLRSW:
 		    clearflag = true;
 		    continue;
-		case NCLRSW: 
+		case NCLRSW:
 		    clearflag = false;
 		    continue;
 
-		case FORMSW: 
+		case FORMSW:
 		    if (!(form = *argp++) || *form == '-')
 			die("missing argument to %s", argp[-2]);
 		    format = NULL;
 		    continue;
-		case FMTSW: 
+		case FMTSW:
 		    if (!(format = *argp++) || *format == '-')
 			die("missing argument to %s", argp[-2]);
 		    form = NULL;
 		    continue;
 
-		case HEADSW: 
+		case HEADSW:
 		    hdrflag = true;
 		    continue;
-		case NHEADSW: 
+		case NHEADSW:
 		    hdrflag = false;
 		    continue;
 
-		case WIDTHSW: 
+		case WIDTHSW:
 		    if (!(cp = *argp++) || *cp == '-')
 			die("missing argument to %s", argp[-2]);
 		    width = atoi (cp);
@@ -167,10 +168,10 @@ main (int argc, char **argv)
      */
     nfs = new_fs (form, format, FORMAT);
 
-    /*
-     * We are scanning a maildrop file
-     */
     if (file) {
+        /*
+         * We have a -file argument
+         */
 	if (msgs.size)
 	    die("\"msgs\" not allowed with -file");
 	if (folder)
@@ -181,10 +182,63 @@ main (int argc, char **argv)
 	    in = stdin;
 	    file = "stdin";
 	} else {
-	    if ((in = fopen (file, "r")) == NULL)
-		adios (file, "unable to open");
+	    /* check if "file" is really a Maildir folder */
+	    struct stat st;
+	    if (stat (file, &st) == NOTOK)
+		adios (file, "unable to stat");
+	    if (!(st.st_mode & S_IFDIR)) {
+		if ((in = fopen (file, "r")) == NULL)
+		    adios (file, "unable to open");
+	    } else {
+		/*
+		 * We are scanning a Maildir folder
+		 */
+		struct Maildir_entry *Maildir;
+		int num_maildir_entries;
+		int msgnum = 0;
+		char *fnp;
+		FILE *in;
+		int i;
+
+		maildir_read_and_sort(file, &Maildir, &num_maildir_entries);
+		for (i = 0; i < num_maildir_entries; i++) {
+		    msgnum++;
+		    fnp = Maildir[i].filename;
+
+		    if ((in = fopen (fnp, "r")) == NULL) {
+			admonish (fnp, "unable to open message");
+			continue;
+		    }
+
+		    switch (state = scan (in, msgnum, 0, nfs, width,
+					  0, 0, hdrflag ? file : NULL,
+					  0L, 1, &scanl)) {
+		    case SCNMSG:
+		    case SCNERR:
+			break;
+
+		    default:
+			die("scan() botch (%d)", state);
+
+		    case SCNEOF:
+			inform("message %d: empty", msgnum);
+			break;
+		    }
+		    if (scanl)
+			charstring_clear(scanl);
+		    scan_finished ();
+		    hdrflag = false;
+		    fclose (in);
+		    if (ontty)
+			fflush (stdout);
+		}
+		done (0);
+	    }
 	}
 
+	/*
+	 * We are scanning a maildrop file
+	 */
 	if (hdrflag) {
 	    printf ("FOLDER %s\t%s\n", file, dtimenow (1));
 	}
@@ -282,14 +336,14 @@ main (int argc, char **argv)
 	    switch (state = scan (in, msgnum, 0, nfs, width,
 			msgnum == mp->curmsg, unseen,
 			folder, 0L, 1, &scanl)) {
-		case SCNMSG: 
-		case SCNERR: 
+		case SCNMSG:
+		case SCNERR:
 		    break;
 
-		default: 
+		default:
 		    die("scan() botch (%d)", state);
 
-		case SCNEOF: 
+		case SCNEOF:
 		    inform("message %d: empty", msgnum);
 		    break;
 	    }

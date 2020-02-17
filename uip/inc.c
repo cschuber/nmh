@@ -67,6 +67,7 @@
 #include "sbr/lock_file.h"
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"
+#include "sbr/maildir_read_and_sort.h"
 
 #ifndef TLS_SUPPORT
 # define TLSminc(a) (a)
@@ -118,11 +119,8 @@ DEFINE_SWITCH_ARRAY(INC, switches);
 #define INC_FILE  0
 #define INC_POP   1
 
-static struct Maildir_entry {
-	char *filename;
-	time_t mtime;
-} *Maildir = NULL;
-static int num_maildir_entries = 0;
+static struct Maildir_entry *Maildir;
+static int num_maildir_entries;
 static bool snoop;
 
 typedef struct {
@@ -181,20 +179,8 @@ static FILE *in;
 /*
  * prototypes
  */
-static int maildir_srt(const void *va, const void *vb) PURE;
 static void inc_done(int) NORETURN;
 static int pop_action(void *closure, char *);
-
-static int
-maildir_srt(const void *va, const void *vb)
-{
-    const struct Maildir_entry *a = va, *b = vb;
-    if (a->mtime > b->mtime)
-      return 1;
-    if (a->mtime < b->mtime)
-      return -1;
-    return 0;
-}
 
 int
 main (int argc, char **argv)
@@ -478,53 +464,7 @@ main (int argc, char **argv)
 	if (stat (newmail, &s1) == NOTOK || s1.st_size == 0)
 	    die("no mail to incorporate");
 	if (s1.st_mode & S_IFDIR) {
-	    DIR *md;
-	    struct dirent *de;
-	    struct stat ms;
-	    int i;
-	    i = 0;
-	    cp = concat (newmail, "/new", NULL);
-	    if ((md = opendir(cp)) == NULL)
-		die("unable to open %s", cp);
-	    while ((de = readdir (md)) != NULL) {
-		if (de->d_name[0] == '.')
-		    continue;
-		if (i >= num_maildir_entries) {
-		    if ((Maildir = realloc(Maildir, sizeof(*Maildir) * (2*i+16))) == NULL)
-			die("not enough memory for %d messages", 2*i+16);
-		    num_maildir_entries = 2*i+16;
-		}
-		Maildir[i].filename = concat (cp, "/", de->d_name, NULL);
-		if (stat(Maildir[i].filename, &ms) != 0)
-	           adios (Maildir[i].filename, "couldn't get delivery time");
-		Maildir[i].mtime = ms.st_mtime;
-		i++;
-	    }
-	    free (cp);
-	    closedir (md);
-	    cp = concat (newmail, "/cur", NULL);
-	    if ((md = opendir(cp)) == NULL)
-		die("unable to open %s", cp);
-	    while ((de = readdir (md)) != NULL) {
-		if (de->d_name[0] == '.')
-		    continue;
-		if (i >= num_maildir_entries) {
-		    if ((Maildir = realloc(Maildir, sizeof(*Maildir) * (2*i+16))) == NULL)
-			die("not enough memory for %d messages", 2*i+16);
-		    num_maildir_entries = 2*i+16;
-		}
-		Maildir[i].filename = concat (cp, "/", de->d_name, NULL);
-		if (stat(Maildir[i].filename, &ms) != 0)
-	           adios (Maildir[i].filename, "couldn't get delivery time");
-		Maildir[i].mtime = ms.st_mtime;
-		i++;
-	    }
-	    free (cp);
-	    closedir (md);
-	    if (i == 0)
-	        die("no mail to incorporate");
-	    num_maildir_entries = i;
-	    qsort (Maildir, num_maildir_entries, sizeof(*Maildir), maildir_srt);
+	    maildir_read_and_sort(newmail, &Maildir, &num_maildir_entries);
 	}
 
 	cp = mh_xstrdup(newmail);

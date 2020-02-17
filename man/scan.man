@@ -1,4 +1,4 @@
-.TH SCAN %manext1% 2014-01-20 "%nmhversion%"
+.TH SCAN %manext1% 2020-02-17 "%nmhversion%"
 .
 .\" %nmhwarning%
 .
@@ -92,13 +92,25 @@ The
 .I filename
 switch allows the user to obtain a
 .B scan
-listing of a mail drop file as produced by
-.BR packf .
+listing of a mail drop.
 This listing
-includes every message in the file (you can't scan individual messages).
+includes every message in the mail drop (you can't scan individual messages).
 The switch
 .B \-reverse
 is ignored with this option.
+If
+.I filename
+is a file, it can be in
+.B mbox
+or
+.B MMDF
+format, as produced by
+.BR packf .
+If
+.I filename
+is a directory, it is considered to be in
+.B Maildir
+format.
 .PP
 The switch
 .B \-width

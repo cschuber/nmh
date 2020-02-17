@@ -23,6 +23,7 @@ NEW FEATURES
      comment indicator.
   3) Add a postproc entry that points to the post that you use.  That can
      be viewed with "mhparam postproc".
+- scan(1) -file argument can be a Maildir directory.
 
 -----------------
 OBSOLETE FEATURES
