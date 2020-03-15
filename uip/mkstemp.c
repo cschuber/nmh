@@ -88,8 +88,8 @@ build_template(const char *directory, const char *prefix, const char *suffix)
     prefix_len = strlen(prefix);
     suffix_len = strlen(suffix);
     /* sizeof pattern includes its final NULL, so don't add another. */
-    len = directory_len  +  pathsep_len  +  prefix_len  +   sizeof pattern  +
-        suffix_len;
+    len =
+        directory_len + pathsep_len + prefix_len + sizeof pattern + suffix_len;
 
     if ((template = malloc(len))) {
         char *tp = template;
@@ -102,7 +102,7 @@ build_template(const char *directory, const char *prefix, const char *suffix)
         (void) strncpy(tp, prefix, prefix_len);
         tp += prefix_len;
 
-        (void) strncpy(tp, pattern, sizeof pattern - 1);
+        (void) memcpy(tp, pattern, sizeof pattern);
         tp += sizeof pattern - 1;
 
         (void) strncpy(tp, suffix, suffix_len);

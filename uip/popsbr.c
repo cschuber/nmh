@@ -703,7 +703,8 @@ multiline (void)
         strncpy (response, buffer + LEN(TRM), sizeof(response));
     }
     else
-	strncpy (response, buffer, sizeof(response));
+	strncpy (response, buffer,
+		 min (strlen(buffer) + 1, sizeof(response) - 1));
 
     return OK;
 }

@@ -247,10 +247,12 @@ mbx_copy (char *mailbox, int mbx_style, int md, int fd,
 			 * If there is already a "From " line,
 			 * then leave it alone.  Else we add one.
 			 */
-			char tmpbuffer[sizeof buffer-7];
+			char tmpbuffer[sizeof buffer-21];
 			char *tp, *ep;
 
-			strncpy(tmpbuffer, buffer, sizeof(tmpbuffer));
+			(void) strncpy(tmpbuffer, buffer,
+				       min(strlen(buffer) + 1,
+					   sizeof(tmpbuffer) - 1));
 			ep = "nobody@nowhere";
 			tp = dctime(dlocaltimenow());
 			snprintf (buffer, sizeof(buffer), "From %s  %s%s", ep, tp, tmpbuffer);

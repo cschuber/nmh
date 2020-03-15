@@ -14,6 +14,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#ifndef min
+# define min(a,b) ((a) < (b) ? (a) : (b))
+#endif
+
 #define PIDFILE "/tmp/fakesmtp.pid"
 
 #define LINESIZE 1024
@@ -155,9 +159,9 @@ getsmtp(int socket, char *data)
 		if (bytesinbuf > 0 && (p = strchr(buffer, '\r')) &&
 							*(p + 1) == '\n') {
 			*p = '\0';
-			strncpy(data, buffer, LINESIZE);
-			data[LINESIZE - 1] = '\0';
 			cc = strlen(buffer);
+			memcpy(data, buffer, min(cc + 1, LINESIZE));
+			data[LINESIZE - 1] = '\0';
 
 			/*
 			 * Shuffle leftover bytes back to the beginning
