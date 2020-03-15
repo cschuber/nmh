@@ -153,7 +153,7 @@ ruserpass(const char *host, char **aname, char **apass, int flags)
 	    if ((pp = getpwuid (getuid())) != NULL)
 		myname = pp->pw_name;
 	}
-	printf("Name (%s:%s): ", host, myname);
+	printf("Name (%s:%s): ", host ? host : "", myname);
 
 	if (fgets(tmp, sizeof tmp, stdin) == NULL) {
 	    advise ("tmp", "fgets");
