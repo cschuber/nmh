@@ -370,10 +370,18 @@ if [ -z "$CFLAGS" ]; then
   #### Only use these flags with gcc.
   if cc -dM -E - </dev/null 2>&1 | grep __GNUC__ >/dev/null; then
     #### configure will supply -g -O2 with gcc, but only if CFLAGS
-    #### isn't defined.
-    CFLAGS='-g -std=c99 -pedantic'
+    #### isn't defined.  Always add -g here.
+    #### Try all this, borrowed from Fedora 32 build.
+    CFLAGS="-g -std=c99 -pedantic -Wall -Werror=format-security \
+-Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong \
+-grecord-gcc-switches -fasynchronous-unwind-tables \
+-fstack-clash-protection -fcf-protection"
+    if ! cc -x c -c $CFLAGS /dev/null -o /dev/null 2>/dev/null; then
+        #### All that wasn't supported.  The following should be.
+        CFLAGS='-g -std=c99 -pedantic'
+    fi
     if [ "$config_debug" = n ]; then
-      CFLAGS="$CFLAGS -O2 -D_FORTIFY_SOURCE=2"
+      CFLAGS="$CFLAGS -O2 -Wp,-D_FORTIFY_SOURCE=2"
     else
       CFLAGS="$CFLAGS -O0"
     fi
