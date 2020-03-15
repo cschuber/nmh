@@ -119,9 +119,9 @@ main (int argc, char **argv)
 	if (cp > newfolder)
 	    *cp = '\0';
 	else
-	    strncpy (newfolder, getfolder(0), sizeof(newfolder));
+	    strncpy (newfolder, getfolder(0), sizeof(newfolder) - 1);
     } else {
-	strncpy (newfolder, getfolder(0), sizeof(newfolder));
+	strncpy (newfolder, getfolder(0), sizeof(newfolder) - 1);
     }
 
     if (interactive) {

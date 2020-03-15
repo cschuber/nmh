@@ -339,7 +339,7 @@ main (int argc, char **argv)
 try_it_again:
 
     strncpy (drft, buildsw ? m_maildir ("draft")
-			  : m_draft (dfolder, NULL, NOUSE, &isdf), sizeof(drft));
+                 : m_draft (dfolder, NULL, NOUSE, &isdf), sizeof(drft) - 1);
 
     /* Check if a draft already exists */
     if (!buildsw && stat (drft, &st) != NOTOK) {

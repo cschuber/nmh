@@ -246,7 +246,7 @@ LocalName (int flag)
 
     /* check if the mts.conf file specifies a "localname" */
     if (*localname && flag == 0) {
-	strncpy (buf, localname, sizeof(buffer0));
+	strncpy (buf, localname, sizeof(buffer0) - 1);
     } else {
 	memset(buf, 0, sizeof(buffer0));
 	/* first get our local name */
@@ -293,7 +293,7 @@ SystemName (void)
 
     /* check if mts.conf file specifies a "systemname" */
     if (*systemname) {
-	strncpy (buffer, systemname, sizeof(buffer));
+	strncpy (buffer, systemname, sizeof(buffer) - 1);
 	return buffer;
     }
 
@@ -409,7 +409,7 @@ getuserinfo (void)
 	char *at_sign = strchr (np, '@');
 	char *right_angle_bracket = strchr (np, '>');
 
-	strncpy(localmbox, np, sizeof(localmbox));
+	strncpy(localmbox, np, sizeof(localmbox) - 1);
 
 	if (left_angle_bracket	&&  at_sign  &&	 right_angle_bracket) {
 	    if (at_sign > left_angle_bracket  &&

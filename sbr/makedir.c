@@ -44,7 +44,7 @@ makedir (const char *dir)
        to interact with the umask.  Clear it temporarily. */
     saved_umask = umask(0);
 
-    c = strncpy(path, dir, sizeof(path));
+    c = strncpy(path, dir, sizeof(path) - 1);
 
     bool had_an_error = false;
     while (!had_an_error && (c = strchr((c + 1), '/')) != NULL) {

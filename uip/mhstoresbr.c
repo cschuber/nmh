@@ -704,7 +704,7 @@ parse_format_string (CT ct, char *cp, char *buffer, int buflen, char *dir)
      * return (send content to standard output).
      */
     if (cp[0] == '-' && cp[1] == '\0') {
-	strncpy (buffer, cp, buflen);
+	strncpy (buffer, cp, buflen - 1);
 	return 0;
     }
 

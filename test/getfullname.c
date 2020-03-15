@@ -36,7 +36,7 @@ main(int argc, char *argv[])
 		strncpy(buf, pwd->pw_gecos, sizeof(buf));
 		buf[sizeof(buf) - 1] = '\0';
 	} else
-		strncpy(buf, argv[1], sizeof(buf));
+		strncpy(buf, argv[1], sizeof(buf) - 1);
 
 	/*
 	 * Perform the same processing that getuserinfo() does.

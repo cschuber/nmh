@@ -363,10 +363,10 @@ main (int argc, char **argv)
 		inform("no folder given for message %s, continuing...", msg);
 	    readonly_folders (); /* do any readonly folders */
 	    cp = context_find(pfolder);
-	    strncpy (folder, FENDNULL(cp), sizeof(folder));
+	    strncpy (folder, FENDNULL(cp), sizeof(folder) - 1);
 	    crawl_folders (".", get_folder_info_callback, NULL);
 	} else {
-	    strncpy (folder, argfolder, sizeof(folder));
+	    strncpy (folder, argfolder, sizeof(folder) - 1);
 	    if (get_folder_info (argfolder, msg)) {
 		context_replace (pfolder, argfolder);/* update current folder */
 		context_save ();		     /* save the context file */
@@ -379,7 +379,8 @@ main (int argc, char **argv)
 		crawl_folders (folder, get_folder_info_callback, NULL);
 	}
     } else {
-	strncpy (folder, argfolder ? argfolder : getfolder (1), sizeof(folder));
+	strncpy (folder, argfolder ? argfolder : getfolder (1),
+		 sizeof(folder) - 1);
 
 	/*
 	 * Check if folder exists.  If not, then see if

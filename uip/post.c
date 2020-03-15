@@ -631,7 +631,7 @@ main (int argc, char **argv)
 		die("unable to create temporary file in %s",
 		      get_temp_dir());
 	    }
-            strncpy(tmpfil, cp, sizeof(tmpfil));
+            strncpy(tmpfil, cp, sizeof(tmpfil) - 1);
 	}
     }
 
@@ -1495,7 +1495,7 @@ make_bcc_file (int dashstuff)
     if ((tfile = m_mktemp2(NULL, "bccs", NULL, &out)) == NULL) {
 	die("unable to create temporary file in %s", get_temp_dir());
     }
-    strncpy (bccfil, tfile, sizeof(bccfil));
+    strncpy (bccfil, tfile, sizeof(bccfil) - 1);
 
     fprintf (out, "From: %s\n", fullfrom);
     fprintf (out, "Date: %s\n", dtime (&tclock, 0));
@@ -1878,7 +1878,7 @@ do_an_address (struct mailname *lp, int talk)
 	case LOCALHOST: 
 	    mbox = lp->m_mbox;
 	    host = lp->m_host;
-	    strncpy (addr, mbox, sizeof(addr));
+	    strncpy (addr, mbox, sizeof(addr) - 1);
 	    break;
 
 	case UUCPHOST: 

@@ -340,7 +340,7 @@ main (int argc, char **argv)
 
 try_it_again:
     strncpy (drft, build ? m_maildir ("draft")
-			: m_draft (dfolder, file, use, &isdf), sizeof(drft));
+			: m_draft (dfolder, file, use, &isdf), sizeof(drft) - 1);
 
     /*
      * Check if we have an existing draft

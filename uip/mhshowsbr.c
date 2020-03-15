@@ -379,7 +379,7 @@ show_content_aux (CT ct, int alternate, char *cp, char *cracked, struct format *
     }
 
     if (cracked) {
-	strncpy (buffer, cp, sizeof(buffer));
+	strncpy (buffer, cp, sizeof(buffer) - 1);
 	goto got_command;
     }
 
@@ -1041,7 +1041,7 @@ raw:
     if (ct->c_termproc) {
 	char term[BUFSIZ];
 
-	strncpy (term, buffer, sizeof(term));
+	strncpy (term, buffer, sizeof(term) - 1);
 	snprintf (buffer, buflen, ct->c_termproc, term);
     }
 

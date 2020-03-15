@@ -49,8 +49,8 @@ folder_pack (struct msgs **mpp, int verbose)
     for (msgnum = mp->lowmsg, hole = 1; msgnum <= mp->hghmsg; msgnum++) {
 	if (does_exist (mp, msgnum)) {
 	    if (msgnum != hole) {
-		strncpy (newmsg, m_name (hole), sizeof(newmsg));
-		strncpy (oldmsg, m_name (msgnum), sizeof(oldmsg));
+		strncpy (newmsg, m_name (hole), sizeof(newmsg) - 1);
+		strncpy (oldmsg, m_name (msgnum), sizeof(oldmsg) - 1);
 		if (verbose)
 		    printf ("message %s becomes %s\n", oldmsg, newmsg);
 

@@ -253,7 +253,7 @@ main (int argc, char **argv)
 	die("can't mix files and folders/msgs");
 
 try_it_again:
-    strncpy (drft, m_draft (dfolder, dmsg, NOUSE, &isdf), sizeof(drft));
+    strncpy (drft, m_draft (dfolder, dmsg, NOUSE, &isdf), sizeof(drft) - 1);
 
     /* Check if draft already exists */
     if (stat (drft, &st) != NOTOK) {

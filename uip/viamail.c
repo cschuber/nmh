@@ -155,7 +155,7 @@ via_mail (char *mailsw, char *subjsw, char *parmsw, char *descsw,
     if ((tfile = m_mktemp2(NULL, invo_name, NULL, &fp)) == NULL) {
 	die("unable to create temporary file in %s", get_temp_dir());
     }
-    strncpy (tmpfil, tfile, sizeof(tmpfil));
+    strncpy (tmpfil, tfile, sizeof(tmpfil) - 1);
 
     if (!strchr(mailsw, '@'))
 	mailsw = concat (mailsw, "@", LocalName (0), NULL);

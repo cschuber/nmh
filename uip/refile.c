@@ -216,7 +216,7 @@ main (int argc, char **argv)
 	app_msgarg(&msgs, "cur");
     if (!folder)
 	folder = getfolder (1);
-    strncpy (maildir, m_maildir (folder), sizeof(maildir));
+    strncpy (maildir, m_maildir (folder), sizeof(maildir) - 1);
 
     if (chdir (maildir) == NOTOK)
 	adios (maildir, "unable to change directory to");
@@ -311,7 +311,7 @@ opnfolds (struct msgs *src_folder, struct st_fold *folders, int nfolders)
 	if (chdir (m_maildir ("")) < 0) {
 	    advise (m_maildir (""), "chdir");
 	}
-	strncpy (nmaildir, m_maildir (fp->f_name), sizeof(nmaildir));
+	strncpy (nmaildir, m_maildir (fp->f_name), sizeof(nmaildir) - 1);
 
 	/*
 	 * Null src_folder indicates that we are refiling a file to

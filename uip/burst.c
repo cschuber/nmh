@@ -434,8 +434,8 @@ burst (struct msgs **mpp, int msgnum, struct smsg *smsgs, int numburst,
      */
     if (inplace) {
 	for (i = mp->hghmsg; j > msgnum; i--, j--) {
-	    strncpy (f1, m_name (i), sizeof(f1));
-	    strncpy (f2, m_name (j), sizeof(f2));
+	    strncpy (f1, m_name (i), sizeof(f1) - 1);
+	    strncpy (f2, m_name (j), sizeof(f2) - 1);
 	    if (does_exist (mp, j)) {
 		if (verbosw)
 		    printf ("message %d becomes message %d\n", j, i);
@@ -483,8 +483,8 @@ burst (struct msgs **mpp, int msgnum, struct smsg *smsgs, int numburst,
 	    die("unable to create temporary file in %s",
 		  get_temp_dir());
 	}
-	strncpy (f2, tempfile, sizeof(f2));
-	strncpy (f1, m_name (i), sizeof(f1));
+	strncpy (f2, tempfile, sizeof(f2) - 1);
+	strncpy (f1, m_name (i), sizeof(f1) - 1);
 
 	if (verbosw && i != msgnum)
 	    printf ("message %d of digest %d becomes message %d\n", j, msgnum, i);
@@ -496,7 +496,7 @@ burst (struct msgs **mpp, int msgnum, struct smsg *smsgs, int numburst,
 	fclose (out);
 
 	if (i == msgnum) {
-	    strncpy (f3, m_backup (f1), sizeof(f3));
+	    strncpy (f3, m_backup (f1), sizeof(f3) - 1);
 	    if (rename (f1, f3) == NOTOK)
 		admonish (f3, "unable to rename %s to", f1);
 

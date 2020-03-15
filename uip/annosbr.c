@@ -194,7 +194,7 @@ annosbr (int fd, char *file, char *comp, char *text, bool inplace, bool datesw, 
     if ((cp = m_mktemp2(file, "annotate", NULL, &tmp)) == NULL) {
 	die("unable to create temporary file");
     }
-    strncpy (tmpfil, cp, sizeof(tmpfil));
+    strncpy (tmpfil, cp, sizeof(tmpfil) - 1);
     chmod (tmpfil, mode);
 
     /*
@@ -422,7 +422,7 @@ annosbr (int fd, char *file, char *comp, char *text, bool inplace, bool datesw, 
 	close (tmpfd);
 	(void) m_unlink (tmpfil);
     } else {
-	strncpy (buffer, m_backup (file), sizeof(buffer));
+	strncpy (buffer, m_backup (file), sizeof(buffer) - 1);
 	if (rename (file, buffer) == NOTOK) {
 	    switch (errno) {
 		case ENOENT:	/* unlinked early - no annotations */

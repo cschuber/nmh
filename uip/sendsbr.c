@@ -139,7 +139,8 @@ sendsbr (char **vec, int vecp, char *program, char *draft, struct stat *st,
 	    if (cp == NULL) {
 		die("unable to create temporary file");
 	    }
-	    if (rename (drft, strncpy(file, cp, sizeof(file))) == NOTOK)
+	    if (rename (drft, strncpy(file, cp, sizeof(file) - 1)) ==
+		NOTOK)
 		adios (file, "unable to rename %s to", drft);
 	    drft = file;
 	}
@@ -173,7 +174,7 @@ sendsbr (char **vec, int vecp, char *program, char *draft, struct stat *st,
 	/* rename the original draft */
 	if (rename_drft && status == OK &&
 		rename (drft, strncpy (buffer, m_backup (drft),
-				 sizeof(buffer))) == NOTOK)
+				 sizeof(buffer) - 1)) == NOTOK)
 	    advise (buffer, "unable to rename %s to", drft);
 	break;
 
@@ -324,7 +325,8 @@ alert (char *file, int out)
 		    if (write (out, buf, strlen (buf)) < 0) {
 			advise (file, "write");
 		    }
-		    if (rename (file, strncpy (buf, m_backup (file), sizeof(buf))) == NOTOK)
+		    if (rename (file, strncpy (buf, m_backup (file),
+					       sizeof(buf) - 1)) == NOTOK)
 			admonish (buf, "unable to rename %s to", file);
 		}
 	    }

@@ -100,7 +100,7 @@ getname (const char *addrs)
 	return NULL;
     }
 
-    strncpy (adr, ap->text, sizeof(adr));
+    strncpy (adr, ap->text, sizeof(adr) - 1);
     pers = ap->pers;
     mbox = ap->mbox;
     host = ap->host;
@@ -109,7 +109,7 @@ getname (const char *addrs)
     ingrp = ap->ingrp;
     note = ap->note;
     if (ap->err && *ap->err)
-	strncpy (err, ap->err, sizeof(err));
+	strncpy (err, ap->err, sizeof(err) - 1);
 
     return adr;
 }

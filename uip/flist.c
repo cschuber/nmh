@@ -234,7 +234,7 @@ main(int argc, char **argv)
         free (path ("./", TFOLDER));
 
     /* get current folder */
-    strncpy (curfolder, getfolder(1), sizeof(curfolder));
+    strncpy (curfolder, getfolder(1), sizeof(curfolder) - 1);
 
     /* get nmh base directory */
     nmhdir = m_maildir ("");
@@ -316,7 +316,7 @@ ScanFolders(void)
 
     if (numfolders > 0) {
 	/* Update context */
-	strncpy (curfolder, foldersToDo[numfolders - 1], sizeof(curfolder));
+	strncpy (curfolder, foldersToDo[numfolders - 1], sizeof(curfolder) - 1);
 	context_replace (pfolder, curfolder);/* update current folder */
 	context_save ();                     /* save the context file */
 

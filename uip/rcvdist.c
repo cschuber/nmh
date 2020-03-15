@@ -171,7 +171,7 @@ main (int argc, char **argv)
     if ((tfile = m_mktemp2(NULL, invo_name, NULL, &fp)) == NULL) {
 	die("unable to create temporary file in %s", get_temp_dir());
     }
-    strncpy (tmpfil, tfile, sizeof(tmpfil));
+    strncpy (tmpfil, tfile, sizeof(tmpfil) - 1);
 
     cpydata (fileno (stdin), fileno (fp), "message", tmpfil);
     fseek (fp, 0L, SEEK_SET);
@@ -179,7 +179,7 @@ main (int argc, char **argv)
     if ((tfile = m_mktemp2(NULL, invo_name, NULL, NULL)) == NULL) {
 	die("unable to create temporary file in %s", get_temp_dir());
     }
-    strncpy (drft, tfile, sizeof(tmpfil));
+    strncpy (drft, tfile, sizeof(drft) - 1);
 
     rcvdistout (fp, form, addrs);
     fclose (fp);

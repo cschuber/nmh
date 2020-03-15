@@ -702,7 +702,7 @@ editfile (char **ed, char **arg, char *file, int use, struct msgs *mp,
 
     if (altmsg) {
 	if (mp == NULL || *altmsg == '/' || cwd == NULL)
-	    strncpy (altpath, altmsg, sizeof(altpath));
+	    strncpy (altpath, altmsg, sizeof(altpath) - 1);
 	else
 	    snprintf (altpath, sizeof(altpath), "%s/%s", mp->foldpath, altmsg);
 	if (cwd == NULL)

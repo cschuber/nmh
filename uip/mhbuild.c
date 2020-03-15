@@ -302,7 +302,7 @@ main (int argc, char **argv)
 	    die("unable to create temporary file in %s",
 		  get_temp_dir());
 	}
-	strncpy (infile, cp, sizeof(infile));
+	strncpy (infile, cp, sizeof(infile) - 1);
 
 	/* copy standard input to temporary file */
 	while ((n = fread(buffer, 1, sizeof(buffer), stdin)) > 0) {
@@ -362,7 +362,7 @@ main (int argc, char **argv)
     if ((cp = m_mktemp2(compfile, invo_name, NULL, &fp_out)) == NULL) {
 	die("unable to create temporary file");
     }
-    strncpy(outfile, cp, sizeof(outfile));
+    strncpy(outfile, cp, sizeof(outfile) - 1);
 
     /* output the message */
     output_message_fp (ct, fp_out, outfile);

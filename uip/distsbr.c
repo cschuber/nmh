@@ -156,7 +156,7 @@ ready_msg (char *msgnam)
     if (cp == NULL) {
 	die("unable to create temporary file in %s", get_temp_dir());
     }
-    strncpy(tmpfil, cp, sizeof(tmpfil));
+    strncpy(tmpfil, cp, sizeof(tmpfil) - 1);
     if ((out = dup (hdrfd)) == NOTOK
 	    || (ofp = fdopen (out, "w")) == NULL)
 	die("no file descriptors -- you lose big");
@@ -187,7 +187,7 @@ ready_msg (char *msgnam)
 			  get_temp_dir());
                 }
                 fchmod(txtfd, 0600);
-		strncpy (tmpfil, cp, sizeof(tmpfil));
+		strncpy (tmpfil, cp, sizeof(tmpfil) - 1);
 		if ((out = dup (txtfd)) == NOTOK
 			|| (ofp = fdopen (out, "w")) == NULL)
 		    die("no file descriptors -- you lose big");

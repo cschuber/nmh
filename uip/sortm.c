@@ -534,7 +534,7 @@ rename_chain (struct msgs *mp, struct smsg **mlist, int msg, int endmsg)
 	mlist[msg] = NULL;
 	old = smsgs[nxt].s_msg;
 	new = smsgs[msg].s_msg;
-	strncpy (oldname, m_name (old), sizeof(oldname));
+	strncpy (oldname, m_name (old), sizeof(oldname) - 1);
 	newname = m_name (new);
 	if (verbose)
 	    printf ("message %d becomes message %d\n", old, new);
@@ -568,7 +568,7 @@ rename_msgs (struct msgs *mp, struct smsg **mlist)
     char newbuf[PATH_MAX + 1];
     struct smsg *sp;
 
-    strncpy (tmpfil, m_name (mp->hghmsg + 1), sizeof(tmpfil));
+    strncpy (tmpfil, m_name (mp->hghmsg + 1), sizeof(tmpfil) - 1);
 
     for (i = 0; i < nmsgs; i++) {
 	if (! (sp = mlist[i]))
@@ -585,7 +585,7 @@ rename_msgs (struct msgs *mp, struct smsg **mlist)
 	 */
 	old = smsgs[j].s_msg;
 	new = smsgs[i].s_msg;
-	strncpy (f1, m_name (old), sizeof(f1));
+	strncpy (f1, m_name (old), sizeof(f1) - 1);
 
 	if (verbose)
 	    printf ("renaming message chain from %d to %d\n", old, new);

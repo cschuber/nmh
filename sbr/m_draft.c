@@ -45,7 +45,7 @@ m_draft (char *folder, char *msg, int use, int *isdf)
     if (chdir (m_maildir ("")) < 0) {
 	advise (m_maildir (""), "chdir");
     }
-    strncpy (buffer, m_maildir (folder), sizeof(buffer));
+    strncpy (buffer, m_maildir (folder), sizeof(buffer) - 1);
 
     create_folder (buffer, 0, done);
 

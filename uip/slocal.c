@@ -1038,7 +1038,7 @@ usr_folder (int fd, char *string)
 
     /* get folder name ready */
     if (*string == '+')
-	strncpy(folder, string, sizeof(folder));
+	strncpy(folder, string, sizeof(folder) - 1);
     else
 	snprintf(folder, sizeof(folder), "+%s", string);
 
@@ -1179,7 +1179,7 @@ get_sender (char *envelope, char **sender)
     }
 
     i = LEN("From ");
-    strncpy (buffer, envelope + i, sizeof(buffer));
+    strncpy (buffer, envelope + i, sizeof(buffer) - 1);
     if ((cp = strchr(buffer, '\n'))) {
 	*cp = 0;
 	cp -= 24;
@@ -1317,7 +1317,7 @@ trim (char *cp)
 	return NULL;
 
     /* copy string into temp buffer */
-    strncpy (buffer, cp, sizeof(buffer));
+    strncpy (buffer, cp, sizeof(buffer) - 1);
     bp = buffer;
 
     /* skip over leading whitespace */

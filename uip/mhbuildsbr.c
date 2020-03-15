@@ -726,7 +726,7 @@ user_content (FILE *in, char *buf, CT *ctp, const char *infilename)
 	ce->ce_unlink = 1;
 
 	if (do_direct() && (buf[0] == '#' && buf[1] == '<')) {
-	    strncpy (content, buf + 2, sizeof(content));
+	    strncpy (content, buf + 2, sizeof(content) - 1);
 	    inlineD = true;
 	    goto rock_and_roll;
 	}
@@ -735,7 +735,8 @@ user_content (FILE *in, char *buf, CT *ctp, const char *infilename)
 	/* the directive is implicit */
 	strncpy (content, "text/plain", sizeof(content));
 	headers = 0;
-	strncpy (buffer, (!do_direct() || buf[0] != '#') ? buf : buf + 1, sizeof(buffer));
+	strncpy (buffer, (!do_direct() || buf[0] != '#') ? buf : buf + 1,
+		 sizeof(buffer) - 1);
 	for (;;) {
 	    int	i;
 

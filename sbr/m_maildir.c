@@ -78,7 +78,7 @@ exmaildir (char *folder)
 	    && strcmp (folder, DOT)
 	    && strcmp (folder, DOTDOT)
 	    && !has_prefix(folder, PWD))) {
-	strncpy (mailfold, folder, sizeof(mailfold));
+	strncpy (mailfold, folder, sizeof(mailfold) - 1);
 	return mailfold;
     }
 

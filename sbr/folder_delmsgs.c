@@ -124,7 +124,7 @@ folder_delmsgs (struct msgs *mp, int unlink_msgs, int nohook)
 		}
 	    } else {
 		/* or rename messages with standard prefix */
-		strncpy (buf, m_backup (dp), sizeof(buf));
+		strncpy (buf, m_backup (dp), sizeof(buf) - 1);
 		if (rename (dp, buf) == -1) {
 		    admonish (buf, "unable to rename %s to", dp);
 		    retval = -1;
