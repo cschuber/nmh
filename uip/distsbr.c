@@ -58,12 +58,20 @@ distout (char *drft, char *msgnam, char *backup)
 	switch (state = m_getfld2(&gstate, name, buffer, &buffersz)) {
 	    case FLD: 
 	    case FLDPLUS: 
-		if (uprf (name, "distribute-"))
-		    snprintf (name, sizeof(name), "%s%.*s", "Resent",
-			      (int) sizeof name - 7, &name[10]);
-		if (uprf (name, "distribution-"))
-		    snprintf (name, sizeof(name), "%s%.*s", "Resent",
-			      (int) sizeof name - 7, &name[12]);
+		if (uprf (name, "distribute-")) {
+		    (void) memcpy(name, "Resent", 6);
+		    (void) memmove(name + 6, name + 10, sizeof name - 10);
+		    /* in case the string wasn't null terminated,
+		       4 = strlen("distribute") - strlen("Resent") */
+		    name[sizeof name - 4] = '\0';
+                }
+		if (uprf (name, "distribution-")) {
+		    (void) memcpy(name, "Resent", 6);
+		    (void) memmove(name + 6, name + 12, sizeof name - 12);
+		    /* in case the string wasn't null terminated,
+		       6 = strlen("distribution") - strlen("Resent") */
+		    name[sizeof name - 6] = '\0';
+                }
 		if (!uprf (name, "resent")) {
 		    inform(BADHDR, "draft", name);
 		    goto leave_bad;
