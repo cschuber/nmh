@@ -49,6 +49,7 @@ actual_err=$MH_TEST_DIR/$$.actual_err
 
 
 # check -help
+start_test "-help"
 cat >$expected <<EOF
 Usage: fmtdump [switches]
   switches are:
@@ -63,6 +64,7 @@ EOF
 check "$expected" "$actual"
 
 # check -version
+start_test "-version"
 case `$fmtdump -v` in
   fmtdump\ --*) ;;
   *           ) printf '%s: fmtdump -v generated unexpected output\n' "$0" >&2
@@ -70,9 +72,11 @@ case `$fmtdump -v` in
 esac
 
 # check unknown switch
+start_test "unknown switch"
 run_test "$fmtdump -nonexistent" 'fmtdump: -nonexistent unknown'
 
 # check with no switches
+start_test "with no switches"
 cat >$expected <<EOF
 	LV_DAT, value dat[0]
 	NUMF, width 4, fill ' '
@@ -130,6 +134,7 @@ run_prog $fmtdump >$actual 2>&1
 check $expected $actual
 
 # check -form
+start_test "-form"
 cat >$expected <<EOF
 	LV_DAT, value dat[0]
 	NUMF, width 4, fill ' '
@@ -189,6 +194,7 @@ run_prog $fmtdump -form "$MH_INST_DIR${nmhetcdir}/scan.default" >$actual 2>&1
 check $expected $actual
 
 # check -format
+start_test "-format"
 cat >$expected <<EOF
 	LS_LIT str "1234567890"
 	IF_S continue else goto L0
@@ -201,4 +207,5 @@ run_prog $fmtdump -format '%<(lit 1234567890)%(strlen)%>' >$actual 2>&1
 check $expected $actual
 
 
+finish_test
 exit ${failed:-0}

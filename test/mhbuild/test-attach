@@ -51,6 +51,7 @@ check "$draft" "$expected"
 
 #
 # Check out more common case, one (or more) attachments
+start_test "out more common case, one (or more) attachments"
 # along with message text.
 #
 
@@ -128,6 +129,7 @@ check "$draft" "$expected"
 
 #
 # Check a completely empty message
+start_test "a completely empty message"
 #
 
 cat > "$draft" <<EOF
@@ -330,6 +332,7 @@ EOF
 check "$draft" "$expected"
 
 # check that blank line is inserted between header and content
+start_test "that blank line is inserted between header and content"
 
 cat > "$MH_TEST_DIR/Mail/oneline" <<EOF
 There needs to be a blank line before this content line.
@@ -375,4 +378,5 @@ check "$draft" "$expected"
 
 [ ${failed:=0} -eq 0 ]  &&  rm -f ${backup}
 
+finish_test
 exit ${failed:-0}

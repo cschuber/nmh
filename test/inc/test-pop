@@ -71,6 +71,7 @@ Dude, nmh is totally brutal.
 EOM
 
 # Check netrc's permissions test
+start_test "netrc's permissions test"
 pid=`"${MH_OBJ_DIR}/test/fakepop" "$testport" '' '' "$testmessage"`
 chmod g=w,o=x $netrc
 run_test "inc -user ${TESTUSER} -host 127.0.0.1 -port $testport" \
@@ -89,6 +90,7 @@ i"
 check "$testmessage" `mhpath +inbox 11` 'keep first'
 
 # Check multiple messages at once
+start_test "multiple messages at once"
 
 pid=`"${MH_OBJ_DIR}/test/fakepop" "$testport" \
 			"$TESTUSER" "$TESTPASS" "$testmessage" \
@@ -108,6 +110,7 @@ check "${testmessage}.3" `mhpath +inbox 13`
 rm -f "$netrc"
 
 # check credentials: file
+start_test "credentials: file"
 # Redirect stdin so that inc doesn't wait on the user if it can't
 # read the netrc file, even though that shouldn't happen.
 TESTUSER=differenuser
@@ -129,4 +132,5 @@ check $testmessage `mhpath +inbox 11`
 
 rm -f "$netrc"
 
+finish_test
 exit ${failed:-0}

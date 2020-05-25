@@ -68,6 +68,7 @@ actual_err=$MH_TEST_DIR/test-mhmail$$.actual_err
 
 
 # check -help
+start_test "-help"
 # Verified behavior consistent with compiled sendmail.
 cat >$expected <<EOF
 Usage: mhmail [-t(o)] addrs ... [switches]
@@ -94,6 +95,7 @@ check "$expected" "$actual"
 
 
 # check -version
+start_test "-version"
 # Verified same behavior as compiled mhmail.
 case `mhmail -v` in
   mhmail\ --*) ;;
@@ -102,6 +104,7 @@ case `mhmail -v` in
 esac
 
 # check for missing argument to switches that require them
+start_test "for missing argument to switches that require them"
 for switch in attach body cc from headerfield subject to; do
   run_test "mhmail recipient -$switch" \
            "mhmail: missing argument to -$switch"
@@ -117,6 +120,7 @@ done
 
 
 # check with no switches
+start_test "with no switches"
 # That will just run inc, which we don't want to do anything,
 # so tell inc to just display its version.
 # Verified same behavior as compiled mhmail.
@@ -129,6 +133,7 @@ esac
 
 
 # check -nosend
+start_test "-nosend"
 # Not supported by compiled mhmail.
 mhmail -nosend recipient@example.com -from sender1@localhost \
   -server 127.0.0.1 -port $localport -body '' >"$actual" 2>"$actual_err"
@@ -149,6 +154,7 @@ check "$expected_err" "$actual_err"
 
 
 # check -send
+start_test "-send"
 # Not supported by compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -169,6 +175,7 @@ test_mhmail "$expected" "-from sender2@localhost -nosend -send" '|' message
 
 
 # check -from
+start_test "-from"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -189,6 +196,7 @@ test_mhmail "$expected" "-from sender3@localhost" '|' message
 
 
 # check -from and -body
+start_test "-from and -body"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -209,6 +217,7 @@ test_mhmail "$expected" "-from sender4@localhost" -b body
 
 
 # check -from and -cc
+start_test "-from and -cc"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -232,6 +241,7 @@ test_mhmail "$expected" \
 
 
 # check -from and multiple -cc addresses
+start_test "-from and multiple -cc addresses"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -259,6 +269,7 @@ test_mhmail "$expected" \
 
 
 # check -from and -subject
+start_test "-from and -subject"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -280,6 +291,7 @@ test_mhmail "$expected" '-from sender7@localhost -subject Test' '|' message
 
 
 # check -from and -profile
+start_test "-from and -profile"
 # Show that -profile causes mhmail to 1) read the profile and
 # 2) use send(1) by added a send switch to the profile and
 # verifying that it gets used.
@@ -308,6 +320,7 @@ test_mhmail "$expected" '-from sender8@localhost -profile' '|' message
 
 
 # check repeated -from and -subject switches
+start_test "repeated -from and -subject switches"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -329,6 +342,7 @@ test_mhmail "$expected" '-from sender9@localhost -from sender9@localhost '\
 [ ${failed:-0} -eq 0 ] || exit ${failed:-0}
 
 # check repeated -body switches
+start_test "repeated -body switches"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -349,6 +363,7 @@ test_mhmail "$expected" "-from sender10@localhost -body body1" -b body2
 
 
 # check multiple -cc switches
+start_test "multiple -cc switches"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -373,6 +388,7 @@ test_mhmail "$expected" \
 
 
 # check separated -cc arguments
+start_test "separated -cc arguments"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -399,6 +415,7 @@ test_mhmail "$expected" \
 
 
 # check -cc switch followed by -to switch
+start_test "-cc switch followed by -to switch"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -426,6 +443,7 @@ test_mhmail "$expected" \
 
 
 # check with no newline on stdin
+start_test "with no newline on stdin"
 # Shows different behavior than compiled mhmail, which was silent in this case.
 cat > "$expected" <<EOF
 EOF
@@ -445,6 +463,7 @@ check "$expected_err" "$actual_err"
 
 
 # check with one newline on stdin
+start_test "with one newline on stdin"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -466,6 +485,7 @@ test_mhmail "$expected" '-from sender14@localhost' '|' '
 
 
 # check with multiple newlines on stdin
+start_test "with multiple newlines on stdin"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -491,6 +511,7 @@ test_mhmail "$expected" '-from sender15@localhost' '|' '
 
 
 # check with text and no trailing newline on stdin
+start_test "with text and no trailing newline on stdin"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -511,6 +532,7 @@ test_mhmail "$expected" '-from sender16@localhost' '|' 'no newline in input'
 
 
 # check with text and multiple trailing blank lines on stdin
+start_test "with text and multiple trailing blank lines on stdin"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -536,6 +558,7 @@ test_mhmail "$expected" '-from sender17@localhost' '|' "here's some text
 
 
 # check with no newline to -body
+start_test "with no newline to -body"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -556,6 +579,7 @@ test_mhmail "$expected" '-from sender18@localhost' -b ''
 
 
 # check with one newline to -body
+start_test "with one newline to -body"
 # Shows different behavior than compiled mhmail, which suppressed the newline.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -578,6 +602,7 @@ test_mhmail "$expected" '-from sender19@localhost' -b '
 
 
 # check with multiple newlines to -body
+start_test "with multiple newlines to -body"
 # Shows different behavior than compiled mhmail, which suppressed one
 #   of the newlines.
 cat > "$expected" <<EOF
@@ -605,6 +630,7 @@ test_mhmail "$expected" '-from sender20@localhost' -b '
 
 
 # check with text and no trailing newline to -body
+start_test "with text and no trailing newline to -body"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -625,6 +651,7 @@ test_mhmail "$expected" '-from sender21@localhost' -b 'no newline in input'
 
 
 # check with text and multiple trailing blank lines to -body
+start_test "with text and multiple trailing blank lines to -body"
 # Shows different behavior than compiled mhmail, which suppressed one
 #   of the newlines.
 cat > "$expected" <<EOF
@@ -650,6 +677,7 @@ test_mhmail "$expected" '-from sender22@localhost' -b "here's some text
 
 
 # check -resent
+start_test "-resent"
 # Verified same behavior as compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -678,6 +706,7 @@ please resend this message, 1'
 [ ${failed:-0} -eq 0 ] || exit ${failed:-0}
 
 # check -resent -profile, using stdin
+start_test "-resent -profile, using stdin"
 # Not supported by compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -708,6 +737,7 @@ please resend this message, 2'
 
 
 # check -resent -profile, using -b
+start_test "-resent -profile, using -b"
 # Not supported by compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -738,6 +768,7 @@ please resend this message, 3'
 
 
 # check -headerfield.
+start_test "-headerfield."
 # Not supported by compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -762,6 +793,7 @@ test_mhmail "$expected" \
 
 
 # check multiple -headerfields.
+start_test "multiple -headerfields."
 # Not supported by compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -790,6 +822,7 @@ test_mhmail "$expected" \
 
 
 # check -attach
+start_test "-attach"
 # Not supported by compiled mhmail.
 cat > "$expected" <<EOF
 EHLO nosuchhost.example.com
@@ -829,4 +862,5 @@ test_mhmail "$expected" \
 [ ${failed:-0} -eq 0 ] || exit ${failed:-0}
 
 
+finish_test
 exit ${failed:-0}

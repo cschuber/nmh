@@ -24,6 +24,7 @@ actual=$MH_TEST_DIR/$$.actual
 cd $MH_TEST_DIR
 
 # check -help
+start_test "-help"
 cat >"$expected" <<EOF
 Usage: sortm [+folder] [msgs] [switches]
   switches are:
@@ -44,6 +45,7 @@ run_prog sortm -help 2>&1 | sed '/^$/,$d' >"$actual"
 check "$expected" "$actual"
 
 # check -version
+start_test "-version"
 case `sortm -version` in
   sortm\ --*) ;;
   *       ) echo "$0: sortm -v generated unexpected output" 1>&2
@@ -71,6 +73,7 @@ This is message number 12
 EOF
 
 # check with no options
+start_test "with no options"
 cat >"$expected" <<EOF
    1  09/28 Test12             common subject<<This is message number 12 >>
    2  09/29 Test1              Testing message 1<<This is message number 1 >>
@@ -91,6 +94,7 @@ scan -width 80 >"$actual"
 check "$expected" "$actual"
 
 # check +folder
+start_test "+folder"
 cat >"$expected" <<EOF
    1  09/28 Test12             common subject<<This is message number 12 >>
    2+ 09/29 Test1              Testing message 1<<This is message number 1 >>
@@ -112,6 +116,7 @@ scan -width 80 >"$actual"
 check "$expected" "$actual"
 
 # check -verbose
+start_test "-verbose"
 cat >"$expected" <<EOF
 sorting by datefield date
 renaming message chain from 12 to 1
@@ -146,6 +151,7 @@ scan -width 80 >>"$actual"
 check "$expected" "$actual"
 
 # check -noverbose
+start_test "-noverbose"
 cat >"$expected" <<EOF
    1  09/28 Test12             common subject<<This is message number 12 >>
    2+ 09/29 Test1              Testing message 1<<This is message number 1 >>
@@ -167,6 +173,7 @@ scan -width 80 >>"$actual"
 check "$expected" "$actual"
 
 # check msgs
+start_test "msgs"
 cat >"$expected" <<EOF
    1  09/28 Test12             common subject<<This is message number 12 >>
    2  09/29 Test2              Testing message 2<<This is message number 2 >>
@@ -188,6 +195,7 @@ scan -width 80 >"$actual"
 check "$expected" "$actual"
 
 # check -datefield
+start_test "-datefield"
 cat >"$expected" <<EOF
    1  09/29 Test11             Re: common subject<<This is message number 11 >>
    2  09/29 Test2              Testing message 2<<This is message number 2 >>
@@ -208,6 +216,7 @@ scan -width 80 >"$actual"
 check "$expected" "$actual"
 
 # check -textfield subject (datefield major, subjects grouped)
+start_test "-textfield subject (datefield major, subjects grouped)"
 cat >"$expected" <<EOF
    1  09/28 Test12             common subject<<This is message number 12 >>
    2  09/29 Test11             Re: common subject<<This is message number 11 >>
@@ -228,6 +237,7 @@ scan -width 80 >"$actual"
 check "$expected" "$actual"
 
 # check -nolimit
+start_test "-nolimit"
 cat >"$expected" <<EOF
    1  09/28 Test12             common subject<<This is message number 12 >>
    2  09/29 Test11             Re: common subject<<This is message number 11 >>
@@ -248,6 +258,7 @@ scan -width 80 >"$actual"
 check "$expected" "$actual"
 
 # check -textfield subject -limit 0 (subject sort)
+start_test "-textfield subject -limit 0 (subject sort)"
 cat >"$expected" <<EOF
    1  09/29 Test11             Re: common subject<<This is message number 11 >>
    2  09/28 Test12             common subject<<This is message number 12 >>
@@ -269,6 +280,7 @@ scan -width 80 >"$actual"
 check "$expected" "$actual"
 
 # check -textfield -limit 0 (text sort)
+start_test "-textfield -limit 0 (text sort)"
 cat >"$expected" <<EOF
    1  09/29 Test10             Testing message 10<<This is message number 10 >>
    2  09/29 Test11             Re: common subject<<This is message number 11 >>
@@ -290,6 +302,7 @@ scan -width 80 >"$actual"
 check "$expected" "$actual"
 
 # check -textfield with finite -limit that doesn't cover message 13
+start_test "-textfield with finite -limit that doesn't cover message 13"
 cat >$MH_TEST_DIR/Mail/inbox/13 <<EOF || exit 1
 From: Test13 <test13@example.com>
 To: Some User <user@example.com>
@@ -321,6 +334,7 @@ scan -width 80 >"$actual"
 check "$expected" "$actual"
 
 # check -textfield with finite -limit that does cover message 13
+start_test "-textfield with finite -limit that does cover message 13"
 cat >"$expected" <<EOF
    1  09/28 Test12             common subject<<This is message number 12 >>
    2  09/29 Test11             Re: common subject<<This is message number 11 >>
@@ -343,6 +357,7 @@ scan -width 80 >"$actual"
 check "$expected" "$actual"
 
 # check -notextfield
+start_test "-notextfield"
 cat >"$expected" <<EOF
    1  09/28 Test12             common subject<<This is message number 12 >>
    2  09/29 Test10             Testing message 10<<This is message number 10 >>
@@ -365,9 +380,11 @@ scan -width 80 >"$actual"
 check "$expected" "$actual"
 
 # check -noall
+start_test "-noall"
 run_test 'sortm -noall' 'sortm: must specify messages to sort with -noall'
 
 # check -all
+start_test "-all"
 cat >"$expected" <<EOF
    1  09/28 Test12             common subject<<This is message number 12 >>
    2+ 09/29 Test10             Testing message 10<<This is message number 10 >>
@@ -390,6 +407,7 @@ scan -width 80 >"$actual"
 check "$expected" "$actual"
 
 # check -check
+start_test "-check"
 cat >"$expected" <<EOF
 sortm: can't parse date field in message 14, will use file modification time
 sortm: errors found, no messages sorted
@@ -421,6 +439,7 @@ scan -width 80 >"$actual"
 check "$expected" "$actual"
 
 # check -nocheck
+start_test "-nocheck"
 cat >"$expected" <<EOF
    1  09/28 Test12             common subject<<This is message number 12 >>
    2+ 09/29 Test10             Testing message 10<<This is message number 10 >>
@@ -446,4 +465,5 @@ scan -width 80 >"$actual"
 check "$expected" "$actual"
 
 
+finish_test
 exit ${failed:-0}

@@ -25,6 +25,7 @@ actual_err=$MH_TEST_DIR/$$.actual_err
 
 
 # check -help
+start_test "-help"
 cat >$expected <<EOF
 Usage: prompter [switches] file
   switches are:
@@ -42,6 +43,7 @@ run_prog prompter -help 2>&1 | sed '/^$/,$d' >"$actual"
 check "$expected" "$actual"
 
 # check -version
+start_test "-version"
 case `prompter -v` in
   prompter\ --*) ;;
   *            ) printf '%s: prompter -v generated unexpected output\n' "$0" >&2
@@ -49,13 +51,16 @@ case `prompter -v` in
 esac
 
 # check unknown switch
+start_test "unknown switch"
 run_test 'prompter -nonexistent' 'prompter: -nonexistent unknown'
 
 
 # check with no switches
+start_test "with no switches"
 run_test 'prompter' 'prompter: usage: prompter [switches] file'
 
 # check with file
+start_test "with file"
 cat >$expected <<EOF
 Resent-From: sender@example.com
 Resent-To: recipient@example.com
@@ -78,6 +83,7 @@ printf 'recipient@example.com\ncc@example.com\n+outbox\nmessage body\n' | \
 check "$expected" "$MH_TEST_DIR/prompter-file" 'keep first'
 
 # check -doteof
+start_test "-doteof"
 cat >$MH_TEST_DIR/prompter-file <<EOF
 Resent-From: sender@example.com
 Resent-To:
@@ -91,6 +97,7 @@ printf 'recipient@example.com\ncc@example.com\n+outbox\nmessage body\n.\n' | \
 check "$expected" "$MH_TEST_DIR/prompter-file" 'keep first'
 
 # check -nodoteof
+start_test "-nodoteof"
 cat >$MH_TEST_DIR/prompter-file <<EOF
 Resent-From: sender@example.com
 Resent-To:
@@ -104,6 +111,7 @@ printf 'recipient@example.com\ncc@example.com\n+outbox\nmessage body\n' | \
 check "$expected" "$MH_TEST_DIR/prompter-file" 'keep first'
 
 # check -noprepend
+start_test "-noprepend"
 cat >$MH_TEST_DIR/prompter-file <<EOF
 Resent-From: sender@example.com
 Resent-To:
@@ -121,6 +129,7 @@ printf 'recipient@example.com\ncc@example.com\n+outbox\nappendage\n' | \
 check "$expected" "$MH_TEST_DIR/prompter-file"
 
 # check -prepend
+start_test "-prepend"
 cat >$MH_TEST_DIR/prompter-file <<EOF
 Resent-From: sender@example.com
 Resent-To:
@@ -146,6 +155,7 @@ printf 'recipient@example.com\ncc@example.com\n+outbox\nprependage\n' | \
 check "$MH_TEST_DIR/prompter-file" "$expected" 'keep first'
 
 # check -rapid
+start_test "-rapid"
 cat >$expected <<EOF
 Resent-From: sender@example.com
 Resent-To: recipient@example.com
@@ -162,6 +172,7 @@ run_prog prompter -rapid $MH_TEST_DIR/prompter-file >"$actual" </dev/null
 check "$expected" "$actual"
 
 # check -norapid
+start_test "-norapid"
 cat >$expected <<EOF
 Resent-From: sender@example.com
 Resent-To: recipient@example.com
@@ -181,6 +192,7 @@ run_prog prompter -rapid -norapid $MH_TEST_DIR/prompter-file \
 check "$expected" "$actual"
 
 # check -erase and -kill.  We can't test their effects because they
+start_test "-erase and -kill.  We can't test their effects because they"
 # only affect the terminal and this test execution might not be
 # connected to one.  So we can just check that the respective options
 # were set.
@@ -204,6 +216,7 @@ printf 'woot woot\n' | \
 check "$expected" "$actual"
 
 # check -body.  It's undocumented but the default, so make sure that
+start_test "-body.  It's undocumented but the default, so make sure that"
 # it reverses the effect of -nobody.
 cat >$expected <<EOF
 Resent-From: sender@example.com
@@ -225,6 +238,7 @@ run_prog prompter -nobody -body $MH_TEST_DIR/prompter-file >"$actual" \
 check "$expected" "$actual"
 
 # check -nobody.  It's undocumented but looks like it removes the body.
+start_test "-nobody.  It's undocumented but looks like it removes the body."
 cat >$expected <<EOF
 Resent-From: sender@example.com
 Resent-To: recipient@example.com
@@ -237,4 +251,5 @@ run_prog prompter -nobody $MH_TEST_DIR/prompter-file >/dev/null
 check "$expected" "$MH_TEST_DIR/prompter-file"
 
 
+finish_test
 exit ${failed:-0}

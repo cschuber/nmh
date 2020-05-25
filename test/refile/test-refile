@@ -27,9 +27,11 @@ run_prog folder -create +other -fast >/dev/null
 run_prog folder -create +another -fast >/dev/null
 
 # check with no options and no current message
+start_test "with no options and no current message"
 run_test 'refile' 'refile: no folder specified'
 
 # check with current message
+start_test "with current message"
 run_prog folder +inbox 4 >/dev/null
 run_test 'refile +other' ''
 run_test 'folders -noheader' \
@@ -40,6 +42,7 @@ other    has  1 message   (1- 1).
 TOTAL = 10 messages in 3 folders.'
 
 # check with specified message
+start_test "with specified message"
 run_prog folder +inbox 5 >/dev/null
 run_test 'refile 5 +other' ''
 run_test 'folders -noheader' \
@@ -50,6 +53,7 @@ other    has  2 messages  (1- 2).
 TOTAL = 10 messages in 3 folders.'
 
 # check multiple messages
+start_test "multiple messages"
 run_test 'refile 6 7 +other' ''
 run_test 'folders -noheader' \
 'another  has no messages.
@@ -59,6 +63,7 @@ other    has  4 messages  (1- 4).
 TOTAL = 10 messages in 3 folders.'
 
 # check multiple folders
+start_test "multiple folders"
 run_test 'refile 8 +other +another' ''
 run_test 'folders -noheader' \
 'another  has 1 message   (1- 1).
@@ -68,10 +73,12 @@ other    has 5 messages  (1- 5).
 TOTAL = 11 messages in 3 folders.'
 
 # check message number greater than highest
+start_test "message number greater than highest"
 run_test 'refile 11 +other' "refile: message 11 doesn't exist"
 run_prog folder -f +another >/dev/null
 
 # check -src
+start_test "-src"
 run_test 'refile 9 -src +inbox +other' ''
 run_test 'folders -noheader' \
 'another  has 1 message   (1- 1).
@@ -81,6 +88,7 @@ other    has 6 messages  (1- 6).
 TOTAL = 11 messages in 3 folders.'
 
 # check -file
+start_test "-file"
 run_test "refile -file $MH_TEST_DIR/Mail/inbox/10 +other" ''
 run_test 'folders -noheader' \
 'another  has 1 message   (1-1).
@@ -90,6 +98,7 @@ other    has 7 messages  (1-7).
 TOTAL = 11 messages in 3 folders.'
 
 # check -file -, which isn't supported
+start_test "-file -, which isn't supported"
 run_test "refile -file - +other <$MH_TEST_DIR/Mail/inbox/9" \
          'refile: missing argument to -file'
 run_test 'folders -noheader' \
@@ -108,6 +117,7 @@ other+   has no messages.
 TOTAL = 11 messages in 3 folders.'
 
 # check -draft
+start_test "-draft"
 mv $MH_TEST_DIR/Mail/another/1 $MH_TEST_DIR/Mail/draft
 rmdir $MH_TEST_DIR/Mail/another
 run_test 'refile -draft +other' ''
@@ -138,6 +148,7 @@ else
 fi
 
 # check -nolink
+start_test "-nolink"
 run_test 'refile 7 +other -link -nolink' ''
 run_test 'folders -noheader' \
 'inbox+ has 9 messages  (1-10); cur=7.
@@ -148,6 +159,7 @@ TOTAL = 12 messages in 2 folders.'
 run_test 'scan +inbox 7' "scan: message 7 doesn't exist"
 
 # check -preserve
+start_test "-preserve"
 run_test 'refile 10 +other -preserve' ''
 run_test 'folders -noheader' \
 'inbox+ has 8 messages  (1- 9).
@@ -158,6 +170,7 @@ run_test 'scan +other last -format %(msg):%(decode{subject})' \
          '10:Testing message 10'
 
 # check -nopreserve
+start_test "-nopreserve"
 run_test 'refile 9 -src +inbox +other -preserve -nopreserve' ''
 run_test 'folders -noheader' \
 'inbox+ has 7 messages  (1- 8).
@@ -170,6 +183,7 @@ run_test 'scan +other last -format %(msg):%(decode{subject})' \
 sbackup="`mhparam sbackup`"
 
 # check -unlink
+start_test "-unlink"
 run_test 'refile 3 -src +inbox +other -unlink' ''
 run_test 'folders -noheader' \
 'inbox+ has 6 messages  (1- 8); cur=3.
@@ -182,6 +196,7 @@ if test -f "$MH_TEST_DIR/Mail/inbox/${sbackup}3"; then
 fi
 
 # check -nounlink
+start_test "-nounlink"
 run_test 'refile 2 +other -unlink -nounlink' ''
 run_test 'folders -noheader' \
 'inbox+ has 5 messages  (1- 8); cur=2.
@@ -196,6 +211,7 @@ else
 fi
 
 # test folder creation when stdin is not a tty
+start_test "folder creation when stdin is not a tty"
 refile first +newfolder </dev/null
 run_test 'folders -noheader' \
 'inbox+     has 4 messages  (4- 8).
@@ -205,6 +221,7 @@ other      has 7 messages  (1-13).
 TOTAL = 12 messages in 3 folders.'
 
 # test -rmmproc
+start_test "-rmmproc"
 run_test 'refile first +other -rmmproc echo' '4'
 run_test 'folders -noheader' \
 'inbox+     has 4 messages  (4- 8); cur=4.
@@ -214,6 +231,7 @@ other      has 8 messages  (1-14).
 TOTAL = 13 messages in 3 folders.'
 
 # test -normmproc
+start_test "-normmproc"
 run_test 'refile first +other -rmmproc echo -normmproc' ''
 run_test 'folders -noheader' \
 'inbox+     has 3 messages  (5- 8).
@@ -223,6 +241,7 @@ other      has 9 messages  (1-15).
 TOTAL = 13 messages in 3 folders.'
 
 # test -retainsequences
+start_test "-retainsequences"
 mark first -seq seq1
 mark last -seq seq2
 refile first last -retainsequences +other
@@ -233,6 +252,7 @@ seq2: 17"
 
 # test -retainsequences when refiling to same folder (+other)
 # cur is set to the original message number of the last message refiled.
+start_test "-retainsequences when refiling to same folder (+other)"
 mark first -seq seq1 -zero
 mark first=2 -seq seq2 -zero
 refile first:2 -retainsequences +other
@@ -240,4 +260,5 @@ run_test 'mark -list' "cur: 2
 seq1: 18
 seq2: 19"
 
+finish_test
 exit $failed

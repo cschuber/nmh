@@ -76,6 +76,7 @@ test_sendfiles ()
 
 
 # check -help
+start_test "-help"
 cat >"$expected" <<EOF
 Usage: sendfiles [switches] -to recipient -subject subject file1 [file2 ...]
   or
@@ -93,6 +94,7 @@ run_prog sendfiles -help 2>&1 | sed '/^$/,$d' >"$actual"
 check "$expected" "$actual"
 
 # check -version
+start_test "-version"
 case `sendfiles -v` in
   sendfiles\ --*) ;;
   *           ) printf '%s: sendfiles -v generated unexpected output\n' "$0" >&2
@@ -100,6 +102,7 @@ case `sendfiles -v` in
 esac
 
 # check unknown switch
+start_test "unknown switch"
 run_test 'sendfiles -nonexistent' "Usage: sendfiles [switches] -to recipient \
 -subject subject file1 [file2 ...]
   or
@@ -112,6 +115,7 @@ run_test 'sendfiles -nonexistent' "Usage: sendfiles [switches] -to recipient \
   Can use PERSON environment variable instead of -from switch."
 
 # check unknown compression method
+start_test "unknown compression method"
 run_test 'sendfiles -compress unknown to subject file' \
 'sendfiles: unknown compression method "unknown"'"
 Usage: sendfiles [switches] -to recipient \
@@ -126,6 +130,7 @@ Usage: sendfiles [switches] -to recipient \
   Can use PERSON environment variable instead of -from switch."
 
 # Check basic operation, using specified compression method.
+start_test "basic operation, using specified compression method."
 # Don't check the mhlist output, by not creating an $expected file,
 # because it will vary with compression method and compressed file
 # size.
@@ -137,6 +142,7 @@ Usage: sendfiles [switches] -to recipient \
 [ "`findprog lzma`" ]      &&  test_sendfiles 'lzma -cd' new -compress lzma
 
 # check with no compression
+start_test "with no compression"
 cat >"$expected" <<EOF
  msg part  type/subtype              size description
   11       application/octet-stream
@@ -147,6 +153,7 @@ EOF
 test_sendfiles cat new -compress none
 
 # check with no compression, -none
+start_test "with no compression, -none"
 cat >"$expected" <<EOF
  msg part  type/subtype              size description
   11       application/octet-stream
@@ -157,6 +164,7 @@ EOF
 test_sendfiles cat new -none
 
 # check old argument style (without -to and -subject)
+start_test "old argument style (without -to and -subject)"
 cat >"$expected" <<EOF
  msg part  type/subtype              size description
   11       application/octet-stream
@@ -167,6 +175,7 @@ EOF
 test_sendfiles cat old -compress none
 
 # check -from
+start_test "-from"
 cat >"$expected" <<EOF
  msg part  type/subtype              size description
   11       application/octet-stream
@@ -177,6 +186,7 @@ EOF
 test_sendfiles cat new -compress none -from 'Sender <sender@example.com>'
 
 # check PERSON environment variable
+start_test "PERSON environment variable"
 cat >"$expected" <<EOF
  msg part  type/subtype              size description
   11       application/octet-stream
@@ -189,4 +199,5 @@ PERSON='Sender <sender@example.com>' test_sendfiles cat new -compress none
 rm -fr "$MH_TEST_DIR/fakesendmail" "$MH_TEST_DIR/$testfile" "$MH_TEST_DIR/tmp"
 
 
+finish_test
 exit ${failed:-0}

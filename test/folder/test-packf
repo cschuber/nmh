@@ -23,6 +23,7 @@ actual="$MH_TEST_DIR/$$.actual"
 
 
 # check -help
+start_test "-help"
 cat >"$expected" <<EOF
 Usage: packf [+folder] [msgs] [switches]
   switches are:
@@ -38,6 +39,7 @@ packf -help 2>&1 | sed '/^$/,$d' >"$actual"
 check "$expected" "$actual"
 
 # check -version
+start_test "-version"
 case `packf -v` in
   packf\ --*) ;;
   *         ) printf '%s: packf -v generated unexpected output\n' "$0" >&2
@@ -45,12 +47,14 @@ case `packf -v` in
 esac
 
 # check unknown switch
+start_test "unknown switch"
 run_test "packf -nonexistent" 'packf: -nonexistent unknown'
 
 cd "${MH_TEST_DIR}"  ||  exit 1
 printf 'y\n' >Mail/yes
 
 # check with no switches
+start_test "with no switches"
 run_prog packf <Mail/yes
 inc +inbox2 -file msgbox <Mail/yes >/dev/null
 rm -f msgbox
@@ -61,6 +65,7 @@ run_test "printf $i" '10'
 rmm +inbox2 -unlink `pick +inbox2`
 
 # check +folder
+start_test "+folder"
 run_prog packf +inbox <Mail/yes
 inc +inbox2 -file msgbox >/dev/null
 rm -f msgbox
@@ -71,6 +76,7 @@ run_test "printf $i" '10'
 rmm +inbox2 -unlink `pick +inbox2`
 
 # check msgs
+start_test "msgs"
 run_prog packf +inbox 1 2 3 <Mail/yes
 inc +inbox2 -file msgbox >/dev/null
 rm -f msgbox
@@ -81,6 +87,7 @@ run_test "printf $i" '3'
 rmm +inbox2 -unlink `pick +inbox2`
 
 # check -file
+start_test "-file"
 run_prog packf +inbox -file msgbox2 <Mail/yes
 inc +inbox2 -file msgbox2 >/dev/null
 for i in `pick +inbox2`; do
@@ -90,6 +97,7 @@ run_test "printf $i" '10'
 rmm +inbox2 -unlink `pick +inbox2`
 
 # check append to existing mbox file
+start_test "append to existing mbox file"
 run_prog packf +inbox -file msgbox2 <Mail/yes
 inc +inbox2 -file msgbox2 >/dev/null
 rm -f msgbox2
@@ -105,6 +113,7 @@ run_test "printf $i" '20'
 rmm +inbox2 -unlink `pick +inbox2`
 
 # check -mbox
+start_test "-mbox"
 run_prog packf +inbox -mbox <Mail/yes
 inc +inbox2 -file msgbox >/dev/null
 rm -f msgbox
@@ -115,6 +124,7 @@ run_test "printf $i" '10'
 rmm +inbox2 -unlink `pick +inbox2`
 
 # check -mmdf
+start_test "-mmdf"
 run_prog packf +inbox -mmdf <Mail/yes
 inc +inbox2 -file msgbox >/dev/null
 rm -f msgbox
@@ -125,6 +135,7 @@ run_test "printf $i" '10'
 rmm +inbox2 -unlink `pick +inbox2`
 
 # check append to existing mmdf file
+start_test "append to existing mmdf file"
 run_prog packf +inbox -mmdf <Mail/yes
 inc +inbox2 -file msgbox >/dev/null
 rm -f msgbox
@@ -140,4 +151,5 @@ run_test "printf $i" '10'
 rmm +inbox2 -unlink `pick +inbox2`
 
 
+finish_test
 exit ${failed:-0}

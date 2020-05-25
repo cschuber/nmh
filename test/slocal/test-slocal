@@ -27,6 +27,7 @@ actual2="$MH_TEST_DIR"/$$.actual2
 md="$MH_TEST_DIR"/Mail/maildelivery
 
 # check -help
+start_test "-help"
 cat >"$expected" <<EOF
 Usage: slocal [switches]
   switches are:
@@ -49,6 +50,7 @@ run_prog $slocal -help 2>&1 | sed '/^$/,$d' >"$actual"
 check "$expected" "$actual"
 
 # check -version
+start_test "-version"
 case `$slocal -vers` in
   slocal\ --*) ;;
   *          ) printf '%s: slocal -vers generated unexpected output\n' "$0" >&2
@@ -56,9 +58,11 @@ case `$slocal -vers` in
 esac
 
 # check unknown switch
+start_test "unknown switch"
 run_test "$slocal -nonexistent" 'slocal: -nonexistent unknown'
 
 # check non-switch argument
+start_test "non-switch argument"
 run_test "$slocal nonexistent" 'slocal: only switch arguments are supported'
 
 # If no mail spool, explicitly specify the mailbox.
@@ -72,6 +76,7 @@ fi
 [ -x /usr/bin/tee ]  &&  tee=/usr/bin/tee  ||  tee=tee
 
 # check basic operation
+start_test "basic operation"
 # Can't use rcvstore because slocal wipes out the environment.
 # So, it would put the message in the user's inbox, not the
 # test inbox.  slocal also freopens stdout and stderr to
@@ -93,22 +98,26 @@ if [ ${failed:-0} -eq 1 ]; then
 fi
 
 # check -debug
+start_test "-debug"
 run_prog $slocal -debug -maildelivery "$md" $mbox <"$MH_TEST_DIR"/Mail/inbox/1 \
   >"$actual2" 2>&1
 run_test "grep ^retrieving $actual2" 'retrieving message from stdin'
 
 # check -verbose
+start_test "-verbose"
 run_prog $slocal -verbose -maildelivery "$md" $mbox \
   <"$MH_TEST_DIR"/Mail/inbox/1 >"$actual2" 2>&1
 run_test "grep ^delivering $actual2" "delivering to pipe \"$tee\", success."
 
 # check -noverbose
+start_test "-noverbose"
 run_prog $slocal -verbose -noverbose -maildelivery "$md" $mbox \
   <"$MH_TEST_DIR"/Mail/inbox/1 >"$actual2" 2>&1
 run_test "grep ^delivering $actual2" ''
 rm -f "$actual2"
 
 # check match of From
+start_test "match of From"
 cat >"$md"  <<EOF
 From test2@example.com qpipe A "$tee $actual"
 EOF
@@ -117,6 +126,7 @@ run_prog $slocal -maildelivery "$md" $mbox <"$MH_TEST_DIR"/Mail/inbox/2
 check "$MH_TEST_DIR/Mail/inbox/2" "$actual" 'keep first'
 
 # check R and ?
+start_test "R and ?"
 cat >"$md"  <<EOF
 From test3@example.com qpipe R "$tee $actual"
 From test3@example.com qpipe ? "$tee $actual2"
@@ -127,6 +137,7 @@ check "$MH_TEST_DIR/Mail/inbox/3" "$actual" 'keep first'
 check "$MH_TEST_DIR/Mail/inbox/3" "$actual2" 'keep first'
 
 # check R and N
+start_test "R and N"
 cat >"$md"  <<EOF
 From test4@example.com qpipe R "$tee $actual"
 From test4@example.com qpipe N "$tee $actual2"
@@ -137,6 +148,7 @@ check "$MH_TEST_DIR/Mail/inbox/4" "$actual" 'keep first'
 check "$MH_TEST_DIR/Mail/inbox/4" "$actual2" 'keep first'
 
 # check default
+start_test "default"
 cat >"$md"  <<EOF
 From test5@example.com qpipe R "$tee $actual"
 default 1 qpipe A "$tee $actual2"
@@ -147,6 +159,7 @@ check "$MH_TEST_DIR/Mail/inbox/5" "$actual" 'keep first'
 check "$MH_TEST_DIR/Mail/inbox/5" "$actual2" 'keep first'
 
 # check -addr
+start_test "-addr"
 cat >"$md"  <<EOF
 addr someaddress qpipe A "$tee $actual"
 EOF
@@ -156,6 +169,7 @@ run_prog $slocal -addr someaddress -maildelivery "$md" $mbox \
 check "$MH_TEST_DIR/Mail/inbox/6" "$actual" 'keep first'
 
 # check -addr with . in address
+start_test "-addr with . in address"
 cat >"$md"  <<EOF
 addr "first.last" qpipe A "$tee $actual"
 EOF
@@ -164,6 +178,7 @@ run_prog $slocal -addr 'first.last' \
 check "$MH_TEST_DIR/Mail/inbox/6" "$actual" 'keep first'
 
 # check -info
+start_test "-info"
 cat >"$md"  <<EOF
 * - qpipe A "\$(info) $actual"
 EOF
@@ -173,6 +188,7 @@ run_prog $slocal -info $tee -maildelivery "$md" $mbox \
 check "$MH_TEST_DIR/Mail/inbox/7" "$actual" 'keep first'
 
 # check -sender, which is compared with "source"
+start_test "-sender, which is compared with "source""
 cat >"$md"  <<EOF
 source somesender qpipe A "$tee $actual"
 EOF
@@ -182,6 +198,7 @@ run_prog $slocal -sender somesender -maildelivery "$md" $mbox \
 check "$MH_TEST_DIR/Mail/inbox/8" "$actual" 'keep first'
 
 # check -user
+start_test "-user"
 cat >"$md"  <<EOF
 * - qpipe A "$tee $actual"
 EOF
@@ -197,6 +214,7 @@ check "$MH_TEST_DIR/Mail/inbox/9" "$actual" 'keep first'
 # that there is one.
 
 # check -mailbox
+start_test "-mailbox"
 cat >"$md"  <<EOF
 EOF
 
@@ -207,6 +225,7 @@ rm -f "$actual"
 check "$MH_TEST_DIR/Mail/inbox/10" "$MH_TEST_DIR/Mail/inbox/11" 'keep first'
 
 # check -file
+start_test "-file"
 run_prog $slocal -mailbox "$actual" -maildelivery "$md" \
   -file "$MH_TEST_DIR"/Mail/inbox/1
 inc -file "$actual" -silent -truncate
@@ -214,6 +233,7 @@ rm -f "$actual"
 check "$MH_TEST_DIR/Mail/inbox/1" "$MH_TEST_DIR/Mail/inbox/11" 'keep first'
 
 # check -suppressdup
+start_test "-suppressdup"
 cat >"$md"  <<EOF
 * - qpipe A "$tee $actual"
 EOF
@@ -230,8 +250,10 @@ if [ -f "$actual" ]; then
 fi
 
 # check -nosuppressdup
+start_test "-nosuppressdup"
 run_prog $slocal -suppress -nosuppressdup -maildelivery "$md" $mbox \
   <"$MH_TEST_DIR"/Mail/inbox/2
 check "$MH_TEST_DIR/Mail/inbox/2" "$actual" 'keep first'
 
+finish_test
 exit ${failed:-0}

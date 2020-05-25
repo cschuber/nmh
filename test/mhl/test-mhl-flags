@@ -61,6 +61,7 @@ EOF
 
 
 # check nortrim (default), and that trailing whitespace in a
+start_test "nortrim (default), and that trailing whitespace in a"
 # component is trimmed when filtering blank lines
 cat >"$expected" <<EOF
 > There are two blank lines below.  And there is a trailing space: 
@@ -78,6 +79,7 @@ check "$expected" "$actual"
 
 
 # check rtrim
+start_test "rtrim"
 cat >"$expected" <<EOF
 > There are two blank lines below.  And there is a trailing space:
 > And another trailing space:
@@ -95,4 +97,5 @@ check "$expected" "$actual"
 
 rm -f "$MH_TEST_DIR/test.format"
 
+finish_test
 exit $failed

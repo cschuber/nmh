@@ -26,6 +26,7 @@ expected="$MH_TEST_DIR"/$$.expected
 actual="$MH_TEST_DIR"/$$.actual
 
 # check charset conversion
+start_test "charset conversion"
 msgfile=`mhpath new`
 msgnum=`basename $msgfile`
 cat >"$msgfile" <<'EOF'
@@ -62,6 +63,7 @@ EOF
 
 
 # check expansion of %{charset} by itself
+start_test "expansion of %{charset} by itself"
 msgfile=`mhpath new`
 msgnum=`basename $msgfile`
 cat >"$msgfile" <<'EOF'
@@ -93,6 +95,7 @@ check "$expected" "$actual" : check %{charset} by itself
 
 
 # check expansion of empty %{charset} by itself
+start_test "expansion of empty %{charset} by itself"
 msgfile=`mhpath new`
 omsgnum=$msgnum
 msgnum=`basename $msgfile`
@@ -131,6 +134,7 @@ mhshow-show-text/plain: charset=%{charset}; echo ${charset:+-I $charset}
 EOF
 
 # check expansion of embedded %{charset} with no text following
+start_test "expansion of embedded %{charset} with no text following"
 cat >"$expected" <<EOF
 [ Message inbox:$omsgnum ]
 Date:    Sun, 18 Dec 2005 00:52:39 +0100
@@ -148,6 +152,7 @@ check "$expected" "$actual" : check embedded %{charset} with no text
 
 
 # check expansion of empty embedded %{charset} with no text following
+start_test "expansion of empty embedded %{charset} with no text following"
 cat >"$expected" <<EOF
 [ Message inbox:$msgnum ]
 Date:    Sun, 18 Dec 2005 00:52:39 +0100
@@ -168,6 +173,7 @@ sed -e 's%\(mhshow-show-text/plain:.*\)%\1 file%' "$MH" >"$MH.new"
 mv -f "$MH.new" "$MH"
 
 # check expansion of embedded %{charset} with text following
+start_test "expansion of embedded %{charset} with text following"
 cat >"$expected" <<EOF
 [ Message inbox:$omsgnum ]
 Date:    Sun, 18 Dec 2005 00:52:39 +0100
@@ -185,6 +191,7 @@ check "$expected" "$actual" : check embedded %{charset} with text following
 
 
 # check expansion of empty embedded %{charset} with text following
+start_test "expansion of empty embedded %{charset} with text following"
 cat >"$expected" <<EOF
 [ Message inbox:$msgnum ]
 Date:    Sun, 18 Dec 2005 00:52:39 +0100
@@ -205,6 +212,7 @@ sed -e 's/charset/method/g' "$MH" >"$MH.new"
 mv -f "$MH.new" "$MH"
 
 # check parameter value quoting
+start_test "parameter value quoting"
 msgfile=`mhpath new`
 msgnum=`basename $msgfile`
 cat >"$msgfile" <<'EOF'
@@ -241,6 +249,7 @@ sed -e 's/method/unknown/g' "$MH" >"$MH.new"
 mv -f "$MH.new" "$MH"
 
 # check that unknown parameter is not expanded
+start_test "that unknown parameter is not expanded"
 msgfile=`mhpath new`
 msgnum=`basename $msgfile`
 cat >"$msgfile" <<'EOF'
@@ -278,6 +287,7 @@ mhshow-show-text/plain: true '%F' %F
 EOF
 
 # check parameter value quoting with text following
+start_test "parameter value quoting with text following"
 msgfile=`mhpath new`
 msgnum=`basename $msgfile`
 cat >"$msgfile" <<'EOF'
@@ -306,6 +316,7 @@ run_prog mhshow last >"$actual" 2>&1
 check "$expected" "$actual" : parameter value quoting with text following
 
 # check malicious parameter value quoting
+start_test "malicious parameter value quoting"
 msgfile=`mhpath new`
 msgnum=`basename $msgfile`
 cat >"$msgfile" <<'EOF'
@@ -1194,4 +1205,5 @@ EOF
 run_prog mhshow last >"$actual" 2>&1
 check "$expected" "$actual" : large file conversion to UTF-8
 
+finish_test
 exit $failed

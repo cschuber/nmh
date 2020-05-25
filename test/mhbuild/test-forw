@@ -34,6 +34,7 @@ expected="$MH_TEST_DIR/$$.expected"
 actual="$MH_TEST_DIR/$$.actual"
 
 # check mhbuild
+start_test "mhbuild"
 cat > $expected <<EOF
 To:
 cc:
@@ -73,6 +74,7 @@ check $expected $draft
 test ${failed:-0} -eq 0  &&  rm "$draftorig"
 
 # check mhbuild -rfc934
+start_test "mhbuild -rfc934"
 cat > $expected <<EOF
 To:
 cc:
@@ -110,4 +112,5 @@ run_prog mhbuild -rfc934 $draft
 check $expected $draft
 test ${failed:-0} -eq 0  &&  rm "$draftorig"
 
+finish_test
 exit $failed

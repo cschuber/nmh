@@ -37,6 +37,7 @@ actual_err="$MH_TEST_DIR/$$.actual_err"
 
 
 # check -help
+start_test "-help"
 cat >"$expected" <<EOF
 Usage: dp [switches] dates ...
   switches are:
@@ -52,6 +53,7 @@ run_prog "$dp" -help 2>&1 | sed '/^$/,$d' >"$actual"
 check "$expected" "$actual"
 
 # check -version
+start_test "-version"
 case `$dp -v` in
   dp\ --*) ;;
   *      ) printf '%s: dp -v generated unexpected output\n' "$0" >&2
@@ -59,12 +61,15 @@ case `$dp -v` in
 esac
 
 # check unknown switch
+start_test "unknown switch"
 run_test "$dp -nonexistent" 'dp: -nonexistent unknown'
 
 # check with no switches
+start_test "with no switches"
 run_test "$dp" 'dp: usage: dp [switches] dates ...'
 
 # check with one valid date
+start_test "with one valid date"
 cat >"$expected" <<EOF
 Sun, 01 Jul 2012 00:00:00
 EOF
@@ -73,6 +78,7 @@ run_prog $dp 'Sun Jul  1 2012' > "$actual" 2>&1
 check "$expected" "$actual"
 
 # check with two valid dates
+start_test "with two valid dates"
 cat >"$expected" <<EOF
 Sun, 01 Jul 2012 00:00:00
 Mon, 02 Jul 2012 00:00:00
@@ -82,6 +88,7 @@ run_prog $dp 'Sun Jul  1 2012' 'Mon Jul  2 2012' > "$actual" 2>&1
 check "$expected" "$actual"
 
 # check with invalid date
+start_test "with invalid date"
 cat >"$expected" <<EOF
 error: not a date
 EOF
@@ -94,6 +101,7 @@ check "$expected" "$actual"
 check "$expected_err" "$actual_err"
 
 # check -form
+start_test "-form"
 form="${MH_TEST_DIR}/Mail/dp-form"
 cat >"$form" <<'EOF'
 %(day{text})
@@ -108,6 +116,7 @@ check $expected $actual
 rm -f "$form"
 
 # check -format
+start_test "-format"
 cat >"$expected" <<EOF
 Sun
 EOF
@@ -116,6 +125,7 @@ run_prog $dp -format '%(day{text})' 'Jul 1 2012' >$actual 2>&1
 check $expected $actual
 
 # check -width
+start_test "-width"
 cat >"$expected" <<EOF
 Sun, 01 Jul 2012 
 EOF
@@ -124,4 +134,5 @@ run_prog $dp -width 17 'Sun Jul  1 2012' > "$actual" 2>&1
 check "$expected" "$actual"
 
 
+finish_test
 exit ${failed:-0}

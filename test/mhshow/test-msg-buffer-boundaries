@@ -21,6 +21,7 @@ expected="$MH_TEST_DIR/$$.expected"
 actual="$MH_TEST_DIR/$$.actual"
 
 # check a boundary condition in m_getfld():  its internal message
+start_test "a boundary condition in m_getfld():  its internal message"
 # buffer holds exactly up to the end of a header field body in a
 # message part
 msgfile=`mhpath new`
@@ -162,6 +163,7 @@ run_prog mhshow -part 1.1 -form mhl.null $msgnum >"$actual" 2>&1
 check "$expected" "$actual" : check number 1
 
 # check a boundary condition in m_getfld():  its internal message
+start_test "a boundary condition in m_getfld():  its internal message"
 # buffer holds exactly up to the end of a header field name in a
 # message part
 msgfile=`mhpath new`
@@ -303,6 +305,7 @@ run_prog mhshow -part 1.1 -form mhl.null $msgnum >"$actual" 2>&1
 check "$expected" "$actual" : check number 2
 
 # check a boundary condition in m_getfld():  its internal message
+start_test "a boundary condition in m_getfld():  its internal message"
 # buffer holds exactly up to the end of a message part boundary
 msgfile=`mhpath new`
 msgnum=`basename $msgfile`
@@ -445,4 +448,5 @@ run_prog mhshow -part 1.1 -form mhl.null $msgnum >"$actual" 2>&1
 check "$expected" "$actual" : check number 3
 
 
+finish_test
 exit $failed

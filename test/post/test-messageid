@@ -42,6 +42,7 @@ QUIT
 EOF
 
 # check invalid -messageid selection
+start_test "invalid -messageid selection"
 run_test "send -draft -messageid invalid" \
 "post: unsupported messageid \"invalid\"
 send: message not delivered to anyone"
@@ -111,6 +112,7 @@ test_messageid ()
 }
 
 # check -messageid localname (the default)
+start_test "-messageid localname (the default)"
 cat > "${MH_TEST_DIR}/Mail/draft" <<EOF
 From: Mr Nobody <nobody@example.com>
 To: Somebody Else <somebody@example.com>
@@ -136,6 +138,7 @@ EOF
 test_messageid localname "${testname}.expected"
 
 # check -messageid random
+start_test "-messageid random"
 cat > "${MH_TEST_DIR}/Mail/draft" <<EOF
 From: Mr Nobody <nobody@example.com>
 To: Somebody Else <somebody@example.com>
@@ -163,4 +166,5 @@ test_messageid random "${testname}.expected"
 
 rm -f ${MHMTSCONF}
 
+finish_test
 exit ${failed:-0}

@@ -19,13 +19,16 @@ setup_test
 check_exit '-eq 1' install-mh -
 
 # check with no options, with nmh already installed
+start_test "with no options, with nmh already installed"
 run_test "install-mh" \
     'install-mh: You already have an nmh profile, use an editor to modify it'
 
 # check -auto, with nmh already installed
+start_test "-auto, with nmh already installed"
 run_test "install-mh -auto" 'install-mh: invocation error'
 
 # check -check, with nmh already installed
+start_test "-check, with nmh already installed"
 run_test "install-mh -check" ''
 # make sure exit status is 0
 run_prog install-mh -check
@@ -35,6 +38,7 @@ run_test "echo $?" '0'
 rm -rf $MH_TEST_DIR/Mail
 
 # check -check, with nmh not installed
+start_test "-check, with nmh not installed"
 run_test "install-mh -check" ''
 # make sure exit status is 1
 set +e
@@ -43,6 +47,7 @@ run_test "echo $?" '1'
 set -e
 
 # check with no options, with nmh not installed.  Use canned
+start_test "with no options, with nmh not installed.  Use canned"
 # responses to install.
 installpath=`echo $MH_TEST_DIR/Mail | sed 's%^/%%'`
 echo "n
@@ -70,4 +75,5 @@ else
 fi
 
 
+finish_test
 exit $failed

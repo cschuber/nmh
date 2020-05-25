@@ -200,6 +200,7 @@ run_test "scan -width 120 +inbox 11" \
 	"  11+ 03/01 Mr Nobody          Who is on first?<<Abbott: Every dollar of it. And why not, the man's entitled to it. Cost"
 
 # check header field name with ':' character than lands on m_getfld() buffer
+start_test "header field name with ':' character than lands on m_getfld() buffer"
 cat >"$MH_TEST_DIR/mess" <<EOF
 Comments: The important characteristic of this message is that the 8193'rd
 Comments: byte is the ':' at the end of header field name.  That tests some
@@ -319,6 +320,7 @@ run_test 'scan -width 60 -file '"$MH_TEST_DIR/mess" \
 rm -f "$MH_TEST_DIR/mess"
 
 # check m_getfld() handling of fields with trailing whitespace
+start_test "m_getfld() handling of fields with trailing whitespace"
 # Even though header field names aren't supposed to have spaces (RFC
 # 28220, m_getfld () trims trailing whitespace from them.
 cat >`mhpath new` <<EOF
@@ -330,6 +332,7 @@ EOF
 run_test 'scan last' '  12  12/18 foo@example.edu    test'
 
 # check header field body with more than 511 characters
+start_test "header field body with more than 511 characters"
 cat >"$MH_TEST_DIR/mess" <<EOF
 Comments: The important characteristic of this message is that this header
           field body is more than 511 bytes long.  That tests the logic in
@@ -350,6 +353,7 @@ run_test 'scan -width 80 -file '"$MH_TEST_DIR"'/mess' \
 rm -f "$MH_TEST_DIR/mess"
 
 # check inc of message with header field body with more than 511 characters
+start_test "inc of message with header field body with more than 511 characters"
 cat >"$expected" <<EOF
 Comments: The important characteristic of this message is that this header
           field body is more than 511 bytes long.  That tests the logic in
@@ -386,6 +390,7 @@ check "$expected" `mhpath last`  ||  rmm last
 rm -f "$MH_TEST_DIR/mess"
 
 # check scan and inc of mbox with multiple messages
+start_test "scan and inc of mbox with multiple messages"
 echo y | packf -file "$MH_TEST_DIR/msgbox"
 run_test "scan -width 80 -file $MH_TEST_DIR/msgbox" \
 '   1  09/29 Test1              Testing message 1<<This is message number 1 >>
@@ -418,6 +423,7 @@ run_test "inc -width 80 -file $MH_TEST_DIR/msgbox -truncate" \
 rm -f  "$MH_TEST_DIR/msgbox"
 
 # check mbox with two blank lines between header and body
+start_test "mbox with two blank lines between header and body"
 cat >>"$MH_TEST_DIR/msgbox" <<EOF
 From 
 Date: Mon, 15 Apr 2013 21:02:12 -0500
@@ -434,6 +440,7 @@ run_test "inc -width 60 -file $MH_TEST_DIR/msgbox -truncate" \
 rm -f  "$MH_TEST_DIR/msgbox"
 
 # check inc (m_getfld, actually) of very, very, very short message
+start_test "inc (m_getfld, actually) of very, very, very short message"
 cat >>"$MH_TEST_DIR/msgbox" <<EOF
 From 
 Date: Tue, 6 Sep 2016 08:52:32 -0400
@@ -449,6 +456,7 @@ run_test "inc -width 50 -file $MH_TEST_DIR/msgbox -truncate" \
 rm -f  "$MH_TEST_DIR/msgbox"
 
 # check inc (m_getfld, actually) of very, very short message
+start_test "inc (m_getfld, actually) of very, very short message"
 cat >>"$MH_TEST_DIR/msgbox" <<EOF
 From 
 Date: Tue, 6 Sep 2016 08:52:32 -0400
@@ -464,6 +472,7 @@ run_test "inc -width 50 -file $MH_TEST_DIR/msgbox -truncate" \
 rm -f  "$MH_TEST_DIR/msgbox"
 
 # check inc (m_getfld, actually) of very short message
+start_test "inc (m_getfld, actually) of very short message"
 cat >>"$MH_TEST_DIR/msgbox" <<EOF
 From 
 Date: Tue, 6 Sep 2016 08:52:32 -0400
@@ -479,6 +488,7 @@ run_test "inc -width 50 -file $MH_TEST_DIR/msgbox -truncate" \
 rm -f  "$MH_TEST_DIR/msgbox"
 
 # check inc (m_getfld, actually) of short message
+start_test "inc (m_getfld, actually) of short message"
 cat >>"$MH_TEST_DIR/msgbox" <<EOF
 From 
 Date: Tue, 6 Sep 2016 08:52:32 -0400
@@ -494,4 +504,5 @@ run_test "inc -width 50 -file $MH_TEST_DIR/msgbox -truncate" \
 rm -f  "$MH_TEST_DIR/msgbox"
 
 
+finish_test
 exit ${failed:-0}
