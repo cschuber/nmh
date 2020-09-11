@@ -590,7 +590,8 @@ find_or_alloc_user_creds(struct user_creds user_creds[], const char *user)
     }
     if (user_creds->alloc == user_creds->len) {
         user_creds->alloc *= 2;
-        user_creds->creds = mh_xrealloc(user_creds->creds, user_creds->alloc);
+        user_creds->creds = mh_xrealloc(user_creds->creds,
+                                        user_creds->alloc * sizeof *user_creds->creds);
     }
     creds = user_creds->creds+user_creds->len;
     user_creds->len++;
@@ -625,7 +626,7 @@ load_creds(struct user_creds **result, FILE *fp, mh_oauth_ctx *ctx)
 
     struct user_creds *user_creds;
     NEW(user_creds);
-    user_creds->alloc = 4;
+    user_creds->alloc = 16;
     user_creds->len = 0;
     user_creds->creds = mh_xmalloc(user_creds->alloc * sizeof *user_creds->creds);
 

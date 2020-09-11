@@ -156,6 +156,65 @@ test_send
 
 check_creds
 
+# TEST
+start_test 'fill all slots in creds table'
+
+setup_draft
+
+fake_creds <<EOF
+access-nobody@example.com: test-access
+refresh-nobody@example.com: test-refresh
+expire-nobody@example.com: 2000000000
+access-nobody2@example.com: test-access
+refresh-nobody2@example.com: test-refresh
+expire-nobody2@example.com: 2000000000
+access-nobody3@example.com: test-access
+refresh-nobod3y@example.com: test-refresh
+expire-nobody3@example.com: 2000000000
+access-nobody4@example.com: test-access
+refresh-nobody4@example.com: test-refresh
+expire-nobody4@example.com: 2000000000
+access-nobody5@example.com: test-access
+refresh-nobody5@example.com: test-refresh
+expire-nobody5@example.com: 2000000000
+access-nobody6@example.com: test-access
+refresh-nobody6@example.com: test-refresh
+expire-nobody6@example.com: 2000000000
+access-nobody7@example.com: test-access
+refresh-nobody7@example.com: test-refresh
+expire-nobody7@example.com: 2000000000
+access-nobody8@example.com: test-access
+refresh-nobody8@example.com: test-refresh
+expire-nobody8@example.com: 2000000000
+access-nobody9@example.com: test-access
+refresh-nobody9@example.com: test-refresh
+expire-nobody9@example.com: 2000000000
+access-nobody10@example.com: test-access
+refresh-nobody10@example.com: test-refresh
+expire-nobody10@example.com: 2000000000
+access-nobody11@example.com: test-access
+refresh-nobody11@example.com: test-refresh
+expire-nobody11@example.com: 2000000000
+access-nobody12@example.com: test-access
+refresh-nobody12@example.com: test-refresh
+expire-nobody12@example.com: 2000000000
+access-nobody13@example.com: test-access
+refresh-nobody13@example.com: test-refresh
+expire-nobody13@example.com: 2000000000
+access-nobody14@example.com: test-access
+refresh-nobody14@example.com: test-refresh
+expire-nobody14@example.com: 2000000000
+access-nobody15@example.com: test-access
+refresh-nobody15@example.com: test-refresh
+expire-nobody15@example.com: 2000000000
+access-nobody16@example.com: test-access
+refresh-nobody16@example.com: test-refresh
+expire-nobody16@example.com: 2000000000
+EOF
+
+start_fakesmtp
+run_test "send -draft -server 127.0.0.1 -port ${smtp_port} -sasl -saslmech xoauth2 -authservice test -user nobody@example.com"
+
 #
 # fail cases
 #
