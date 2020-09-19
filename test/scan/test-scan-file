@@ -69,7 +69,7 @@ do
     destfile=$MH_TEST_DIR/Maildir/$subdir/$timepart.P$$.testhost$info
     mv "$MH_TEST_DIR/Mail/inbox/$i" "$destfile"
     # Maildir sorts by mtime, so make sure all times are unique
-    touch -c -m --date="@$timepart" "$destfile"
+    touch -c -m -d "2019-09-07T16:00:$i" "$destfile"
 done
 
 # should be empty now; remove it to make sure "scan -file" is not using it
