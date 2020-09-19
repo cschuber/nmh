@@ -17,6 +17,8 @@ all/mail/nomail ]
 all/mail/nomail ]
 .RB [ \-host
 .IR hostname ]
+.RB [ \-port
+.IR portname/number ]
 .RB [ \-user
 .IR username ]
 .RB [ \-sasl " | " \-nosasl ]
@@ -91,7 +93,10 @@ the option \*(lqpophost:\*(rq is set in the mts configuration file
 switch is given,
 .B msgchk
 will query this POP service host as to the status of
-mail waiting.
+mail waiting.  The
+.B \-port
+switch specifies the port name or number used to connect to the POP
+server.  If unspecified, the default is \*(lqpop3\*(rq.
 .PP
 To specify a username for authentication with the POP server, use the
 .B \-user
