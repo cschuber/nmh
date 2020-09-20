@@ -88,7 +88,6 @@ extern int icaldebug;
 int icalparse (void);
 extern vevent vevents;
 int icallex (void);
-extern int parser_status;
 
 /* And this is for the icalendar scanner. */
 extern YYSTYPE icallval;

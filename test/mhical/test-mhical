@@ -950,7 +950,7 @@ start_test "invalid line folding"
 
 cat >"$expected" <<'EOF'
 Summary: test
-Description: this file does not end with a newline
+Description: test of invalid line folding
 At: Sun, 14 May 2017 13:00 +0000
 To: Sun, 14 May 2017 14:00
 EOF
@@ -969,8 +969,8 @@ DTSTAMP:20170514T122300Z
 DTSTART:20170514T130000Z
 DTEND:20170514T140000Z
 SUMMARY:test
-DESCRIPTION:this file does not end with a newline
-and this line is not folded,
+DESCRIPTION:test of invalid line folding
+where this line is not folded,
 END:VEVENT
 END:VCALENDAR" | TZ=UTC mhical >"$actual" 2>"$actual_err"
 set -e
@@ -980,7 +980,7 @@ check "$expected_err" "$actual_err"
 
 # check null input
 start_test "null input"
-check_exit '-eq 0' mhical </dev/null
+check_exit '-eq 1' mhical </dev/null
 
 
 # check timezone boundary at transition from daylight saving time, -2SU

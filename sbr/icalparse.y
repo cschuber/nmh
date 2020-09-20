@@ -355,8 +355,7 @@ icalerror (const char *error)
         } else {
             inform ("%s", error);
         }
-        parser_status = -1;
-        return -1;
+        return 1;
     }
 
     return 0;  /* The return value isn't used anyway. */

@@ -68,7 +68,6 @@ DEFINE_SWITCH_ARRAY(MHICAL, switches);
 #undef X
 
 vevent vevents = { NULL, NULL, NULL};
-int parser_status = 0;
 
 int
 main (int argc, char *argv[])
@@ -88,6 +87,7 @@ main (int argc, char *argv[])
     vevent *v, *nextvevent;
     char *form = "mhical.24hour", *format = NULL;
     char **argp, **arguments, *cp;
+    int parser_status = 0;
 
     icaldebug = 0;  /* Global provided by bison (with name-prefix "ical"). */
 
@@ -207,7 +207,7 @@ main (int argc, char *argv[])
 
     vevents.last = &vevents;
     /* vevents is accessed by parser as global. */
-    icalparse ();
+    parser_status += icalparse();
 
     for (v = &vevents; v; v = nextvevent) {
         if (! unfold  &&  v != &vevents  &&  v->contentlines  &&
