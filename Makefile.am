@@ -1182,6 +1182,7 @@ sbr_libmh_a_LIBADD = $(LIBOBJS)
 ## Need explicit dependency so that YACC is run before LEX.
 ##
 sbr/icalendar.c: sbr/icalparse.c
+uip/mhical.c: sbr/icalparse.h
 
 ##
 ## Because these files use the definitions in the libmh rule below,
