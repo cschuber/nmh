@@ -4,14 +4,10 @@
  * providers implement XOAUTH2 or some similar OAuth-based SMTP authentication
  * protocol, it should be simple to extend this.
  *
- * OAuth  https://tools.ietf.org/html/rfc6749
- * SMTP   https://developers.google.com/gmail/xoauth2_protocol
- * POP3   http://googleappsdeveloper.blogspot.com/2014/10/updates-on-authentication-for-gmail.html
+ * OAuth        https://tools.ietf.org/html/rfc6749
+ * XOAUTH2      https://developers.google.com/gmail/imap/xoauth2-protocol
  *
- * Presumably [2] should document POP3 and that is an over-sight.  As it stands,
- * that blog post is the closest we have to documentation.
- *
- * According to [1] 2.1 Client Types, this is a "native application", a
+ * According to RFC6749 2.1 Client Types, this is a "native application", a
  * "public" client.
  *
  * To summarize the flow:
