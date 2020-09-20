@@ -955,10 +955,6 @@ At: Sun, 14 May 2017 13:00 +0000
 To: Sun, 14 May 2017 14:00
 EOF
 
-cat >"$expected_err" <<'EOF'
-mhical: syntax error, unexpected ICAL_COMMA, expecting ICAL_COLON after " this line is not folded"
-EOF
-
 set +e
 printf %s \
 "BEGIN:VCALENDAR
@@ -975,7 +971,8 @@ END:VEVENT
 END:VCALENDAR" | TZ=UTC mhical >"$actual" 2>"$actual_err"
 set -e
 check "$expected" "$actual"
-check "$expected_err" "$actual_err"
+grep "mhical: syntax error.*this line is not folded\"" "$actual_err" >/dev/null
+test `wc -l <"$actual_err"` -eq 1
 
 
 # check null input
