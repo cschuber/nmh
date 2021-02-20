@@ -536,7 +536,7 @@ to process drafts which are MIME composition files.
 .RS 5
 This program is used to refile or link a message to another folder.
 It is used by
-.B send
+.B post
 to file a copy of a message into a folder given
 by a \*(lqFcc:\*(rq field.  It is used by the draft folder facility in
 .BR comp ,
@@ -1037,7 +1037,8 @@ Public sequences for <folder>.
 .IR mhshow (1),
 .IR mhstore (1),
 .IR mh-sequence (5),
-.IR nmh (7)
+.IR nmh (7),
+.IR post (8)
 .SH BUGS
 There is some question as to what kind of arguments should be placed
 in the profile as options.  In order to provide a clear answer, recall
