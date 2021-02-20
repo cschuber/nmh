@@ -46,6 +46,13 @@ start_test 'scan file'
 run_prog scan -file "$MH_TEST_DIR/spoolfile" -width 80 >"$actual" || exit 1
 check "$expected" "$actual" 'keep first'
 
+## Test that scanning file "-" reads from stdin
+
+start_test 'scan file stdin'
+
+run_prog scan -file - <"$MH_TEST_DIR/spoolfile" -width 80 >"$actual" || exit 1
+check "$expected" "$actual" 'keep first'
+
 test -z "$MH_TEST_NOCLEANUP" && rm -f "$MH_TEST_DIR/spoolfile"
 
 ## Convert the test inbox folder into a Maildir directory
