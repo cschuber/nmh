@@ -107,6 +107,7 @@ TESTS = \
     test/mhshow/test-binary \
     test/mhshow/test-charset \
     test/mhshow/test-cte-binary \
+    test/mhshow/test-eof-newline \
     test/mhshow/test-exec \
     test/mhshow/test-markers \
     test/mhshow/test-msg-buffer-boundaries \

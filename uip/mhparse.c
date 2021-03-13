@@ -1169,6 +1169,15 @@ InitMultiPart (CT ct)
 		bufp[gotlen - 1] = '\0';
 	}
 
+        /*
+         * Another lame hack: if this line is at the end of the part and doesn't
+         * end with a newline, at one to the buffer.  This allows the parser to
+         * handle files that don't end with a newline.
+         */
+        if (pos == last  &&  bufp[strlen(bufp)-1] != 0x0a) {
+            bufp = add("\n", bufp);
+        }
+
 	if (inout) {
 	    if (strcmp (bufp + 2, m->mp_start))
 		continue;
