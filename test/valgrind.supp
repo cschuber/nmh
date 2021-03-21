@@ -52,6 +52,14 @@
 }
 
 {
+   iconv_open on Fedora 33
+   Memcheck:Addr16
+   fun:strncmp
+   ...
+   fun:iconv_open
+}
+
+{
    dyld libraryLocator on MacOS 10.11.6 (El Capitan)
    Memcheck:Cond
    fun:vbcmp
