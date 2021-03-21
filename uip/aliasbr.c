@@ -168,15 +168,20 @@ alias (char *file)
     char *bp, *cp, *pp;
     char lc, *ap;
     struct aka *ak = NULL;
+    bool allocated_file = false;
     FILE *fp;
 
     if (*file != '/'
-            && !has_prefix(file, "./") && !has_prefix(file, "../"))
+            && !has_prefix(file, "./") && !has_prefix(file, "../")) {
 	file = etcpath (file);
+	allocated_file = true;
+    }
     if ((fp = fopen (file, "r")) == NULL) {
 	akerrst = file;
 	return AK_NOFILE;
     }
+
+    if (allocated_file) free (file);
 
     while (vfgets (fp, &ap) == OK) {
 	bp = ap;
