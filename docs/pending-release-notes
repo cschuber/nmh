@@ -59,3 +59,4 @@ BUG FIXES
 - Fixed file descriptor leak in mhfixmsg when run on multiple input files.
 - Fixed memory corruption in post(1) and inc(1) when using XOAUTH2,
   with 4 or more entries in the oauth-authservice file.
+- Added alias expansion to From: address for use by sendfrom.

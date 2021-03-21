@@ -26,11 +26,13 @@
 #include "sbr/pidstatus.h"
 #include "sbr/arglist.h"
 #include "sbr/error.h"
+#include "h/addrsbr.h"
 #include "h/fmt_scan.h"
 #include "h/fmt_compile.h"
 #include "h/signals.h"
 #include <setjmp.h>
 #include <fcntl.h>
+#include "h/aliasbr.h"
 #include "h/mime.h"
 #include "h/tws.h"
 #include "h/utils.h"
@@ -49,6 +51,7 @@
 #include "sbr/m_mktemp.h"
 #include "sbr/message_id.h"
 
+static int expand_alias(const char *, const char **addr, const char **host, const char **);
 #ifdef OAUTH_SUPPORT
 static int setup_oauth_params(char *[], int *, const char *, const char **);
 #endif /* OAUTH_SUPPORT */
@@ -519,12 +522,32 @@ oops:
 static void
 handle_sendfrom(char **vec, int *vecp, char *draft, const char *auth_svc)
 {
-    const char *addr, *host;
+    const char *addr = NULL, *host;
     const char *message;
 
     /* Extract address and host from From: header line in draft. */
     if (get_from_header_info(draft, &addr, &host, &message) != OK) {
-        adios(draft, "%s", message);
+        if (addr  &&  strchr(addr, '@')) {
+            free((void *) addr);
+            free((void *) host);
+            adios(NULL, "%s for %s", message, addr);
+        } else {
+            /* Unable to extract address and host.  Try interpreting the
+               address as an alias. */
+            char *alias = strdup(addr);
+            free((void *) addr);
+            free((void *) host);
+            if (expand_alias(alias, &addr, &host, &message)) {
+                adios(NULL, "%s %s", message, alias);
+            }
+
+            if (! strcmp(alias, addr)) {
+                /* The address was not an alias that we ere able to expand. */
+                free(alias);
+                adios(NULL, "%s for %s", message, addr);
+            }
+            free(alias);
+        }
     }
 
     /* Merge in any address or host specific switches to post(1) from profile. */
@@ -552,6 +575,51 @@ handle_sendfrom(char **vec, int *vecp, char *draft, const char *auth_svc)
             }
         }
     }
+}
+
+
+/* Return address that an alias expands to, along with the host part. */
+static
+int
+expand_alias(const char *an_alias, const char **addr, const char **host, const char **message)
+{
+    struct mailname *mp = NULL;
+    int count = 0;
+    char error[BUFSIZ], *cp;
+
+    /*
+     * check for "Aliasfile:" profile entry
+     */
+    if ((cp = context_find ("Aliasfile"))) {
+        char *dp = NULL, **ap;
+
+        for (ap = brkstring(dp = mh_xstrdup(cp), " ", "\n"); ap && *ap; ap++) {
+            alias(*ap);
+        }
+        free(dp);
+    }
+
+    *addr = akvalue ((char *) an_alias);  /* do mh alias substitution */
+    /* There should only be one From: alias.  But call getname() as usual
+       until it returns NULL to reset its internal state. */
+    while ((cp = getname (*addr))) {
+        if (!(mp = getm (cp, NULL, 0, error, sizeof(error)))) {
+            admonish(cp, "%s", error);
+            continue;
+        }
+        if (mp->m_host) {
+            *host = strdup(mp->m_host);
+            ++count;
+            mnfree(mp);
+        } else {
+            *message = "unable to expand alias";
+            mnfree(mp);
+            return NOTOK;
+        }
+    }
+
+    *message = "only one sender address allowed";
+    return count == 1 ? OK : NOTOK;
 }
 
 
