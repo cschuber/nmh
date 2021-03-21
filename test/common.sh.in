@@ -244,7 +244,7 @@ check() {
 #### variable (to anything) so run_* will use valgrind.
 if [ "${NMH_VALGRIND}"  -a  -z "${NMH_TEST_PREFIX}" ]; then
   #### Need absolute path to valgrind.supp in case the test does a cd.
-  NMH_TEST_PREFIX="valgrind --quiet --error-exitcode=1 \
+  NMH_TEST_PREFIX="valgrind --quiet --error-exitcode=1 --num-callers=500 \
                      --suppressions=`cd ${srcdir} && pwd`/test/valgrind.supp"
 fi
 
