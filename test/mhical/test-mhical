@@ -973,6 +973,7 @@ set -e
 check "$expected" "$actual"
 grep "mhical: syntax error.*this line is not folded\"" "$actual_err" >/dev/null
 test `wc -l <"$actual_err"` -eq 1
+rm -f "$actual_err"
 
 
 # check null input
