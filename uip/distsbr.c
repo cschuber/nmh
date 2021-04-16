@@ -79,7 +79,7 @@ distout (char *drft, char *msgnam, char *backup)
 		if (state == FLD)
 		    resent = add (":", add (name, resent));
 		resent = add (buffer, resent);
-		fprintf (ofp, "%s: %s", name, buffer);
+		fprintf (ofp, "%s:%s", name, buffer);
 		while (state == FLDPLUS) {
 		    buffersz = sizeof buffer;
 		    state = m_getfld2(&gstate, name, buffer, &buffersz);
@@ -178,7 +178,7 @@ ready_msg (char *msgnam)
 	    case FLDPLUS: 
 		if (uprf (name, "resent"))
 		    fprintf (ofp, "Prev-");
-		fprintf (ofp, "%s: %s", name, buffer);
+		fprintf (ofp, "%s:%s", name, buffer);
 		while (state == FLDPLUS) {
 		    buffersz = sizeof buffer;
 		    state = m_getfld2(&gstate, name, buffer, &buffersz);

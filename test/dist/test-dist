@@ -470,5 +470,38 @@ EOF
 test_dist +inbox 1 -noedit -from 'Mr Føo Bar <resent-from@example.com>' \
 	  -to 'Mr Nobodÿ <resent-to@example.com>' -fcc +outbox
 
+# check that mhdraft is assembled properly
+start_test "check mhdraft assembly"
+
+cat >"$expected" <<EOF
+From: Test1 <test1@example.com>
+To: Some User <user@example.com>
+Date: Fri, 29 Sep 2006 00:00:00
+Message-Id: 1@test.nmh
+Subject: Testing message 1
+Resent-From: resender@example.com
+Resent-To: recipient@example.com
+Resent-cc:
+Resent-fcc:
+
+This is message number 1
+EOF
+
+#### Capture $mhdraft in a postproc.  Then check to see that it doesn't
+#### have, for example, extra spaces in the header fields.
+postproc="${MH_TEST_DIR}/Mail/postproc"
+cat >"$postproc" <<EOF
+cp \$mhdraft $actual
+EOF
+chmod +x "$postproc"
+sed -e "s%\(postproc:\).*%\1 $postproc%" "$MH" >"$MH.new"
+mv -f "$MH.new" "$MH"
+
+printf 'send\n' | run_prog dist +inbox 1 -noedit -from 'resender@example.com' \
+    -to 'recipient@example.com' >/dev/null
+
+check "$actual" "$expected"
+
+
 finish_test
 exit ${failed:-0}
