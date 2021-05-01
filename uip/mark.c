@@ -41,6 +41,8 @@
     X("nopublic", 0, NPUBLSW) \
     X("zero", 0, ZEROSW) \
     X("nozero", 0, NZEROSW) \
+    X("empty", 0, EMPTYSW) \
+    X("noempty", 0, NEMPTYSW) \
     X("version", 0, VERSIONSW) \
     X("help", 0, HELPSW) \
     X("debug", -5, DEBUGSW) \
@@ -69,6 +71,7 @@ main (int argc, char **argv)
     bool listsw = false;
     int publicsw = -1;
     bool zerosw = false;
+    bool emptysw = true;
     int msgnum;
     unsigned int seqp = 0;
     char *cp, *maildir, *folder = NULL, buf[BUFSIZ];
@@ -143,6 +146,13 @@ main (int argc, char **argv)
 		continue;
 	    case NZEROSW: 
 		zerosw = false;
+		continue;
+
+	    case EMPTYSW: 
+		emptysw = true;
+		continue;
+	    case NEMPTYSW: 
+		emptysw = false;
 		continue;
 	    }
 	}
@@ -222,12 +232,12 @@ main (int argc, char **argv)
     /* Listing messages in sequences */
     if (listsw) {
 	if (seqp) {
-	    /* print the sequences given */
 	    for (seqp = 0; seqp < svector_size (seqs); seqp++)
-		seq_print (mp, svector_at (seqs, seqp));
+		seq_print_msgs (mp, -1, svector_at (seqs, seqp), emptysw);
 	} else {
-	    /* else print them all */
-	    seq_printall (mp);
+	    size_t i;
+	    for (i = 0; i < svector_size (mp->msgattrs); i++)
+		seq_print_msgs (mp, i, svector_at (mp->msgattrs, i), emptysw);
 	}
 
 	/* print debugging info about SELECTED messages */
