@@ -4,5 +4,4 @@
  * COPYRIGHT file in the root directory of the nmh distribution for
  * complete copyright information. */
 
-void seq_printall(struct msgs *);
-void seq_print(struct msgs *, char *);
+int seq_print_msgs (struct msgs *, int i, char *, bool, bool);

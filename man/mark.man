@@ -1,4 +1,4 @@
-.TH MARK %manext1% 2013-03-31 "%nmhversion%"
+.TH MARK %manext1% 2021-05-01 "%nmhversion%"
 .
 .\" %nmhwarning%
 .
@@ -14,11 +14,11 @@ mark \- manipulate nmh message sequences
 .RI [ msgs ]
 .RB [ \-sequence
 .I name
-\&...]
-.RB [ \-add " | " \-delete ]
-.RB [ \-list ]
+.IR \&... ]
+.RB [ \-add " | " \-delete " | " \-list ]
 .RB [ \-public " | " \-nopublic ]
 .RB [ \-zero " | " \-nozero ]
+.RB [ \-empty " | " \-noempty ]
 .ad
 .SH DESCRIPTION
 The
@@ -69,6 +69,10 @@ should be initialized to the indicated messages, while
 .B \-add
 .B \-nozero
 means that each sequence should be appended to by the indicated messages.
+The
+.B \-empty
+switch does not affect the operation of
+.BR \-add .
 .PP
 The
 .B \-delete
@@ -99,6 +103,10 @@ As expected, the command
 .B \-delete
 all\*(rq empties the sequence \*(lqfoo\*(rq, and therefore removes
 that sequence from the current folder's list of sequences.
+The
+.B \-empty
+switch does not affect the operation of
+.BR \-delete .
 .PP
 When creating or modifying sequences, you can specify the switches
 .B \-public
@@ -127,18 +135,18 @@ The
 .B \-list
 switch tells
 .B mark
-to list both the sequences defined
-for the folder and the messages associated with those sequences.
-.B mark
-will list the name of each sequence given by
+to list all sequences and the messages associated with them.  The output
+can be limited to just certain sequences (with
 .B \-sequence
-.I name
-and the messages associated with that sequence.  If the
-sequence is private, this will also be indicated.  If no sequence is
-specified by the
-.B \-sequence
-switch, then all sequences for this folder
-will be listed.  The
+switches) and/or messages (with
+.I msgs
+arguments).  The
+.B \-noempty
+switch will suppress sequences which would be listed as empty, either
+because they actually are empty, or because they don't include any
+messages specified by
+.IR msgs .
+The
 .B \-zero
 switch does not affect the operation of
 .BR \-list .
