@@ -30,3 +30,8 @@ def test_get_addr_spec():
     assert 'test@example.com' == RFC5322addr.get_addr_spec('<  test@example.com  >')
     assert 'test@example.com' == RFC5322addr.get_addr_spec('Display Name <test@example.com>')
     assert 'test@example.com' == RFC5322addr.get_addr_spec('"Display,Name" <test@example.com>')
+    assert 'test@example.com' == RFC5322addr.get_addr_spec('"Display.Name" <test@example.com>')
+    assert 'test@example.com' == RFC5322addr.get_addr_spec('"Display. Name" <test@example.com>')
+    # These require support of obs-phrase:
+    # assert 'test@example.com' == RFC5322addr.get_addr_spec('Display.Name <test@example.com>')
+    # assert 'test@example.com' == RFC5322addr.get_addr_spec('Display. Name <test@example.com>')
