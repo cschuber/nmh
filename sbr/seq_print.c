@@ -15,10 +15,9 @@
  * Print the sequence membership for the selected messages, for just
  * the given sequence.
  */
-#define CONCISE 1  // turn "8 9 10 11" into "8-11"
 
 int
-seq_print_msgs (struct msgs *mp, int i, char *seqname, bool emptyok)
+seq_print_msgs (struct msgs *mp, int i, char *seqname, bool emptyok, bool rangeok)
 {
     int msgnum, r;
     int found = 0;
@@ -53,12 +52,12 @@ seq_print_msgs (struct msgs *mp, int i, char *seqname, bool emptyok)
 	    }
 
 	    printf(" %d", msgnum);
-	    if (CONCISE) {
+	    if (rangeok) {  /* turn "8 9 10 11" into "8-11" */
 		r = msgnum;  /* start of range? */
 		for (++msgnum; msgnum <= mp->hghsel &&
 		    (is_selected (mp, msgnum) && in_sequence (mp, i, msgnum));
 			msgnum++)
-		    /* spin */ ;
+		    /* loop to end of range */ ;
 
 		if (msgnum - r > 1)
 		    printf("-%d", msgnum - 1);
