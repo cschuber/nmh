@@ -19,6 +19,7 @@ mark \- manipulate nmh message sequences
 .RB [ \-public " | " \-nopublic ]
 .RB [ \-zero " | " \-nozero ]
 .RB [ \-empty " | " \-noempty ]
+.RB [ \-range " | " \-norange ]
 .ad
 .SH DESCRIPTION
 The
@@ -135,17 +136,37 @@ The
 .B \-list
 switch tells
 .B mark
-to list all sequences and the messages associated with them.  The output
+to list all sequences, and the messages associated with them.  The output
 can be limited to just certain sequences (with
 .B \-sequence
 switches) and/or messages (with
 .I msgs
-arguments).  The
+arguments).  
+Normally,
+.B \-list
+will show all
+sequences associated with the folder, or all sequences given with
+.BR \-sequence .
+Using
 .B \-noempty
-switch will suppress sequences which would be listed as empty, either
+will suppress any which would show as empty, whether
 because they actually are empty, or because they don't include any
-messages specified by
-.IR msgs .
+of the given
+.IR msgs ,
+or because they've been specified with
+.B \-sequence
+but don't exist.
+.RB ( \-empty
+is the default.)
+With the default
+.B \-range
+switch,
+.B mark
+will compress consecutive runs of message numbers to save space.  That
+is, "3\ 4\ 5\ 6" will be shown as the range "3-6".
+With
+.BR \-norange ,
+lists will be fully enumerated.
 The
 .B \-zero
 switch does not affect the operation of

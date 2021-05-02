@@ -58,6 +58,12 @@ run_test 'uip/mark -l -noempty' \
 even: 8 10
 big: 8-10'
 
+run_test 'uip/mark -l -s big' \
+    'big: 8-10'
+
+run_test 'uip/mark -l -s big -norange' \
+    'big: 8 9 10'
+
 run_test 'uip/mark -l -s big -s cur' \
     'big: 8-10'
 

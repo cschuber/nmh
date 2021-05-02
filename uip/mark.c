@@ -43,6 +43,8 @@
     X("nozero", 0, NZEROSW) \
     X("empty", 0, EMPTYSW) \
     X("noempty", 0, NEMPTYSW) \
+    X("range", 0, RANGESW) \
+    X("norange", 0, NRANGESW) \
     X("version", 0, VERSIONSW) \
     X("help", 0, HELPSW) \
     X("debug", -5, DEBUGSW) \
@@ -72,6 +74,7 @@ main (int argc, char **argv)
     int publicsw = -1;
     bool zerosw = false;
     bool emptysw = true;
+    bool rangesw = true;
     int msgnum;
     unsigned int seqp = 0;
     char *cp, *maildir, *folder = NULL, buf[BUFSIZ];
@@ -154,6 +157,13 @@ main (int argc, char **argv)
 	    case NEMPTYSW: 
 		emptysw = false;
 		continue;
+
+	    case RANGESW: 
+		rangesw = true;
+		continue;
+	    case NRANGESW: 
+		rangesw = false;
+		continue;
 	    }
 	}
 	if (*cp == '+' || *cp == '@') {
@@ -233,11 +243,13 @@ main (int argc, char **argv)
     if (listsw) {
 	if (seqp) {
 	    for (seqp = 0; seqp < svector_size (seqs); seqp++)
-		seq_print_msgs (mp, -1, svector_at (seqs, seqp), emptysw);
+		seq_print_msgs (mp, -1, svector_at (seqs, seqp),
+		    emptysw, rangesw);
 	} else {
 	    size_t i;
 	    for (i = 0; i < svector_size (mp->msgattrs); i++)
-		seq_print_msgs (mp, i, svector_at (mp->msgattrs, i), emptysw);
+		seq_print_msgs (mp, i, svector_at (mp->msgattrs, i),
+		    emptysw, rangesw);
 	}
 
 	/* print debugging info about SELECTED messages */
