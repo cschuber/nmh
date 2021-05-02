@@ -1,5 +1,6 @@
 # Not removed by any Makefile target:
 .DS_Store
+__pycache__
 /atags
 /docs/doxygen/
 /etags

@@ -551,6 +551,21 @@ dist_docs_contrib_SCRIPTS = \
 
 dist_docs_contrib_DATA = docs/contrib/replaliases
 
+## for now, until this app is approved by Google
+docs_gmailapisdir = $(docdir)/contrib/gmailapis
+dist_docs_gmailapis_SCRIPTS = \
+    docs/contrib/gmailapis/ginc.py \
+    docs/contrib/gmailapis/glogin.py \
+    docs/contrib/gmailapis/gpost.py \
+    docs/contrib/gmailapis/gpost_test.py \
+    docs/contrib/gmailapis/nmh_addr.py \
+    docs/contrib/gmailapis/nmh_addr_test.py \
+    docs/contrib/gmailapis/nmh_gmailapi_prereqs.sh \
+    docs/contrib/gmailapis/nmh_gmailapi.py \
+    docs/contrib/gmailapis/RFC5322addr.py \
+    docs/contrib/gmailapis/RFC5322addr_test.py
+dist_docs_gmailapis_DATA = docs/contrib/gmailapis/README.md
+
 ##
 ## Our man pages
 ##
