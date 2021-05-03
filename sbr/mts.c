@@ -33,9 +33,6 @@ static void mts_read_conf_file (FILE *fp);
  * something like ".mail".
  */
 
-/*
- * nmh mail transport interface customization file
- */
 static char *localname   = "";
 static char *localdomain = "";
 static char *systemname  = "";
