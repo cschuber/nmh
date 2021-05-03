@@ -11,6 +11,7 @@
 #include "brkstring.h"
 #include "ambigsw.h"
 #include "print_sw.h"
+#include "utils.h"
 
 #ifdef READLINE_SUPPORT
 #include <readline/readline.h>
@@ -106,7 +107,7 @@ nmh_command_generator(const char *text, int state)
 	buf[sizeof(buf) - 1] = '\0';
 	p = *brkstring(buf, " ", NULL);
 	if (strncmp(p, text, len) == 0)
-            return strdup(p);
+            return mh_xstrdup(p);
     }
 
     return NULL;

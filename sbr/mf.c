@@ -162,7 +162,7 @@ getadrx (const char *addrs, int eai)
     err[0] = 0;
 
     if (dp == NULL) {
-	dp = cp = strdup (FENDNULL(addrs));
+	dp = cp = mh_xstrdup(FENDNULL(addrs));
 	glevel = 0;
     } else if (cp == NULL) {
         free (dp);
@@ -227,7 +227,7 @@ again: ;
     switch (my_lex (buffer)) {
 	case LX_ATOM: 
 	case LX_QSTR: 
-	    pers = strdup (buffer);
+	    pers = mh_xstrdup(buffer);
 	    break;
 
 	case LX_SEMI: 
@@ -577,7 +577,7 @@ my_lex (char *buffer)
 		    if (--i < 0) {
 			*bp = 0;
 			note = note ? add (buffer, add (" ", note))
-			    : strdup (buffer);
+			    : mh_xstrdup(buffer);
 			return my_lex (buffer);
 		    }
 	    }

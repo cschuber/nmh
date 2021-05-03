@@ -71,7 +71,7 @@ mime_type(const char *file_name)
 	    for (np = m_defs; np; np = np->n_next) {
 		if (strncasecmp(np->n_name, "mhshow-suffix-", 14) == 0 &&
 		    strcasecmp(p, FENDNULL(np->n_field)) == 0) {
-		    content_type = strdup(np->n_name + 14);
+		    content_type = mh_xstrdup(np->n_name + 14);
 		    break;
 		}
 	    }
@@ -103,7 +103,7 @@ mime_type(const char *file_name)
 	    fclose(fp);
 
 	    content_type =
-		strdup(binary ? "application/octet-stream" : "text/plain");
+		mh_xstrdup(binary ? "application/octet-stream" : "text/plain");
 	}
     }
 
@@ -166,6 +166,6 @@ get_file_info(const char *proc, const char *file_name)
     if ((needle = strpbrk(info, "\n\r")))
         *needle = '\0';
 
-    return strdup(info);
+    return mh_xstrdup(info);
 }
 #endif /* MIMETYPEPROC */
