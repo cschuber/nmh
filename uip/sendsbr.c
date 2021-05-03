@@ -538,7 +538,7 @@ handle_sendfrom(char **vec, int *vecp, char *draft, const char *auth_svc)
         } else {
             /* Unable to extract address and host.  Try interpreting the
                address as an alias. */
-            char *alias = strdup(addr);
+            char *alias = mh_xstrdup(addr);
             free((void *) addr);
             free((void *) host);
             if (expand_alias(alias, &addr, &host, &message)) {
@@ -612,7 +612,7 @@ expand_alias(const char *an_alias, const char **addr, const char **host, const c
             continue;
         }
         if (mp->m_host) {
-            *host = strdup(mp->m_host);
+            *host = mh_xstrdup(mp->m_host);
             ++count;
             mnfree(mp);
         } else {

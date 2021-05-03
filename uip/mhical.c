@@ -340,7 +340,7 @@ convert_to_reply (contentline *clines, act action, char *attendee)
                             remove_value (v);
                         } else if (! strcasecmp (p->param_name, "PARTSTAT")) {
                             free (v->value);
-                            v->value = strdup (partstat);
+                            v->value = mh_xstrdup(partstat);
                         }
                     }
                 }
@@ -682,7 +682,7 @@ display (FILE *file, contentline *clines, char *nfs)
     if ((c = fmt_findcomp ("dtend"))) {
         if ((node = find_contentline (clines, "DTEND", 0))  &&  node->value) {
             char *datetime = format_datetime (timezones, node);
-            c->c_text = datetime ? datetime : strdup(node->value);
+            c->c_text = datetime ? datetime : mh_xstrdup(node->value);
         } else if ((node = find_contentline (clines, "DTSTART", 0))  &&
                    node->value) {
             /* There is no DTEND.  If there's a DTSTART, use it.  If it
@@ -691,7 +691,7 @@ display (FILE *file, contentline *clines, char *nfs)
                the end of the day.  And assume local timezone. */
             if (strchr(node->value, 'T')) {
                 char * datetime = format_datetime (timezones, node);
-                c->c_text = datetime ? datetime : strdup(node->value);
+                c->c_text = datetime ? datetime : mh_xstrdup(node->value);
             } else {
                 char *datetime;
                 contentline node_copy;
@@ -699,7 +699,7 @@ display (FILE *file, contentline *clines, char *nfs)
                 node_copy = *node;
                 node_copy.value = concat(node_copy.value, "T235959", NULL);
                 datetime = format_datetime (timezones, &node_copy);
-                c->c_text = datetime ? datetime : strdup(node_copy.value);
+                c->c_text = datetime ? datetime : mh_xstrdup(node_copy.value);
                 free(node_copy.value);
             }
         }
