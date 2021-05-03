@@ -80,7 +80,7 @@ start_test 'sendfrom, using alias in From:'
 
 #### Set up profile to use sendfrom by adding a sendfrom-addr.
 cat >> "$MH" <<EOF
-sendfrom-nobody: -user nobody@exmaple.com
+sendfrom-nobody: -user nobody@example.com
 Aliasfile: MailAliases
 EOF
 #### And an alias.
