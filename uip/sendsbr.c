@@ -534,7 +534,7 @@ handle_sendfrom(char **vec, int *vecp, char *draft, const char *auth_svc)
         if (addr  &&  strchr(addr, '@')) {
             free((void *) addr);
             free((void *) host);
-            adios(NULL, "%s for %s", message, addr);
+            die("%s for %s", message, addr);
         } else {
             /* Unable to extract address and host.  Try interpreting the
                address as an alias. */
@@ -542,13 +542,13 @@ handle_sendfrom(char **vec, int *vecp, char *draft, const char *auth_svc)
             free((void *) addr);
             free((void *) host);
             if (expand_alias(alias, &addr, &host, &message)) {
-                adios(NULL, "%s %s", message, alias);
+                die("%s %s", message, alias);
             }
 
             if (! strcmp(alias, addr)) {
                 /* The address was not an alias that we ere able to expand. */
                 free(alias);
-                adios(NULL, "%s for %s", message, addr);
+                die("%s for %s", message, addr);
             }
             free(alias);
         }
