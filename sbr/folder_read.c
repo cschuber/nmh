@@ -81,10 +81,10 @@ folder_read (char *name, int lockflag)
 		mp->lowmsg = msgnum;
 		mp->hghmsg = msgnum;
 	    } else {
-		/* Check if this is it the highest or lowest we've seen? */
+		/* Is this lowest or highest we've seen? */
 		if (msgnum < mp->lowmsg)
 		   mp->lowmsg = msgnum;
-		if (msgnum > mp->hghmsg)
+		else if (msgnum > mp->hghmsg)
 		   mp->hghmsg = msgnum;
 	    }
 
