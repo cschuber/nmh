@@ -9,8 +9,8 @@
  * Do not move or copy this struct as it may contain a pointer to
  * itself;  use bvector_copy(). */
 struct bvector {
-    unsigned long *bits;
-    size_t maxsize;
+    unsigned long *bits;     /* Allocated bits, either tiny[] or malloc()'d. */
+    size_t maxsize;          /* Number of allocated bits: [0, maxsize). */
     unsigned long tiny[2];   /* Default fixed-size storage for bits. */
 };
 typedef struct bvector *bvector_t;
