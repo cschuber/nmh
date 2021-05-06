@@ -47,11 +47,7 @@
 /* The number of elements bits needs to cover bit n, measured in bytes. */
 #define BVEC_BYTES(n) (((n) / BVEC_BITS_BITS + 1) * BVEC_SIZEOF_BITS)
 
-/* bvector_resize ensures the storage used for bits can cover bit
- * newsize.  It always increases the size of the storage used for bits,
- * even if newsize would have been covered by the existing storage.
- * Thus it's normally only called when it's known the storage must grow. */
-static void bvector_resize (bvector_t vec, size_t newsize);
+static void bvector_resize (bvector_t vec, size_t n);
 
 bvector_t
 bvector_create (void)
@@ -139,13 +135,17 @@ bvector_at (bvector_t vec, size_t i)
     return 0;
 }
 
+/* bvector_resize ensures the storage used for bits can cover bit n.
+ * It always increases the size of the storage, even if bit n would have
+ * been covered by the existing storage.  Thus it's normally only called
+ * when it's known the storage must grow. */
 static void
-bvector_resize (bvector_t vec, size_t newsize)
+bvector_resize (bvector_t vec, size_t n)
 {
     size_t oldsize = vec->maxsize;
     size_t bytes;
 
-    while ((vec->maxsize *= 2) < newsize)
+    while ((vec->maxsize *= 2) < n)
         ;
     bytes = BVEC_BYTES(vec->maxsize);
     if (vec->bits == vec->tiny) {
