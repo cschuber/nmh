@@ -99,41 +99,13 @@ static int scan_content (CT, size_t);
 static int build_headers (CT, int);
 static int extract_headers (CT, char *, FILE **);
 
+static void directive_init(bool onoff);
+static void directive_push(bool onoff);
+static void directive_pop(void);
+static bool directive_honour(void);
 
-static unsigned char directives_stack[32];
-static unsigned int directives_index;
-
-static int
-do_direct(void)
-{
-    return directives_stack[directives_index];
-}
-
-static void
-directive_onoff(int onoff)
-{
-    if (directives_index >= sizeof(directives_stack) - 1) {
-	fprintf(stderr, "mhbuild: #on/off overflow, continuing\n");
-	return;
-    }
-    directives_stack[++directives_index] = onoff;
-}
-
-static void
-directive_init(int onoff)
-{
-    directives_index = 0;
-    directives_stack[0] = onoff;
-}
-
-static void
-directive_pop(void)
-{
-    if (directives_index > 0)
-	directives_index--;
-    else
-	fprintf(stderr, "mhbuild: #pop underflow, continuing\n");
-}
+static bool directive_stack[32];       /* Never empty */
+static unsigned int directive_index;   /* Full element */
 
 /*
  * Main routine for translating composition file
@@ -641,7 +613,7 @@ fgetstr (char *s, int n, FILE *stream)
 	    if (!fgets (cp, n, stream))
                 return cp == s ? NULL : s; /* "\\\nEOF" ignored. */
 
-	    if (! do_direct()  ||  (cp == s && *cp != '#'))
+	    if (!directive_honour() || (cp == s && *cp != '#'))
 		return s; /* Plaintext line. */
 
 	    len = strlen(cp);
@@ -655,9 +627,9 @@ fgetstr (char *s, int n, FILE *stream)
 	}
 
 	if (strcmp(s, "#on\n") == 0) {
-	    directive_onoff(1);
+	    directive_push(true);
 	} else if (strcmp(s, "#off\n") == 0) {
-	    directive_onoff(0);
+	    directive_push(false);
 	} else if (strcmp(s, "#pop\n") == 0) {
 	    directive_pop();
 	} else {
@@ -670,6 +642,7 @@ fgetstr (char *s, int n, FILE *stream)
 /*
  * Parse the composition draft for text and directives.
  * Do initial setup of Content structure.
+ * Returns OK, or DONE on processing ‘#end’.
  */
 
 static int
@@ -686,7 +659,7 @@ user_content (FILE *in, char *buf, CT *ctp, const char *infilename)
     CT ct;
     CE ce;
 
-    if (buf[0] == '\n' || (do_direct() && strcmp (buf, "#\n") == 0)) {
+    if (buf[0] == '\n' || (directive_honour() && strcmp (buf, "#\n") == 0)) {
 	*ctp = NULL;
 	return OK;
     }
@@ -710,7 +683,7 @@ user_content (FILE *in, char *buf, CT *ctp, const char *infilename)
      * 2) begins with "##"		(implicit directive)
      * 3) begins with "#<"
      */
-    if (!do_direct() || buf[0] != '#' || buf[1] == '#' || buf[1] == '<') {
+    if (!directive_honour() || buf[0] != '#' || buf[1] == '#' || buf[1] == '<') {
 	int headers;
 	bool inlineD;
 	long pos;
@@ -727,7 +700,7 @@ user_content (FILE *in, char *buf, CT *ctp, const char *infilename)
 	ce->ce_file = mh_xstrdup(cp);
 	ce->ce_unlink = 1;
 
-	if (do_direct() && (buf[0] == '#' && buf[1] == '<')) {
+	if (directive_honour() && (buf[0] == '#' && buf[1] == '<')) {
 	    strncpy (content, buf + 2, sizeof(content) - 1);
 	    inlineD = true;
 	    goto rock_and_roll;
@@ -737,12 +710,12 @@ user_content (FILE *in, char *buf, CT *ctp, const char *infilename)
 	/* the directive is implicit */
 	strncpy (content, "text/plain", sizeof(content));
 	headers = 0;
-	strncpy (buffer, (!do_direct() || buf[0] != '#') ? buf : buf + 1,
+	strncpy (buffer, (!directive_honour() || buf[0] != '#') ? buf : buf + 1,
 		 sizeof(buffer) - 1);
 	for (;;) {
 	    int	i;
 
-	    if (headers >= 0 && do_direct() && uprf (buffer, DESCR_FIELD)
+	    if (headers >= 0 && directive_honour() && uprf (buffer, DESCR_FIELD)
 		&& buffer[i = LEN(DESCR_FIELD)] == ':') {
 		headers = 1;
 
@@ -765,7 +738,7 @@ again_descr:
 		}
 	    }
 
-	    if (headers >= 0 && do_direct() && uprf (buffer, DISPO_FIELD)
+	    if (headers >= 0 && directive_honour() && uprf (buffer, DISPO_FIELD)
 		&& buffer[i = LEN(DISPO_FIELD)] == ':') {
 		headers = 1;
 
@@ -796,7 +769,7 @@ rock_and_roll:
 	    pos = ftell (in);
 	    if ((cp = fgetstr (buffer, sizeof(buffer) - 1, in)) == NULL)
 		break;
-	    if (do_direct() && buffer[0] == '#') {
+	    if (directive_honour() && buffer[0] == '#') {
 		char *bp;
 
 		if (buffer[1] != '#')
@@ -2380,4 +2353,37 @@ failed_to_extract_ct:
     if (*reply_fp) { fclose (*reply_fp); }
     free (buffer);
     return NOTOK;
+}
+
+static void
+directive_init(bool onoff)
+{
+    directive_index = 0;
+    directive_stack[directive_index] = onoff;
+}
+
+static void
+directive_push(bool onoff)
+{
+    if (directive_index == sizeof directive_stack - 1) {
+        inform("#on/off overflow, continuing\n");
+        return;
+    }
+    directive_stack[++directive_index] = onoff;
+}
+
+static void
+directive_pop(void)
+{
+    if (!directive_index) {
+        inform("#pop underflow, continuing\n");
+        return;
+    }
+    directive_index--;
+}
+
+static bool
+directive_honour(void)
+{
+    return directive_stack[directive_index];
 }
