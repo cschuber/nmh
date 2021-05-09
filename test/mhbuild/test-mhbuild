@@ -144,5 +144,82 @@ EOF
 run_test "mhbuild -auto `mhpath last`"
 check "`mhpath last`" "$expected"
 
+start_test 'Checking parsing of explicit content-type'
+
+f="`mhpath new`"
+cat >"$f" <<\E
+Subject: Test message.
+
+#<text/troff
+.sp |4i
+.ce
+Render \fBme\fP!
+E
+
+cat >"$expected" <<\E
+Subject: Test message.
+MIME-Version: 1.0
+Content-Type: text/troff; charset="us-ascii"
+
+.sp |4i
+.ce
+Render \fBme\fP!
+E
+
+run_test "mhbuild $f"
+
+check "$f" "$expected"
+
+start_test "Checking parsing of missing content-type's type"
+
+f="`mhpath new`"
+cat >"$f" <<\E
+Subject: Test message.
+
+#<
+Fail.
+E
+
+cat >"$expected" <"$f" # Unaltered.
+
+run_test "mhbuild $f" \
+    "mhbuild: invalid Content-Type: field in message $f (empty type)"
+
+check "$f" "$expected"
+
+start_test "Checking parsing of missing content-type's slash"
+
+f="`mhpath new`"
+cat >"$f" <<\E
+Subject: Test message.
+
+#<foo
+Fail.
+E
+
+cat >"$expected" <"$f" # Unaltered.
+
+run_test "mhbuild $f" \
+    "mhbuild: invalid content-type in message $f (missing slash after \"foo\")"
+
+check "$f" "$expected"
+
+start_test "Checking parsing of missing content-type's subtype"
+
+f="`mhpath new`"
+cat >"$f" <<\E
+Subject: Test message.
+
+#<foo/
+Fail.
+E
+
+cat >"$expected" <"$f" # Unaltered.
+
+run_test "mhbuild $f" \
+    "mhbuild: invalid Content-Type: field in message $f (empty subtype for \"foo\")"
+
+check "$f" "$expected"
+
 finish_test
 exit $failed
