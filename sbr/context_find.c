@@ -34,25 +34,23 @@ char *
 context_find_by_type (const char *string, const char *type,
                       const char *subtype)
 {
-    char *value = NULL;
+    char *key, *value;
 
     if (subtype) {
-        char *cp;
-
-        cp = concat (invo_name, "-", string, "-", type, "/", subtype, NULL);
-        if ((value = context_find (cp)) != NULL && *value == '\0') value = NULL;
-        free (cp);
+        key = concat(invo_name, "-", string, "-", type, "/", subtype, NULL);
+        value = context_find(key);
+        free(key);
+        if (value && *value)
+            return value;
     }
 
-    if (value == NULL) {
-        char *cp;
+    key = concat(invo_name, "-", string, "-", type, NULL);
+    value = context_find(key);
+    free(key);
+    if (value && *value)
+        return value;
 
-        cp = concat (invo_name, "-", string, "-", type, NULL);
-        if ((value = context_find (cp)) != NULL && *value == '\0') value = NULL;
-        free (cp);
-    }
-
-    return value;
+    return NULL;
 }
 
 
