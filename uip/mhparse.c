@@ -928,9 +928,9 @@ get_comment (const char *filename, const char *fieldname, char **ap,
 	switch (c = *cp++) {
 	case '\0':
 invalid:
-	inform("invalid comment in message %s's %s: field",
+	    inform("invalid comment in message %s's %s: field",
 		filename, fieldname);
-	return NOTOK;
+	    return NOTOK;
 
 	case '\\':
 	    *bp++ = c;
