@@ -652,7 +652,16 @@ get_ctinfo (char *cp, CT ct, int magic)
 	return NOTOK;
 
     if (*cp != '/') {
-	if (!magic)
+        if (magic) {
+            /* Only a few magic directives don't need a subtype. */
+            if (strcmp(ci->ci_type, "forw") &&
+                strcmp(ci->ci_type, "begin") &&
+                strcmp(ci->ci_type, "end")) {
+                inform("invalid content-type in message %s "
+                    "(missing slash after \"%s\")", ct->c_file, ci->ci_type);
+                return NOTOK;
+            }
+        } else
 	    ci->ci_subtype = mh_xstrdup("");
 	goto magic_skip;
     }
