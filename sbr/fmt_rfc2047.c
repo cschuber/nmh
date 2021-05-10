@@ -252,7 +252,7 @@ decode_rfc2047 (char *str, char *dst, size_t dstlen)
 			if (c == -1)
 			    continue;
 			if (c != 0)
-			    *q++ = c;
+			    ADDCHR2(c);
 			pp += 2;
 		    } else if (*pp == '_') {
 			ADDCHR2(' ');
