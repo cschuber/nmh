@@ -239,7 +239,16 @@ decode_rfc2047 (char *str, char *dst, size_t dstlen)
  * in this case on buffer-full we want to run iconv before returning.
  * I apologise for the dreadful name.
  */
-#define ADDCHR2(C) do { *q++ = (C); dstlen--; if (!dstlen) goto iconvbuffull; } while (0)
+#define ADDCHR2(C) \
+    do {                                \
+	*q++ = (C);                     \
+	dstlen--;                       \
+	if (!dstlen)                    \
+	    if (use_iconv)              \
+		goto iconvbuffull;      \
+	    else                        \
+		goto buffull;           \
+    } while (0)
 #else
 #define ADDCHR2(C) ADDCHR(C)
 #endif
