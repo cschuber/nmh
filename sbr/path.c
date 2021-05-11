@@ -124,18 +124,18 @@ compath (char *f)
         }
 
         switch (*++cp) {
-            case 0: 
+            case 0:
                 if (--cp > f)
                     *cp = '\0';
                 return;
 
-            case '/': 
+            case '/':
                 for (dp = cp; *dp == '/'; dp++)
                     continue;
                 strcpy (cp--, dp);
                 continue;
 
-            case '.': 
+            case '.':
                 if (strcmp (cp, DOT) == 0) {
                     if (cp > f + 1)
                         cp--;
@@ -168,7 +168,7 @@ compath (char *f)
                 }
                 continue;
 
-            default: 
+            default:
                 cp++;
                 continue;
         }
@@ -198,11 +198,11 @@ etcpath (char *file)
     context_read();
 
     switch (*file) {
-	case '/': 
+	case '/':
 	    /* If already absolute pathname, return it */
 	    return file;
 
-	case '~': 
+	case '~':
 	    /* Expand ~username */
 	    if ((cp = strchr(pp = file + 1, '/')))
 		*cp++ = '\0';
@@ -227,14 +227,12 @@ etcpath (char *file)
 
             /* FALLTHRU */
 try_it:
-	default: 
+	default:
 	    /* Check nmh Mail directory */
-	    if (access ((cp = m_mailpath (file)), R_OK) != NOTOK) {
-		/* Will leak because caller doesn't know cp was
-		   dynamically allocated. */
-		return cp;
-	    }
-            free (cp);
+	    snprintf (epath, sizeof(epath), "%s", (cp = m_mailpath (file)));
+	    free (cp);
+	    if (access (epath, R_OK) != NOTOK)
+		return epath;
     }
 
     /* Check nmh `etc' directory */

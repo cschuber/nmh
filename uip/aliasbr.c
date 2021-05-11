@@ -175,20 +175,15 @@ alias (char *file)
     char *bp, *cp, *pp;
     char lc, *ap;
     struct aka *ak = NULL;
-    bool allocated_file = false;
     FILE *fp;
 
     if (*file != '/'
-            && !has_prefix(file, "./") && !has_prefix(file, "../")) {
+            && !has_prefix(file, "./") && !has_prefix(file, "../"))
 	file = etcpath (file);
-	allocated_file = true;
-    }
     if ((fp = fopen (file, "r")) == NULL) {
 	akerrst = file;
 	return AK_NOFILE;
     }
-
-    if (allocated_file) free (file);
 
     while (vfgets (fp, &ap) == OK) {
 	bp = ap;
@@ -207,7 +202,7 @@ alias (char *file)
 	    case ':':		/* comment */
 	    case ';':
 	    case '#':
-	    case 0: 
+	    case 0:
 		continue;
 	}
 
@@ -221,15 +216,15 @@ alias (char *file)
 	    return AK_LIMIT;
 	}
 	switch (lc) {
-	    case ':': 
+	    case ':':
 		ak->ak_visible = false;
 		break;
 
-	    case ';': 
+	    case ';':
 		ak->ak_visible = true;
 		break;
 
-	    default: 
+	    default:
 		fclose (fp);
 		return AK_ERROR;
 	}
@@ -268,19 +263,19 @@ akerror (int i)
     static char buffer[BUFSIZ];
 
     switch (i) {
-	case AK_NOFILE: 
+	case AK_NOFILE:
 	    snprintf (buffer, sizeof(buffer), "unable to read '%s'", akerrst);
 	    break;
 
-	case AK_ERROR: 
+	case AK_ERROR:
 	    snprintf (buffer, sizeof(buffer), "error in line '%s'", akerrst);
 	    break;
 
-	case AK_LIMIT: 
+	case AK_LIMIT:
 	    snprintf (buffer, sizeof(buffer), "out of memory while on '%s'", akerrst);
 	    break;
 
-	default: 
+	default:
 	    snprintf (buffer, sizeof(buffer), "unknown error (%d)", i);
 	    break;
     }

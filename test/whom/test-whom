@@ -133,6 +133,16 @@ start_test "-alias with nonexistent aliasfile"
 run_test 'whom -alias nonexistent' \
 "whom: aliasing error in nonexistent - unable to read 'nonexistent'"
 
+# check etcpath() when it does not allocate its return value
+start_test "etcpath() when it does not allocate its return value"
+#### An aliases file that doesn't begin with /, ./, ../, or ~, and
+#### isn't in the Mail or nmh etc directory, will be returned as-is.
+#### Make sure that alias() doesn't try to free() it.
+mailaliases="Mail/aliases"
+echo 'u: user@example.com' >"$mailaliases"
+run_test "whom -alias $mailaliases" '  -- Network Recipients --
+  user at example.com'
+rm -f "$mailaliases"
 
 finish_test
 exit $failed
