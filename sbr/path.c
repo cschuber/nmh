@@ -229,7 +229,8 @@ etcpath (char *file)
 try_it:
 	default:
 	    /* Check nmh Mail directory */
-	    snprintf (epath, sizeof(epath), "%s", (cp = m_mailpath (file)));
+	    cp = m_mailpath(file);
+            TRUNCCPY(epath, cp);   /* FIXME: should not truncate. */
 	    free (cp);
 	    if (access (epath, R_OK) != NOTOK)
 		return epath;
