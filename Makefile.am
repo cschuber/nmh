@@ -1263,8 +1263,16 @@ cleanman:
 
 .PHONY: man cleanman
 
+## Don't include commit hashes in ChangeLog.
+## Fix ISO-8859-1 encoding of ‘ü’ in uip/slocal.c's log.
 ChangeLog:
-	@[ -d $(srcdir)/.git ]  &&  (cd $(srcdir); git log --abbrev-commit > $@)  ||  true
+	@[ -d $(srcdir)/.git ]  &&  ( \
+	    cd $(srcdir); \
+	    git --no-pager log --no-color --abbrev-commit | \
+            LC_ALL=C sed \
+		-e '/^commit [0-9a-f][0-9a-f]*$$/d' \
+		-e '/149745/s/M.ller/Müller/' >$@ \
+	)  ||  true
 ## Make ChangeLog phony so it will always get regenerated.  But don't
 ## fail if we don't have a git repository in order to allow
 ## regeneration of distribution archive or RPM.
