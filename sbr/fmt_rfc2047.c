@@ -243,11 +243,12 @@ decode_rfc2047 (char *str, char *dst, size_t dstlen)
     do {                                \
 	*q++ = (C);                     \
 	dstlen--;                       \
-	if (!dstlen)                    \
+	if (!dstlen) {                  \
 	    if (use_iconv)              \
 		goto iconvbuffull;      \
 	    else                        \
 		goto buffull;           \
+	}                               \
     } while (0)
 #else
 #define ADDCHR2(C) ADDCHR(C)
