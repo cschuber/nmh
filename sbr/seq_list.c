@@ -40,7 +40,7 @@ seq_list(struct msgs *mp, char *seqname)
      */
     if (!strcmp (current, seqname)) {
 	if (mp->curmsg) {	
-	    snprintf(buffer, len, "%s", m_name(mp->curmsg));
+	    trunccpy(buffer, m_name(mp->curmsg), len);
 	    return buffer;
 	}
         return NULL;

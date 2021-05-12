@@ -1288,7 +1288,7 @@ compose_content (CT ct, int verbose)
 			 * insert temporary filename where
 			 * content should be written
 			 */
-			snprintf (bp, buflen, "%s", ce->ce_file);
+			trunccpy(bp, ce->ce_file, buflen);
 			break;
 
 		    case 's':

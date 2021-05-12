@@ -198,7 +198,7 @@ content_error (char *what, CT ct, char *fmt, ...)
 	}
 
 	if ((s = strerror (errno)))
-	    snprintf (bp, buflen, "%s", s);
+	    trunccpy(bp, s, buflen);
 	else
 	    snprintf (bp, buflen, "Error %d", errno);
 
