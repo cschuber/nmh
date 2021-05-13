@@ -184,7 +184,7 @@ be one of the (reserved) message names \*(lqnew\*(rq, \*(lqfirst\*(rq,
 Message ranges with user-defined sequence names are restricted to the
 form \*(lqname:n\*(rq, \*(lqname:+n\*(rq, or \*(lqname:-n\*(rq, and refer
 to the first or last `n' messages of the sequence `name'.
-If '=' is substituted for ':', these forms will instead refer to single
+If `=' is substituted for `:', these forms will instead refer to single
 messages positioned `n' away from one end or the other of the sequence.
 Constructs of the form \*(lqname1\-name2\*(rq are forbidden for user
 defined sequences.

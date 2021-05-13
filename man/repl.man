@@ -401,7 +401,7 @@ You may use the
 switch to change this.
 .PP
 Although the default template specifies that a copy of the reply will be
-put in the folder 'outbox', if the
+put in the folder `outbox', if the
 .B \-fcc
 .I +folder
 switch is given it will override the default value.
