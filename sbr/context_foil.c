@@ -7,6 +7,7 @@
 
 #include "h/mh.h"
 #include "error.h"
+#include "path.h"
 #include "utils.h"
 #include "context_foil.h"
 
@@ -57,11 +58,8 @@ context_foil (char *path)
 	np->n_context = 0;
 	np->n_next = NULL;
 
-	if (mypath == NULL && (mypath = getenv ("HOME")) != NULL)
-	    if (!(mypath = strdup (mypath))) {
-		inform("strdup failed");
-		return -1;
-	    }
+	if (!mypath)
+            set_mypath();
     }
 
     return 0;
