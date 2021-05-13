@@ -135,7 +135,9 @@ If your
 .B nmh
 was not configured with a program to specify a file type as a MIME
 string, then a different method is used to determine the content-type
-string.  For file names with dot suffixes, the profile is scanned for a
+string.  This method is also used if the configured mimetypeproc fails
+to find the MIME type of the content.  For file names with dot suffixes,
+the profile is scanned for a
 .I mhshow-suffix-
 entry for that suffix.
 The content-type for the part is taken from that profile entry if a match is
