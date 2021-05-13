@@ -55,9 +55,8 @@ check_mech(char *server_mechs, size_t server_mechs_size)
      */
 
     if (command("CAPA") == NOTOK) {
-	snprintf(response, sizeof(response),
-		 "The POP CAPA command failed; POP server does not "
-		 "support SASL");
+        TRUNCCPY(response, "The POP CAPA command failed; "
+                           "POP server does not support SASL");
 	return NOTOK;
     }
 
@@ -73,8 +72,7 @@ check_mech(char *server_mechs, size_t server_mechs_size)
     }
 
     if (!sasl_capability) {
-	snprintf(response, sizeof(response), "POP server does not support "
-		 "SASL");
+        TRUNCCPY(response, "POP server does not support SASL");
 	return NOTOK;
     }
 
@@ -97,9 +95,8 @@ pop_start_tls(void)
      */
 
     if (command("CAPA") == NOTOK) {
-	snprintf(response, sizeof(response),
-		 "The POP CAPA command failed; POP server does not "
-		 "support STLS");
+        TRUNCCPY(response, "The POP CAPA command failed; "
+                           "POP server does not support STLS");
 	return NOTOK;
     }
 
@@ -112,8 +109,7 @@ pop_start_tls(void)
     }
 
     if (!stls) {
-	snprintf(response, sizeof(response), "POP server does not support "
-		 "STLS");
+        TRUNCCPY(response, "POP server does not support STLS");
 	return NOTOK;
     }
 
@@ -125,7 +121,7 @@ pop_start_tls(void)
 	return NOTOK;
 
     if (netsec_negotiate_tls(nsc, &errstr) != OK) {
-	snprintf(response, sizeof(response), "%s", errstr);
+	TRUNCCPY(response, errstr);
 	free(errstr);
 	return NOTOK;
     }
@@ -199,7 +195,7 @@ pop_init (char *host, char *port, char *user, char *proxy, int snoop,
 
     if (oauth_svc != NULL) {
 	if (netsec_set_oauth_service(nsc, oauth_svc) != OK) {
-	    snprintf(response, sizeof(response), "OAuth2 not supported");
+	    TRUNCCPY(response, "OAuth2 not supported");
 	    return NOTOK;
 	}
     }
@@ -266,14 +262,14 @@ pop_init (char *host, char *port, char *user, char *proxy, int snoop,
 
     if (tls & P_TLSENABLEMASK) {
 	if (netsec_set_tls(nsc, 1, tls & P_NOVERIFY, &errstr) != OK) {
-	    snprintf(response, sizeof(response), "%s", errstr);
+	    TRUNCCPY(response, errstr);
 	    free(errstr);
 	    return NOTOK;
 	}
 
 	if (tls & P_INITTLS) {
 	    if (netsec_negotiate_tls(nsc, &errstr) != OK) {
-		snprintf(response, sizeof(response), "%s", errstr);
+		TRUNCCPY(response, errstr);
 		free(errstr);
 		return NOTOK;
 	    }
@@ -283,7 +279,7 @@ pop_init (char *host, char *port, char *user, char *proxy, int snoop,
     if (sasl) {
 	if (netsec_set_sasl_params(nsc, "pop", mech, pop_sasl_callback,
 				   NULL, &errstr) != OK) {
-	    snprintf(response, sizeof(response), "%s", errstr);
+	    TRUNCCPY(response, errstr);
 	    free(errstr);
 	    return NOTOK;
 	}

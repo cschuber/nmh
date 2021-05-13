@@ -87,7 +87,7 @@ update_svc(mh_oauth_service_info *svc, const char *svc_name, char *errbuf,
 #define update(name)                                                    \
     update_svc_field(&svc->name, #name, svc_name);                       \
     if (svc->name == NULL) {                                             \
-	snprintf(errbuf, errbuflen, "%s", #name " is missing");		 \
+	trunccpy(errbuf, #name " is missing", errbuflen);		 \
 	errbuf[errbuflen - 1] = '\0';					 \
         return false;                                                    \
     }

@@ -589,7 +589,7 @@ PrintFolders(void)
 	    if (ivector_at (folders[i].nSeq, j) > 0 || showzero) {
 		/* Add `+' to end of name of current folder */
 		if (strcmp(curfolder, folders[i].name))
-		    snprintf(tmpname, sizeof(tmpname), "%s", folders[i].name);
+		    TRUNCCPY(tmpname, folders[i].name);
 		else
 		    snprintf(tmpname, sizeof(tmpname), "%s+", folders[i].name);
 

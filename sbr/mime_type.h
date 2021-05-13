@@ -7,7 +7,7 @@
 
 /* Return a MIME content-type string for the specified file.
  *
- * If the system supports it, will use the "file" command to determine
+ * If the system supports it, will use the MIMETYPEPROC command to determine
  * the appropriate content-type.  Otherwise it will try to determine the
  * content-type from the suffix.  If that fails, the file will be scanned
  * and either assigned a MIME type of text/plain or application/octet-stream

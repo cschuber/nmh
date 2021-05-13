@@ -582,7 +582,7 @@ print_folders (void)
 
 	    /* Add `+' to end of name, if folder is current */
 	    if (strcmp (folder, fi[i].name))
-		snprintf (tmpname, sizeof(tmpname), "%s", fi[i].name);
+		TRUNCCPY(tmpname, fi[i].name);
 	    else
 		snprintf (tmpname, sizeof(tmpname), "%s+", fi[i].name);
 
