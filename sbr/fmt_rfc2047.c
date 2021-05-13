@@ -68,13 +68,12 @@ decode_qp (unsigned char byte1, unsigned char byte2)
 /* Add character to the destination buffer, and bomb out if it fills up */
 #define ADDCHR(C) do { *q++ = (C); dstlen--; if (!dstlen) goto buffull; } while (0)
 
-int
+bool
 decode_rfc2047 (char *str, char *dst, size_t dstlen)
 {
     char *p, *q, *pp;
     char *startofmime, *endofmime, *endofcharset;
     int c, quoted_printable;
-    int encoding_found = 0;	/* did we decode anything?                */
     int whitespace = 0;		/* how much whitespace between encodings? */
 #ifdef HAVE_ICONV
     iconv_t cd = NULL;
@@ -84,20 +83,21 @@ decode_rfc2047 (char *str, char *dst, size_t dstlen)
 #endif
 
     if (!str)
-	return 0;
+	return false;
 
     /*
      * Do a quick and dirty check for the '=' character.
      * This should quickly eliminate many cases.
      */
     if (!strchr (str, '='))
-	return 0;
+	return false;
 
 #ifdef HAVE_ICONV
     bool use_iconv = false; /* are we converting encoding with iconv? */
 #endif
     bool between_encodings = false;
     bool equals_pending = false;
+    bool encoding_found = false;   /* Did we decode anything? */
     for (p = str, q = dst; *p; p++) {
 
         /* reset iconv */
@@ -368,7 +368,7 @@ decode_rfc2047 (char *str, char *dst, size_t dstlen)
 	     */
 	    p = endofmime + 1;
 
-	    encoding_found = 1;		/* we found (at least 1) encoded word */
+	    encoding_found = true;      /* we found (at least 1) encoded word */
 	    between_encodings = true;	/* we have just decoded something     */
 	    whitespace = 0;		/* re-initialize amount of whitespace */
 	}

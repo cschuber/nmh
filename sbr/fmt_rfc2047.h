@@ -16,4 +16,4 @@
  */
 int decode_qp(unsigned char byte1, unsigned char byte2) CONST;
 
-int decode_rfc2047(char *, char *, size_t);
+bool decode_rfc2047(char *, char *, size_t);
