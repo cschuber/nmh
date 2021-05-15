@@ -12,15 +12,16 @@ Following a commit checklist, the topics are organized alphabetically.
 commit checklist
 ----------------
 
-1. code updated?
-2. test added?
-3. make distcheck passed?
-4. man page and other documentation updated?
-5. docs/pending-release-notes updated?
-6. should commit message reference bug report?
-7. be sure that commit message starts with one-line synopsis, then a blank line
-8. update/close bug report (with commit id)?
-9. notify nmh-users?
+- Code updated?
+- Test added?
+- make distcheck passed?
+- man page and other documentation updated?
+- docs/pending-release-notes updated?
+- Should commit message reference bug report?
+- Be sure that commit message starts with one-line synopsis, then a
+  blank line.
+- Update/close bug report (with commit id)?
+- Notify nmh-users?
 
 
 ---------------------------------
