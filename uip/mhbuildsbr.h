@@ -27,10 +27,11 @@
  *		  attempt compliance with RFC 934.
  * maxunencoded	- The maximum line length before the default encoding for
  *		  text parts is quoted-printable.
+ * listsw	- Whether to list the MIME contents.
  * verbose	- If 1, output verbose information during message composition
  *
  * Returns a CT structure describing the resulting MIME message.  If the
  * -auto flag is set and a MIME-Version header is encountered, the return
  * value is NULL.
  */
-CT build_mime(char *, int, int, int, int, bool, bool, size_t, int);
+CT build_mime(char *, int, int, int, int, bool, bool, size_t, bool, int);

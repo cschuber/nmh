@@ -59,8 +59,6 @@
 #include <time.h>
 
 
-extern bool listsw;
-
 static char prefix[] = "----- =_aaaaaaaaaa";
 
 struct attach_list {
@@ -88,9 +86,9 @@ static void expand_pseudoheaders (CT, struct multipart *, const char *,
 static void expand_pseudoheader (CT, CT *, struct multipart *, const char *,
                                  const char *, const char *);
 static char *fgetstr (char *, int, FILE *);
-static int user_content (FILE *, char *, CT *, const char *infilename);
+static int user_content(FILE *, char *, CT *, const char *, bool);
 static void set_id (CT, int);
-static int compose_content(CT, bool, int);
+static int compose_content(CT, bool, bool, int);
 static int scan_content (CT, size_t);
 static int build_headers(CT, int, bool);
 static int extract_headers (CT, char *, FILE **);
@@ -115,7 +113,7 @@ static unsigned int directive_index;   /* Full element */
 CT
 build_mime (char *infile, int autobuild, int dist, int directives,
 	    int header_encoding, bool contentid, bool rfc934,
-            size_t maxunencoded, int verbose)
+            size_t maxunencoded, bool listsw, int verbose)
 {
     int	compnum, state;
     char buf[NMH_BUFSIZ], name[NAMESZ];
@@ -396,7 +394,7 @@ finish_field:
 	struct part *part;
 	CT p;
 
-	if (user_content (in, buf, &p, infile) == DONE) {
+	if (user_content(in, buf, &p, infile, listsw) == DONE) {
 	    inform("ignoring spurious #end, continuing...");
 	    continue;
 	}
@@ -546,7 +544,7 @@ finish_field:
      * Fill out, or expand directives.  Parse and execute
      * commands specified by profile composition strings.
      */
-    compose_content(ct, rfc934, verbose);
+    compose_content(ct, rfc934, listsw, verbose);
 
     if ((cp = strchr(prefix, 'a')) == NULL)
 	die("internal error(4)");
@@ -643,7 +641,7 @@ fgetstr (char *s, int n, FILE *stream)
  */
 
 static int
-user_content (FILE *in, char *buf, CT *ctp, const char *infilename)
+user_content(FILE *in, char *buf, CT *ctp, const char *infilename, bool listsw)
 {
     int	extrnal, vrsn;
     char *cp, **ap;
@@ -1099,7 +1097,7 @@ use_forw:
 	    struct part *part;
 	    CT p;
 
-	    if (user_content (in, buffer, &p, infilename) == DONE) {
+	    if (user_content(in, buffer, &p, infilename, listsw) == DONE) {
 		if (!m->mp_parts)
 		    die("empty \"#begin ... #end\" sequence");
 		return OK;
@@ -1150,7 +1148,7 @@ set_id (CT ct, int top)
  */
 
 static int
-compose_content(CT ct, bool rfc934, int verbose)
+compose_content(CT ct, bool rfc934, bool listsw, int verbose)
 {
     CE ce = &ct->c_cefile;
 
@@ -1176,7 +1174,7 @@ compose_content(CT ct, bool rfc934, int verbose)
 
 	    sprintf (pp, "%d", partnum);
 	    p->c_partno = mh_xstrdup(partnam);
-	    if (compose_content(p, rfc934, verbose) == NOTOK)
+	    if (compose_content(p, rfc934, listsw, verbose) == NOTOK)
 		return NOTOK;
 	}
 
