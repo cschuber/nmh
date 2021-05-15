@@ -11,4 +11,5 @@ extern char *annotext;
 extern char *distfile;
 
 extern bool forwsw;
+extern int inplace;
 extern bool verbsw;
