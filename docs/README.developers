@@ -21,7 +21,7 @@ commit checklist
 - Be sure that commit message starts with one-line synopsis, then a
   blank line.
 - Update/close bug report (with commit id)?
-- Notify nmh-users?
+- Notify nmh-workers?
 
 
 ---------------------------------
