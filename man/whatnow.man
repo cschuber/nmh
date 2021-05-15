@@ -44,20 +44,20 @@ repetitively prompts the user with \*(lqWhat now?\*(rq
 and awaits a response.  The valid responses are:
 .PP
 .RS 5
-.TP \w'refilezzzzfolderz'u
+.TP
 .B edit
 re-edit using the same editor that was used on the
 preceding round unless a profile entry
 \*(lq<lasteditor>\-next: <editor>\*(rq names an alternate editor
-.TP \w'refilezzzzfolderz'u
+.TP
 \fBedit\fP \fIeditor\fP
 invoke
 .I editor
 for further editing
-.TP \w'refilezzzzfolderz'u
+.TP
 \fBrefile\fP \fI+folder\fP
 refile the draft into the given folder
-.TP \w'refilezzzzfolderz'u
+.TP
 .B mime
 process the draft as MIME composition file using
 the
@@ -65,59 +65,59 @@ the
 command
 .RB ( mhbuild
 by default)
-.TP \w'refilezzzzfolderz'u
+.TP
 .B display
 list the message being distributed/replied-to
 on the terminal
-.TP \w'refilezzzzfolderz'u
+.TP
 .B list
 list the draft on the terminal
-.TP \w'refilezzzzfolderz'u
+.TP
 .B send
 send the message
-.TP \w'refilezzzzfolderz'u
+.TP
 .B send \-watch
 send the message and monitor the delivery process
-.TP \w'refilezzzzfolderz'u
+.TP
 .B push
 send the message in the background
-.TP \w'refilezzzzfolderz'u
+.TP
 .B whom
 list the addresses that the message will go to
-.TP \w'refilezzzzfolderz'u
+.TP
 .B whom \-check
 list the addresses and verify that they are
 acceptable to the transport service
-.TP \w'refilezzzzfolderz'u
+.TP
 .B quit
 preserve the draft and exit
-.TP \w'refilezzzzfolderz'u
+.TP
 .B quit \-delete
 delete the draft and exit
-.TP \w'refilezzzzfolderz'u
+.TP
 .B delete
 delete the draft and exit
-.TP \w'refilezzzzfolderz'u
+.TP
 \fBcd\fP \fIdirectory\fP
 use
 .I directory
 when interpreting attachment file names
-.TP \w'refilezzzzfolderz'u
+.TP
 .B pwd
 print the working directory for attachment files
-.TP \w'refilezzzzfolderz'u
+.TP
 \fBls\fP [\fIls-options\fP\^]
 list files in the attachment working directory using the ls command
-.TP \w'refilezzzzfolderz'u
+.TP
 \fBattach [-v]\fP \fIfiles\fP
 add the named files to the message as MIME attachments; -v displays
 the mhbuild directive that
 .IR send (1)
 will use
-.TP \w'refilezzzzfolderz'u
+.TP
 .B alist [-ln]
 list the MIME attachments, either short, long [-l] or numbered [-n]
-.TP \w'refilezzzzfolderz'u
+.TP
 \fBdetach [-n]\fP \fIfiles-or-numbers\fP
 remove MIME attachments, either by file name or by number with -n
 .RE
