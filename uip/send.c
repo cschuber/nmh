@@ -126,8 +126,6 @@ extern bool pushsw;
 extern bool unique;
 extern bool verbsw;
 
-extern char *distfile;
-
 
 int
 main (int argc, char **argv)

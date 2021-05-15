@@ -996,8 +996,6 @@ extern bool pushsw;
 extern bool unique;
 extern bool verbsw;
 
-extern char *distfile;
-
 
 static void
 sendit(char *sp, char **arg, char *file, bool pushed)
