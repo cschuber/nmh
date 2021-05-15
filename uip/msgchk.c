@@ -356,8 +356,6 @@ checkmail (char *user, char *home, int datesw, int notifysw, int personal)
 }
 
 
-extern char response[];
-
 static int
 remotemail (char *host, char *port, char *user, char *proxy, int notifysw,
 	    int personal, int snoop, int sasl, char *saslmech, int tls,
