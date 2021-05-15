@@ -5,3 +5,5 @@
  * complete copyright information. */
 
 int sendsbr(char **, int, char *, char *, struct stat *, int, const char *);
+
+extern char *altmsg;
