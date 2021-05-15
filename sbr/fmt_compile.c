@@ -69,8 +69,6 @@ static struct ftable *ftbl;		/* most recent func ref  */
 static int ncomp;
 static int infunction;			/* function nesting cnt  */
 
-extern struct mailname fmt_mnull;
-
 /* ftable->type (argument type) */
 #define	TF_COMP    0	    /* component expected                 */
 #define	TF_NUM     1	    /* number expected                    */

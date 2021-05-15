@@ -56,3 +56,5 @@ struct fmt_callbacks {
  * execute, which is currently always NULL.
  */
 struct format *fmt_scan(struct format *, charstring_t, int, int *, struct fmt_callbacks *);
+
+extern struct mailname fmt_mnull;
