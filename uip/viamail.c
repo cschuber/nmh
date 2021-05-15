@@ -206,12 +206,11 @@ via_mail (char *mailsw, char *subjsw, char *parmsw, char *descsw,
 
     int	status;
     switch (sendsbr (vec, vecp, program, tmpfil, &st, 0, NULL)) {
-	case DONE:
-	case NOTOK:
-	    status = 1;
-	    break;
 	case OK:
-            status = 0;
+	    status = 0;
+	    break;
+	default:
+	    status = 1;
 	    break;
     }
 
