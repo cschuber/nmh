@@ -60,7 +60,6 @@
 
 
 extern bool listsw;
-extern bool contentidsw;
 
 static char prefix[] = "----- =_aaaaaaaaaa";
 
@@ -93,7 +92,7 @@ static int user_content (FILE *, char *, CT *, const char *infilename);
 static void set_id (CT, int);
 static int compose_content(CT, bool, int);
 static int scan_content (CT, size_t);
-static int build_headers (CT, int);
+static int build_headers(CT, int, bool);
 static int extract_headers (CT, char *, FILE **);
 
 static void directive_init(bool onoff);
@@ -115,7 +114,8 @@ static unsigned int directive_index;   /* Full element */
 
 CT
 build_mime (char *infile, int autobuild, int dist, int directives,
-	    int header_encoding, bool rfc934, size_t maxunencoded, int verbose)
+	    int header_encoding, bool contentid, bool rfc934,
+            size_t maxunencoded, int verbose)
 {
     int	compnum, state;
     char buf[NMH_BUFSIZ], name[NAMESZ];
@@ -575,7 +575,7 @@ finish_field:
 
     /* Build the rest of the header field structures */
     if (! dist)
-	build_headers (ct, header_encoding);
+	build_headers(ct, header_encoding, contentid);
 
     return ct;
 }
@@ -1638,7 +1638,7 @@ scan_content (CT ct, size_t maxunencoded)
  */
 
 static int
-build_headers (CT ct, int header_encoding)
+build_headers(CT ct, int header_encoding, bool contentid)
 {
     int	cc, mailbody, extbody, len;
     char *np, *vp, buffer[BUFSIZ];
@@ -1718,7 +1718,7 @@ build_headers (CT ct, int header_encoding)
      * RFC 2045 always requires a Content-ID header for message/external-body
      * entities.
      */
-    if ((contentidsw || ct->c_ctexbody) && ct->c_id) {
+    if ((contentid || ct->c_ctexbody) && ct->c_id) {
 	np = mh_xstrdup(ID_FIELD);
 	vp = concat (" ", ct->c_id, NULL);
 	add_header (ct, np, vp);
@@ -1829,7 +1829,7 @@ skip_headers:
 	    CT p;
 
 	    p = part->mp_part;
-	    build_headers (p, header_encoding);
+	    build_headers(p, header_encoding, contentid);
 	}
     }
 	break;
@@ -1839,7 +1839,7 @@ skip_headers:
 	    struct exbody *e;
 
 	    e = (struct exbody *) ct->c_ctparams;
-	    build_headers (e->eb_content, header_encoding);
+	    build_headers(e->eb_content, header_encoding, contentid);
 	}
 	break;
 

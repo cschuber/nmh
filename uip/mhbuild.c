@@ -84,7 +84,6 @@ DEFINE_SWITCH_ARRAY(MIMEENCODING, encodingswitches);
 bool debugsw;
 
 bool listsw;
-bool contentidsw = true;
 
 /*
  * Temporary files
@@ -98,6 +97,7 @@ main (int argc, char **argv)
 {
     bool sizesw = true;
     bool headsw = true;
+    bool contentidsw = true;
     bool rfc934sw = false;
     bool directives = true;
     bool autobuild = false;
@@ -316,7 +316,7 @@ main (int argc, char **argv)
 
 	/* build the content structures for MIME message */
 	ct = build_mime (infile, autobuild, dist, directives, header_encoding,
-			 rfc934sw, maxunencoded, verbosw);
+			 contentidsw, rfc934sw, maxunencoded, verbosw);
 
 	/*
 	 * If ct == NULL, that means that -auto was set and a MIME version
@@ -347,7 +347,7 @@ main (int argc, char **argv)
 
     /* build the content structures for MIME message */
     ct = build_mime (compfile, autobuild, dist, directives, header_encoding,
-		     rfc934sw, maxunencoded, verbosw);
+		     contentidsw, rfc934sw, maxunencoded, verbosw);
 
     /*
      * If ct == NULL, that means -auto was set and we found a MIME version
