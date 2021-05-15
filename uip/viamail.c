@@ -204,15 +204,7 @@ via_mail (char *mailsw, char *subjsw, char *parmsw, char *descsw,
 	vec[vecp++] = cp;
     }
 
-    int	status;
-    switch (sendsbr (vec, vecp, program, tmpfil, &st, 0, NULL)) {
-	case OK:
-	    status = 0;
-	    break;
-	default:
-	    status = 1;
-	    break;
-    }
+    int	status = sendsbr(vec, vecp, program, tmpfil, &st, 0, NULL) == OK ? 0 : 1;
 
     fclose (fp);
     if (m_unlink (tmpfil) == -1)
