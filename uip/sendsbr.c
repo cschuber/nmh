@@ -526,7 +526,7 @@ oops:
 static void
 handle_sendfrom(char **vec, int *vecp, char *draft, const char *auth_svc)
 {
-    const char *addr = NULL, *host;
+    const char *addr = NULL, *host = NULL;
     const char *message;
 
     /* Extract address and host from From: header line in draft. */
