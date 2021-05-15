@@ -685,7 +685,7 @@ setup_oauth_params(char *vec[], int *vecp, const char *auth_svc,
 	    vec[(*vecp)++] = mh_xstrdup("-oauthtokenendpoint");
 	    vec[(*vecp)++] = getcpy(svc.token_endpoint);
 	    vec[(*vecp)++] = mh_xstrdup("-oauthscope");
-	    vec[(*vecp)++] = getcpy(svc.scope);
+	    vec[(*vecp)++] = getcpy(svc.scopes[svc.send_scope_index]);
         }
     }
 

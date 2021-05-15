@@ -93,7 +93,9 @@ struct mh_oauth_service_info {
     /* [1] 3.2 Token Endpoint */
     char *token_endpoint;
     /* [1] 3.3 Access Token Scope */
-    char *scope;
+    const char **scopes;
+    /* The index of the scope that is used to send. */
+    size_t send_scope_index;
 };
 
 int mh_oauth_do_xoauth(const char *user, const char *svc,

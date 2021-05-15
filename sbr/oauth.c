@@ -7,6 +7,7 @@
 
 #include "h/mh.h"
 #include "m_getfld.h"
+#include "charstring.h"
 #include "concat.h"
 #include "trimcpy.h"
 #include "getcpy.h"
@@ -132,7 +133,8 @@ struct curl_ctx {
 };
 
 static bool get_json_strings(const char *, size_t, FILE *, ...) ENDNULL;
-static bool make_query_url(char *, size_t, CURL *, const char *, ...) ENDNULL;
+static bool make_query_url(char *, size_t, CURL *, const char *, const char **,
+                           ...) ENDNULL;
 static bool post(struct curl_ctx *, const char *, const char *);
 
 /*
@@ -322,7 +324,10 @@ void
 mh_oauth_free(mh_oauth_ctx *ctx)
 {
     free(ctx->svc.name);
-    free(ctx->svc.scope);
+    for (const char **sp = ctx->svc.scopes; *sp; ++sp) {
+        free((char *) *sp);
+    }
+    free(ctx->svc.scopes);
     free(ctx->svc.client_id);
     free(ctx->svc.client_secret);
     free(ctx->svc.auth_endpoint);
@@ -446,11 +451,10 @@ mh_oauth_get_authorize_url(mh_oauth_ctx *ctx)
 {
     /* [1] 4.1.1 Authorization Request */
     if (!make_query_url(ctx->buf, sizeof ctx->buf, ctx->curl,
-                        ctx->svc.auth_endpoint,
+                        ctx->svc.auth_endpoint, ctx->svc.scopes,
                         "response_type", "code",
                         "client_id", ctx->svc.client_id,
                         "redirect_uri", ctx->svc.redirect_uri,
-                        "scope", ctx->svc.scope,
                         NULL)) {
         set_err(ctx, MH_OAUTH_REQUEST_INIT);
         return NULL;
@@ -562,7 +566,7 @@ mh_oauth_authorize(const char *code, mh_oauth_ctx *ctx)
 {
     mh_oauth_cred *result;
 
-    if (!make_query_url(ctx->buf, sizeof ctx->buf, ctx->curl, NULL,
+    if (!make_query_url(ctx->buf, sizeof ctx->buf, ctx->curl, NULL, NULL,
                         "code", code,
                         "grant_type", "authorization_code",
                         "redirect_uri", ctx->svc.redirect_uri,
@@ -601,7 +605,7 @@ mh_oauth_refresh(mh_oauth_cred *cred)
         return false;
     }
 
-    if (!make_query_url(ctx->buf, sizeof ctx->buf, ctx->curl, NULL,
+    if (!make_query_url(ctx->buf, sizeof ctx->buf, ctx->curl, NULL, NULL,
                         "grant_type", "refresh_token",
                         "refresh_token", cred->refresh_token,
                         "client_id", ctx->svc.client_id,
@@ -934,51 +938,61 @@ mh_oauth_sasl_client_response(size_t *res_len,
  * result array in that case.
  */
 static bool
-make_query_url(char *s, size_t size, CURL *curl, const char *base_url, ...)
+make_query_url(char *s, size_t size, CURL *curl, const char *base_url,
+               const char **scopes, ...)
 {
-    bool result = false;
+    bool result;
     size_t len;
     char *prefix;
     va_list ap;
     const char *name;
+    charstring_t buf = charstring_create(URL_MAX);
 
     if (base_url == NULL) {
-        len = 0;
         prefix = "";
     } else {
-        len = strlen(base_url);
-        if (len > size - 1) /* Less one for NUL. */
+        if (strlen(base_url) > size - 1) /* Less one for NUL. */
             return false;
-        strcpy(s, base_url);
+        charstring_append_cstring(buf, base_url);
         prefix = "?";
     }
 
-    va_start(ap, base_url);
+    va_start(ap, scopes);
     for (name = va_arg(ap, char *); name != NULL; name = va_arg(ap, char *)) {
         char *name_esc = curl_easy_escape(curl, name, 0);
         char *val_esc = curl_easy_escape(curl, va_arg(ap, char *), 0);
-        /* prefix + name_esc + '=' + val_esc + '\0' must fit within size */
-        size_t new_len = len
-          + strlen(prefix)
-          + strlen(name_esc)
-          + 1 /* '=' */
-          + strlen(val_esc);
-        if (new_len + 1 > size) {
-            curl_free(name_esc);
-            curl_free(val_esc);
-            goto out;
-        }
-        sprintf(s + len, "%s%s=%s", prefix, name_esc, val_esc);
+        charstring_append_cstring(buf, prefix);
+        charstring_append_cstring(buf, name_esc);
+        charstring_push_back(buf, '=');
+        charstring_append_cstring(buf, val_esc);
         curl_free(name_esc);
         curl_free(val_esc);
-        len = new_len;
         prefix = "&";
     }
-
-    result = true;
-
-  out:
     va_end(ap);
+    if (scopes && *scopes) {
+        charstring_append_cstring(buf, prefix);
+        charstring_append_cstring(buf, "scope");
+        charstring_push_back(buf, '=');
+        for (const char **sp = scopes; sp && *sp; ++sp) {
+            char *val_esc = curl_easy_escape(curl, *sp, 0);
+            if (sp > scopes) {
+                charstring_append_cstring(buf, prefix);
+            }
+            charstring_append_cstring(buf, val_esc);
+            curl_free(val_esc);
+            /* Multiple scopes need to be space-separated, it seems. */
+            prefix="%20";
+        }
+    }
+
+    len = charstring_bytes(buf);
+    result = len < size ? true : false;
+    if (result) {
+        memcpy(s, charstring_buffer(buf), len);
+        s[len] = '\0';
+    }
+    charstring_free(buf);
     return result;
 }
 
