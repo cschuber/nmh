@@ -27,5 +27,7 @@ char *akresult(struct aka *);
 int alias(char *);
 char *akerror(int);
 
+extern struct aka *akahead;
+
 /* FIXME: Definition in config/config.c. */
 extern char *AliasFile;		/* mh-alias(5)             */
