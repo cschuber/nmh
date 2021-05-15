@@ -996,7 +996,6 @@ extern bool pushsw;
 extern bool unique;
 extern bool verbsw;
 
-extern char *annotext;
 extern char *distfile;
 
 
