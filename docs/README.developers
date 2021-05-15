@@ -329,3 +329,8 @@ spelling errors in man pages and binaries.
 Perhaps some nmh developer that uses Debian, or Ubuntu?, could provide
 package-building commands, including lintian(1), for Makefile.am so
 Lintian's complaints are known before release.
+
+A useful overview of what third parties are shipping which release is
+available at https://repology.org/project/nmh/versions with a quick
+overview on the Badges tab which shows
+https://repology.org/badge/vertical-allrepos/nmh.svg.
