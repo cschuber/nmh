@@ -36,7 +36,7 @@
 #   include <iconv.h>
 #endif /* ! HAVE_ICONV */
 
-extern int debugsw;
+extern bool debugsw;
 
 char *progsw = NULL;
 

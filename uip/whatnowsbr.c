@@ -989,7 +989,7 @@ DEFINE_SWITCH_ARRAY(SEND, sendswitches);
 #undef X
 
 
-extern int debugsw;		/* from sendsbr.c */
+extern bool debugsw;		/* from sendsbr.c */
 extern bool forwsw;
 extern int inplace;
 extern bool pushsw;
@@ -1044,7 +1044,7 @@ sendit(char *sp, char **arg, char *file, bool pushed)
     arguments = getarguments (sp, n, savearg, 1);
     argp = arguments;
 
-    debugsw = 0;
+    debugsw = false;
     forwsw = true;
     inplace = 1;
     unique = false;
@@ -1126,7 +1126,7 @@ sendit(char *sp, char **arg, char *file, bool pushed)
 		    continue;
 
 		case DEBUGSW:
-		    debugsw++;
+		    debugsw = true;
 		    /* FALLTHRU */
 		case NFILTSW:
 		case FRMTSW:

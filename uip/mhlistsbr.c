@@ -21,10 +21,10 @@
 /*
  * static prototypes
  */
-static void list_single_message (CT, int, int, int, int);
+static void list_single_message (CT, int, int, bool, int);
 static int list_debug (CT);
-static int list_multi (CT, int, int, int, int, int);
-static int list_external (CT, int, int, int, int, int);
+static int list_multi (CT, int, int, int, bool, int);
+static int list_external (CT, int, int, int, bool, int);
 static int list_encoding (CT);
 
 
@@ -49,7 +49,7 @@ static int list_encoding (CT);
  */
 
 void
-list_all_messages (CT *cts, int headers, int realsize, int verbose, int debug,
+list_all_messages (CT *cts, int headers, int realsize, int verbose, bool debug,
 		   int dispo)
 {
     CT ct, *ctp;
@@ -71,7 +71,7 @@ list_all_messages (CT *cts, int headers, int realsize, int verbose, int debug,
  */
 
 static void
-list_single_message (CT ct, int realsize, int verbose, int debug, int dispo)
+list_single_message (CT ct, int realsize, int verbose, bool debug, int dispo)
 {
     if (type_ok (ct, 1)) {
 	umask (ct->c_umask);
@@ -91,7 +91,7 @@ list_single_message (CT ct, int realsize, int verbose, int debug, int dispo)
  */
 
 int
-list_switch (CT ct, int toplevel, int realsize, int verbose, int debug,
+list_switch (CT ct, int toplevel, int realsize, int verbose, bool debug,
 	     int dispo)
 {
     switch (ct->c_type) {
@@ -128,7 +128,7 @@ list_switch (CT ct, int toplevel, int realsize, int verbose, int debug,
  */
 
 int
-list_content (CT ct, int toplevel, int realsize, int verbose, int debug,
+list_content (CT ct, int toplevel, int realsize, int verbose, bool debug,
 	     int dispo)
 {
     unsigned long size;
@@ -311,7 +311,7 @@ list_debug (CT ct)
  */
 
 static int
-list_multi (CT ct, int toplevel, int realsize, int verbose, int debug,
+list_multi (CT ct, int toplevel, int realsize, int verbose, bool debug,
 	    int dispo)
 {
     struct multipart *m = (struct multipart *) ct->c_ctparams;
@@ -337,7 +337,7 @@ list_multi (CT ct, int toplevel, int realsize, int verbose, int debug,
  */
 
 static int
-list_external (CT ct, int toplevel, int realsize, int verbose, int debug,
+list_external (CT ct, int toplevel, int realsize, int verbose, bool debug,
 	       int dispo)
 {
     struct exbody *e = (struct exbody *) ct->c_ctparams;

@@ -72,7 +72,7 @@ DEFINE_SWITCH_ARRAY(MHLIST, switches);
  * This is currently needed to keep mhparse happy.
  * This needs to be changed.
  */
-int debugsw = 0;
+bool debugsw;
 
 #define	quitser	pipeser
 
@@ -205,7 +205,7 @@ main (int argc, char **argv)
 		dispo = false;
 		continue;
 	    case DEBUGSW:
-		debugsw = 1;
+		debugsw = true;
 		continue;
 	    }
 	}

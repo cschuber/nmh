@@ -48,7 +48,7 @@ DEFINE_SWITCH_ENUM(VIAMAIL);
 DEFINE_SWITCH_ARRAY(VIAMAIL, switches);
 #undef X
 
-extern int debugsw;
+extern bool debugsw;
 extern bool verbsw;
 
 /*
@@ -120,7 +120,7 @@ main (int argc, char **argv)
 		continue;
 
 	    case DEBUGSW:
-		debugsw = 1;
+		debugsw = true;
 		continue;
 	    }
 	}

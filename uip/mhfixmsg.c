@@ -91,7 +91,7 @@ DEFINE_SWITCH_ARRAY(MHFIXMSG, switches);
 
 
 int verbosw;
-int debugsw; /* Needed by mhparse.c. */
+bool debugsw; /* Needed by mhparse.c. */
 
 #define quitser pipeser
 

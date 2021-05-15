@@ -65,7 +65,7 @@ struct smsg {
  * For the MIME parsing routines
  */
 
-int debugsw = 0;
+bool debugsw;
 
 /*
  * static prototypes

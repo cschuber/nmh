@@ -119,7 +119,7 @@ DEFINE_SWITCH_ENUM(USE);
 DEFINE_SWITCH_ARRAY(USE, anyl);
 #undef X
 
-extern int debugsw;		/* from sendsbr.c */
+extern bool debugsw;		/* from sendsbr.c */
 extern bool forwsw;
 extern int inplace;
 extern bool pushsw;
@@ -252,7 +252,7 @@ main (int argc, char **argv)
 		    continue;
 
 		case DEBUGSW: 
-		    debugsw++;
+		    debugsw = true;
 		    /* FALLTHRU */
 		case NFILTSW: 
 		case FRMTSW: 

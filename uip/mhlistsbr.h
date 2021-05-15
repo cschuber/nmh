@@ -16,11 +16,11 @@
  * headsw	- If 1, display a column header.
  * sizesw	- If 1, display the size of the part.
  * verbosw	- If 1, display verbose information
- * debugsw	- If 1, turn on debugging for the output.
+ * debugsw	- If true, turn on debugging for the output.
  * disposw	- If 1, display MIME part disposition information.
  *
  */
-void list_all_messages(CT *, int, int, int, int, int);
+void list_all_messages(CT *, int, int, int, bool, int);
 
 /*
  * Display content-appropriate information on MIME parts, descending recursively
@@ -29,7 +29,7 @@ void list_all_messages(CT *, int, int, int, int, int);
  *
  * Arguments and return value are the same as list_content().
  */
-int list_switch(CT, int, int, int, int, int);
+int list_switch(CT, int, int, int, bool, int);
 
 /*
  * List the content information of a single MIME part on stdout.
@@ -40,9 +40,9 @@ int list_switch(CT, int, int, int, int, int);
  * toplevel	- If set, we're at the top level of a message
  * realsize	- If set, determine the real size of the content
  * verbose	- If set, output verbose information
- * debug	- If set, turn on debugging for the output
+ * debug	- If true, turn on debugging for the output
  * dispo	- If set, display MIME part disposition information.
  *
  * Returns OK on success, NOTOK otherwise.
  */
-int list_content(CT, int, int, int, int, int);
+int list_content(CT, int, int, int, bool, int);

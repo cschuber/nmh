@@ -95,7 +95,7 @@ DEFINE_SWITCH_ARRAY(MHN, switches);
 #undef X
 
 
-int debugsw = 0;
+bool debugsw;
 int verbosw = 0;
 
 /*
@@ -282,7 +282,7 @@ main (int argc, char **argv)
 		verbosw = 0;
 		continue;
 	    case DEBUGSW:
-		debugsw = 1;
+		debugsw = true;
 		continue;
 	    }
 	}
