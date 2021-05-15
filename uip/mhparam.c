@@ -47,8 +47,6 @@ static char *datalocking = "fcntl";
 static char *localmbox = "";
 static bool localmbox_primed;
 
-extern char *spoollocking;
-
 static char *sasl =
 #ifdef CYRUS_SASL
     "cyrus_sasl";
