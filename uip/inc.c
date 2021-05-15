@@ -131,8 +131,6 @@ typedef struct {
     long written;
 } pop_closure;
 
-extern char response[];
-
 /* This is an attempt to simplify things by putting all the
  * privilege ops into macros.
  * *GROUPPRIVS() is related to handling the setgid MAIL property,

@@ -41,8 +41,6 @@ DEFINE_SWITCH_ARRAY(ALI, switches);
 
 static int pos = 1;
 
-extern struct aka *akahead;
-
 /*
  * prototypes
  */

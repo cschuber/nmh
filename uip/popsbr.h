@@ -16,3 +16,5 @@ int pop_retr(int, int (*)(void *, char *), void *);
 int pop_dele(int);
 int pop_quit(void);
 int pop_done(void);
+
+extern char response[BUFSIZ];
