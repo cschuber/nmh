@@ -32,6 +32,10 @@ C library/system call usage notes
   nmh temporary files below).
 * Use m_unlink() instead of unlink(3).
 * Use done() instead of _exit(3) except after a fork(3).
+* Don't cause the process's exit status to be outside of [0, 125] as
+  a shell's ‘$?’ may use higher values for its own errors or indicating
+  a signal occurred.  In particular, be wary of incrementing a counter
+  on each error and exiting with that as the status.
 
 
 -------------------------
