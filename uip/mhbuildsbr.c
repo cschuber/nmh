@@ -60,7 +60,6 @@
 
 
 extern bool listsw;
-extern bool rfc934sw;
 extern bool contentidsw;
 
 static char prefix[] = "----- =_aaaaaaaaaa";
@@ -92,7 +91,7 @@ static void expand_pseudoheader (CT, CT *, struct multipart *, const char *,
 static char *fgetstr (char *, int, FILE *);
 static int user_content (FILE *, char *, CT *, const char *infilename);
 static void set_id (CT, int);
-static int compose_content (CT, int);
+static int compose_content(CT, bool, int);
 static int scan_content (CT, size_t);
 static int build_headers (CT, int);
 static int extract_headers (CT, char *, FILE **);
@@ -116,7 +115,7 @@ static unsigned int directive_index;   /* Full element */
 
 CT
 build_mime (char *infile, int autobuild, int dist, int directives,
-	    int header_encoding, size_t maxunencoded, int verbose)
+	    int header_encoding, bool rfc934, size_t maxunencoded, int verbose)
 {
     int	compnum, state;
     char buf[NMH_BUFSIZ], name[NAMESZ];
@@ -547,7 +546,7 @@ finish_field:
      * Fill out, or expand directives.  Parse and execute
      * commands specified by profile composition strings.
      */
-    compose_content (ct, verbose);
+    compose_content(ct, rfc934, verbose);
 
     if ((cp = strchr(prefix, 'a')) == NULL)
 	die("internal error(4)");
@@ -1151,7 +1150,7 @@ set_id (CT ct, int top)
  */
 
 static int
-compose_content (CT ct, int verbose)
+compose_content(CT ct, bool rfc934, int verbose)
 {
     CE ce = &ct->c_cefile;
 
@@ -1177,7 +1176,7 @@ compose_content (CT ct, int verbose)
 
 	    sprintf (pp, "%d", partnum);
 	    p->c_partno = mh_xstrdup(partnam);
-	    if (compose_content (p, verbose) == NOTOK)
+	    if (compose_content(p, rfc934, verbose) == NOTOK)
 		return NOTOK;
 	}
 
@@ -1187,7 +1186,7 @@ compose_content (CT ct, int verbose)
 	 * message/rfc822, then mark this content and all
 	 * subparts with the rfc934 compatibility mode flag.
 	 */
-	if (rfc934sw && ct->c_subtype == MULTI_DIGEST) {
+	if (rfc934 && ct->c_subtype == MULTI_DIGEST) {
 	    bool is934 = true;
 
 	    for (part = m->mp_parts; part; part = part->mp_next) {
