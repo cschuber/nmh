@@ -964,13 +964,13 @@ make_query_url(char *s, size_t size, CURL *curl, const char *base_url, ...)
           + 1 /* '=' */
           + strlen(val_esc);
         if (new_len + 1 > size) {
-            free(name_esc);
-            free(val_esc);
+            curl_free(name_esc);
+            curl_free(val_esc);
             goto out;
         }
         sprintf(s + len, "%s%s=%s", prefix, name_esc, val_esc);
-        free(name_esc);
-        free(val_esc);
+        curl_free(name_esc);
+        curl_free(val_esc);
         len = new_len;
         prefix = "&";
     }
