@@ -5,8 +5,6 @@ This file is intended to provide a few tips for anyone doing development on nmh.
 Developers who learn things "the hard way" about the nmh codebase (as opposed to
 local info best encoded in a comment) are encouraged to share their wisdom here.
 
-Following a commit checklist, the topics are organized alphabetically.
-
 
 ----------------
 commit checklist
