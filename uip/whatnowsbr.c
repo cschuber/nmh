@@ -990,7 +990,6 @@ DEFINE_SWITCH_ARRAY(SEND, sendswitches);
 
 
 extern bool debugsw;		/* from sendsbr.c */
-extern bool pushsw;
 
 
 static void
