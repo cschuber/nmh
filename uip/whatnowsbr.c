@@ -135,8 +135,8 @@ static char *myprompt = "\nWhat now? ";
  */
 static int editfile (char **, char **, char *, int, struct msgs *,
 	char *, char *, int, int);
-static int sendfile (char **, char *, int);
-static void sendit (char *, char **, char *, int);
+static int sendfile(char **, char *, bool);
+static void sendit(char *, char **, char *, bool);
 static int buildfile (char **, char *);
 static int whomfile (char **, char *);
 static int removefile (char *);
@@ -316,13 +316,13 @@ WhatNow (int argc, char **argv)
 
 	case PUSHSW:
 	    /* Send draft in background */
-	    if (sendfile (++argp, drft, 1))
+	    if (sendfile(++argp, drft, true))
 		done (1);
 	    break;
 
 	case SENDSW:
 	    /* Send draft */
-	    sendfile (++argp, drft, 0);
+	    sendfile(++argp, drft, false);
 	    break;
 
 	case REFILEOPT:
@@ -832,7 +832,7 @@ copyf (char *ifile, char *ofile)
  */
 
 static int
-sendfile (char **arg, char *file, int pushsw)
+sendfile(char **arg, char *file, bool pushsw)
 {
     pid_t child_id;
     int vecp;
@@ -844,7 +844,7 @@ sendfile (char **arg, char *file, int pushsw)
      */
     if (strcmp (sp = r1bindex (sendproc, '/'), "send") == 0) {
 	cp = invo_name;
-	sendit (invo_name = sp, arg, file, pushsw);
+	sendit(invo_name = sp, arg, file, pushsw);
 	invo_name = cp;
 	return 1;
     }
@@ -1002,7 +1002,7 @@ extern char *distfile;
 
 
 static void
-sendit (char *sp, char **arg, char *file, int pushed)
+sendit(char *sp, char **arg, char *file, bool pushed)
 {
     int	vecp, n = 1;
     char *cp, buf[BUFSIZ], **argp, *program;
@@ -1097,10 +1097,10 @@ sendit (char *sp, char **arg, char *file, int pushed)
 		    return;
 
 		case SPSHSW:
-		    pushed++;
+		    pushed = true;
 		    continue;
 		case NSPSHSW:
-		    pushed = 0;
+		    pushed = false;
 		    continue;
 
 		case UNIQSW:
