@@ -59,8 +59,6 @@
 #include <time.h>
 
 
-extern int debugsw;
-
 extern bool listsw;
 extern bool rfc934sw;
 extern bool contentidsw;
