@@ -49,7 +49,7 @@ int show_content_aux(CT ct, int alternate, char *cp, char *cracked,
 int convert_charset(CT ct, char *dest_charset, int *message_mods);
 
 extern char *progsw;
-extern int nomore;
+extern bool nomore;
 extern char *formsw;
 extern char *folder;
 extern char *markerform;

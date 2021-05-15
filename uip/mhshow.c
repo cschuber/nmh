@@ -235,7 +235,7 @@ main (int argc, char **argv)
 		    die("missing argument to %s", argp[-2]);
 		continue;
 	    case NPROGSW:
-		nomore++;
+		nomore = true;
 		continue;
 
 	    case LENSW:

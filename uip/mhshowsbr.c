@@ -41,7 +41,7 @@ extern int debugsw;
 char *progsw = NULL;
 
 /* flags for moreproc/header display */
-int nomore   = 0;
+bool nomore;
 char *formsw = NULL;
 
 /* for output markers and headers */
