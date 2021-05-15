@@ -7,6 +7,7 @@
 
 #include "h/mh.h"
 #include <pwd.h>
+#include "error.h"
 #include "ssequal.h"
 #include "getfolder.h"
 #include "path.h"
@@ -26,6 +27,37 @@ static char *pwds;
  */
 static char *expath(char *,int);
 static void compath(char *);
+
+
+/* set_mypath sets the global mypath to the HOME environment variable if
+ * it is set and not empty, or else the password entry's home-directory
+ * field if it's found and not empty.  Otherwise, the program exits
+ * with an error.  The value found is copied with mh_xstrdup() as later
+ * library calls may invalidate returned values. */
+void
+set_mypath(void)
+{
+    char *var = getenv("HOME");
+    if (var) {
+        if (!*var)
+            die("environment variable HOME is empty");
+
+        mypath = mh_xstrdup(var);
+        return;
+    }
+
+    errno = 0;
+    struct passwd *pw = getpwuid(getuid());
+    if (!pw) {
+        if (errno)
+            adios("", "getpwuid() failed");   /* "" prints errno! */
+        die("password entry not found");
+    }
+    if (!*pw->pw_dir)
+        die("password entry has empty home directory");
+
+    mypath = mh_xstrdup(pw->pw_dir);
+}
 
 
 /* Return value must be free(3)'d. */

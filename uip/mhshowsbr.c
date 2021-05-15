@@ -36,12 +36,12 @@
 #   include <iconv.h>
 #endif /* ! HAVE_ICONV */
 
-extern int debugsw;
+extern bool debugsw;
 
 char *progsw = NULL;
 
 /* flags for moreproc/header display */
-int nomore   = 0;
+bool nomore;
 char *formsw = NULL;
 
 /* for output markers and headers */

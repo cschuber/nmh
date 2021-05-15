@@ -32,7 +32,6 @@
 #include "lock_file.h"
 #include "m_maildir.h"
 #include "makedir.h"
-#include <pwd.h>
 #include "utils.h"
 
 void
@@ -42,7 +41,6 @@ context_read (void)
     char			*cp;		/* miscellaneous pointer */
     char			*nd;		/* nmh directory pointer */
     struct	stat		st;		/* stat() results */
-    struct	passwd	        *pw;		/* getpwuid() results */
     FILE			*ib;		/* profile and context file pointer */
     int failed_to_lock = 0;
 
@@ -53,16 +51,7 @@ context_read (void)
     if ( m_defs != 0 )
         return;
 
-    /*
-     *	Find user's home directory.  Try the HOME environment variable first,
-     *	the home directory field in the password file if that's not found.
-     */
-
-    if ((mypath = getenv("HOME")) == NULL) {
-	if ((pw = getpwuid(getuid())) == NULL || *pw->pw_dir == '\0')
-	    die("cannot determine your home directory");
-        mypath = pw->pw_dir;
-    }
+    set_mypath();
 
     /*
      *	Find and read user's profile.  Check for the existence of an MH environment

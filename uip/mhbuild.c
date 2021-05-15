@@ -81,7 +81,7 @@ DEFINE_SWITCH_ENUM(MIMEENCODING);
 DEFINE_SWITCH_ARRAY(MIMEENCODING, encodingswitches);
 #undef X
 
-int debugsw = 0;
+bool debugsw;
 
 bool listsw;
 bool rfc934sw;
@@ -257,7 +257,7 @@ main (int argc, char **argv)
 		dispo = false;
 		continue;
 	    case DEBUGSW:
-		debugsw = 1;
+		debugsw = true;
 		continue;
 	    case DISTSW:
 		dist = true;

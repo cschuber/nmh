@@ -306,10 +306,10 @@ main (int argc, char **argv)
 		    continue;
 
 		case QURYSW: 
-		    querysw++;
+		    querysw = true;
 		    continue;
 		case NQURYSW: 
-		    querysw = 0;
+		    querysw = false;
 		    continue;
 
 		case WIDTHSW: 

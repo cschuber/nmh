@@ -69,7 +69,7 @@ DEFINE_SWITCH_ARRAY(MHSTORE, switches);
 #define	quitser	pipeser
 
 /* mhparse.c */
-int debugsw = 0;
+bool debugsw;
 
 /*
  * static prototypes
@@ -194,7 +194,7 @@ main (int argc, char **argv)
 		clobbersw = cp;
 		continue;
 	    case DEBUGSW:
-		debugsw = 1;
+		debugsw = true;
 		continue;
 	    }
 	}

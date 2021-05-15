@@ -60,7 +60,7 @@ static int expand_alias(const char *, const char **addr, const char **host, cons
 static int setup_oauth_params(char *[], int *, const char *, const char **);
 #endif /* OAUTH_SUPPORT */
 
-int debugsw = 0;		/* global */
+bool debugsw;		/* global */
 bool forwsw = true;
 int inplace = 1;
 bool pushsw;
@@ -526,7 +526,7 @@ oops:
 static void
 handle_sendfrom(char **vec, int *vecp, char *draft, const char *auth_svc)
 {
-    const char *addr = NULL, *host;
+    const char *addr = NULL, *host = NULL;
     const char *message;
 
     /* Extract address and host from From: header line in draft. */

@@ -12,4 +12,4 @@ void replout(FILE *inb, char *msg, char *drft, struct msgs *mp,
 extern short ccto;
 extern short cccc;
 extern short ccme;
-extern short querysw;
+extern bool querysw;

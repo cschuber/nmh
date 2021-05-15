@@ -43,6 +43,7 @@ advise (const char *what, const char *fmt, ...)
  * It calls advertise() with no tail to print fmt, and perhaps what, to
  * stderr, and exits the program with an error status.
  * Thus "[invo_name: ]fmt[[ what]: errno]\n" results.
+ *
  * The route to exit is via the done function pointer and may not be
  * straightforward, e.g. longjmp(3), but it must not return to adios().
  * If it does then it's a bug and adios() will abort(3) as callers do
@@ -61,7 +62,8 @@ adios (const char *what, const char *fmt, ...)
 
 
 /* die is the same as adios(), but without the what as that's commonly
- * NULL. */
+ * NULL.
+ * Thus "[invo_name: ]fmt\n" results. */
 void NORETURN
 die(const char *fmt, ...)
 {
@@ -90,11 +92,16 @@ admonish (char *what, char *fmt, ...)
 
 
 /* advertise prints fmt and ap to stderr after flushing stdout.
- * If invo_name isn't NULL or empty then "invo_name: " precedes fmt.
+ * If invo_name isn't NULL or empty then "invo_name: " is output.
+ *                                       fmt       is appended.
  * If what isn't NULL or empty      then " what"   is appended.
  * If what isn't NULL               then ": errno" is appended.
  * If tail isn't NULL or empty      then ", tail"  is appended.
  * A "\n" finishes the output to stderr.
+ *
+ * Note, a what of "" doesn't print it or the preceding space, but does
+ * trigger the printing of errno; such is the cunning design.
+ *
  * In summary: "[invo_name: ]fmt[[ what]: errno][, tail]\n". */
 void
 advertise (const char *what, char *tail, const char *fmt, va_list ap)

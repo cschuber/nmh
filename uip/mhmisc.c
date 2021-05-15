@@ -15,8 +15,6 @@
 #include "sbr/makedir.h"
 #include "mhmisc.h"
 
-extern int debugsw;
-
 /*
  * limit actions to specified parts or content types
  */

@@ -197,8 +197,8 @@ specified as the \*(lqfilename\*(rq attribute in the
 \*(lqContent-Disposition\*(rq header or as the \*(lqname\*(rq
 attribute in the \*(lqContent-Type\*(rq header for the content you are
 storing.  For security reasons, this filename will be ignored if it
-begins with the character '/', '.', '|', or '!', or if it contains the
-character '%'.  We also recommend using a \*(lqnmh-storage\*(rq profile
+begins with the character `/', `.', `|', or `!', or if it contains the
+character `%'.  We also recommend using a \*(lqnmh-storage\*(rq profile
 entry or a
 .B \-clobber
 switch setting other than the default of \*(lqalways\*(rq to avoid
@@ -235,7 +235,7 @@ folder.
 If the formatting string consists solely of a \*(lq-\*(rq character,
 then the content is sent to the standard output.
 .PP
-If the formatting string starts with a '|', then it represents
+If the formatting string starts with a `|', then it represents
 a command for
 .B mhstore
 to execute which should ultimately store the content.
@@ -248,7 +248,7 @@ The use of the \*(lq%a\*(rq sequence is not recommended because
 the user has no control over the Content-Type parameter data.
 .PP
 Otherwise, the formatting string will represent a pathname in which
-to store the content.  If the formatting string starts with a '/',
+to store the content.  If the formatting string starts with a `/',
 then the content will be stored in the full path given, else the
 file name will be relative to the value of \*(lqnmh-storage\*(rq or
 the current working directory.  Any escapes (given below) will be
@@ -335,7 +335,7 @@ and
 .IR suffix ,
 .I n
 is the lowest unused number, starting from one, in the same form.  If
-a filename does not have an extension (following a '.'), then
+a filename does not have an extension (following a `.'), then
 .I auto
 and
 .I suffix
@@ -365,7 +365,7 @@ can be abbreviated.  If the user responds with
 then
 .B mhstore
 prompts the user for the name of the new file to be created.  If it is
-a relative path name (does not begin with '/'), then it is relative to
+a relative path name (does not begin with `/'), then it is relative to
 the current directory.  If it is an absolute or relative path to a
 directory that does not exist, the user will be prompted whether to
 create the directory.  If standard input is not connected to a

@@ -48,7 +48,7 @@ DEFINE_SWITCH_ENUM(VIAMAIL);
 DEFINE_SWITCH_ARRAY(VIAMAIL, switches);
 #undef X
 
-extern int debugsw;
+extern bool debugsw;
 extern bool verbsw;
 
 /*
@@ -120,7 +120,7 @@ main (int argc, char **argv)
 		continue;
 
 	    case DEBUGSW:
-		debugsw = 1;
+		debugsw = true;
 		continue;
 	    }
 	}
@@ -142,7 +142,7 @@ static int
 via_mail (char *mailsw, char *subjsw, char *parmsw, char *descsw,
           char *cmntsw, char *fromsw)
 {
-    int	status, vecp;
+    int	vecp;
     char tmpfil[BUFSIZ], *program;
     char **vec;
     struct stat st;
@@ -194,8 +194,6 @@ via_mail (char *mailsw, char *subjsw, char *parmsw, char *descsw,
     if (fstat (fileno (fp), &st) == NOTOK)
 	adios ("failed", "fstat of %s", tmpfil);
 
-    status = 0;
-
     vec = argsplit(postproc, &program, &vecp);
     if (verbsw)
 	vec[vecp++] = "-verbose";
@@ -206,12 +204,14 @@ via_mail (char *mailsw, char *subjsw, char *parmsw, char *descsw,
 	vec[vecp++] = cp;
     }
 
+    int	status;
     switch (sendsbr (vec, vecp, program, tmpfil, &st, 0, NULL)) {
 	case DONE:
 	case NOTOK:
-	    status++;
+	    status = 1;
 	    break;
 	case OK:
+            status = 0;
 	    break;
     }
 

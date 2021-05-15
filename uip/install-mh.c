@@ -22,7 +22,6 @@
 #include "sbr/utils.h"
 #include "sbr/m_maildir.h"
 #include "sbr/makedir.h"
-#include <pwd.h>
 #include "sbr/read_line.h"
 
 #define INSTALLMH_SWITCHES \
@@ -48,7 +47,6 @@ main (int argc, char **argv)
     const char *pathname;
     char *dp, **arguments, **argp;
     struct node *np;
-    struct passwd *pw;
     struct stat st;
     FILE *in, *out;
     bool check;
@@ -90,16 +88,7 @@ main (int argc, char **argv)
 	}
     }
 
-    /*
-     *	Find user's home directory.  Try the HOME environment variable first,
-     *	the home directory field in the password file if that's not found.
-     */
-
-    if ((mypath = getenv("HOME")) == NULL) {
-	if ((pw = getpwuid(getuid())) == NULL || *pw->pw_dir == '\0')
-	    die("cannot determine your home directory");
-        mypath = pw->pw_dir;
-    }
+    set_mypath();
 
     /*
      *	Find the user's profile.  Check for the existence of an MH environment

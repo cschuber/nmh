@@ -36,7 +36,7 @@
 #include "sbr/base64.h"
 
 
-extern int debugsw;
+extern bool debugsw;
 
 /*
  * These are for mhfixmsg to:

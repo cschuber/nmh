@@ -88,7 +88,7 @@ DEFINE_SWITCH_ARRAY(MHSHOW, switches);
 #undef X
 
 
-int debugsw = 0;
+bool debugsw;
 int verbosw = 0;
 
 #define	quitser	pipeser
@@ -235,7 +235,7 @@ main (int argc, char **argv)
 		    die("missing argument to %s", argp[-2]);
 		continue;
 	    case NPROGSW:
-		nomore++;
+		nomore = true;
 		continue;
 
 	    case LENSW:
@@ -251,7 +251,7 @@ main (int argc, char **argv)
 		verbosw = 0;
 		continue;
 	    case DEBUGSW:
-		debugsw = 1;
+		debugsw = true;
 		continue;
 	    }
 	}

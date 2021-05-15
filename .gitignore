@@ -40,6 +40,7 @@ __pycache__
 .deps/
 .dirstamp
 /Makefile
+/config.cache
 /config.h
 /config.log
 /config.status

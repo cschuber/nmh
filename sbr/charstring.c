@@ -125,7 +125,7 @@ charstring_append_cstring (charstring_t dest, const char src[])
 
     if (num > 0) {
         charstring_reserve (dest, dest->cur - dest->buffer + num);
-        memcpy (dest->cur, src, num);  /* Exclude src's trailing newline. */
+        memcpy (dest->cur, src, num);  /* Exclude src's trailing NULL. */
         dest->cur += num;
         dest->chars += num;
     }
