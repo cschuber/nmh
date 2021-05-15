@@ -30,7 +30,7 @@
 short ccto = -1;
 short cccc = -1;
 short ccme = -1;
-short querysw = 0;
+bool querysw;
 
 static int dftype=0;
 
