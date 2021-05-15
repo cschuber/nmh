@@ -46,80 +46,94 @@ and awaits a response.  The valid responses are:
 .RS 5
 .TP
 .B edit
-re-edit using the same editor that was used on the
-preceding round unless a profile entry
-\*(lq<lasteditor>\-next: <editor>\*(rq names an alternate editor
+Re-edit using the same editor that was used on the preceding round
+unless a profile entry \*(lq<lasteditor>\-next: <editor>\*(rq names an
+alternate editor.
 .TP
 \fBedit\fP \fIeditor\fP
-invoke
+Invoke
 .I editor
-for further editing
+for further editing.
 .TP
 \fBrefile\fP \fI+folder\fP
-refile the draft into the given folder
+Refile the draft into
+.I folder .
 .TP
 .B mime
-process the draft as MIME composition file using
-the
+Process the draft as a MIME composition file using the
 .I buildmimeproc
-command
-.RB ( mhbuild
-by default)
+command which defaults to
+.IR mhbuild (1).
 .TP
 .B display
-list the message being distributed/replied-to
-on the terminal
+List the message being replied to or distributed on the terminal.
 .TP
 .B list
-list the draft on the terminal
+List the draft on the terminal.
 .TP
 .B send
-send the message
+Send the message.
 .TP
 .B send \-watch
-send the message and monitor the delivery process
+Send the message and monitor the delivery process.
 .TP
 .B push
-send the message in the background
+Send the message in the background.
 .TP
 .B whom
-list the addresses that the message will go to
+List the addresses to whom the message will go.
 .TP
 .B whom \-check
-list the addresses and verify that they are
-acceptable to the transport service
+List the addresses and verify that they are acceptable to the transport
+service.
 .TP
 .B quit
-preserve the draft and exit
+Preserve the draft and exit.
 .TP
 .B quit \-delete
-delete the draft and exit
+Delete the draft and exit.
 .TP
 .B delete
-delete the draft and exit
+Delete the draft and exit.
 .TP
 \fBcd\fP \fIdirectory\fP
-use
+Use
 .I directory
-when interpreting attachment file names
+when interpreting attachment file names.
+This does not change
+.IR whatnow 's
+process's current working directory so it and child processes,
+e.g.\&
+.IR edit 's,
+do not see the change.
 .TP
 .B pwd
-print the working directory for attachment files
+Print the working directory for attachment files.
 .TP
 \fBls\fP [\fIls-options\fP\^]
-list files in the attachment working directory using the ls command
+List files in the attachment working directory using
+.IR ls (1).
 .TP
 \fBattach [-v]\fP \fIfiles\fP
-add the named files to the message as MIME attachments; -v displays
-the mhbuild directive that
+Add the named files to the message as MIME attachments;
+.B -v
+displays the
+.IR mhbuild (1)
+directive that
 .IR send (1)
-will use
+will use.
 .TP
 .B alist [-ln]
-list the MIME attachments, either short, long [-l] or numbered [-n]
+List the MIME attachments' filenames.
+.B -l
+gives a long listing showing their full path.
+.B -n
+numbers them for use with
+.B detach .
 .TP
 \fBdetach [-n]\fP \fIfiles-or-numbers\fP
-remove MIME attachments, either by file name or by number with -n
+Remove MIME attachments, either by file name or by number with
+.BR -n .
 .RE
 .PP
 When entering your response, you need only type enough characters
