@@ -15,7 +15,7 @@
 #include "error.h"
 #include "utils.h"
 
-static void checkconfig();
+static void checkconfig(void);
 
 struct procstr {
     char *procname;
@@ -154,7 +154,8 @@ add_profile_entry (const char *key, const char *value)
 
 /* Check profile for issues to warn about. */
 void
-checkconfig() {
+checkconfig(void)
+{
     /* Check for duplicated non-null profile entries.  Except
        allow multiple profile entries named "#", because that's
        what mh-profile(5) suggests using for comments.
