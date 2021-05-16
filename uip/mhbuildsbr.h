@@ -22,14 +22,16 @@
  * encoding	- The default encoding to use when doing RFC 2047 header
  *		  encoding.  Must be one of CE_UNKNOWN, CE_BASE64, or
  *		  CE_QUOTED.
+ * contentid    - Whether a ‘Content-ID’ field should be added.
  * rfc934	- Whether the multipart/digest for ‘#forw’ should
  *		  attempt compliance with RFC 934.
  * maxunencoded	- The maximum line length before the default encoding for
  *		  text parts is quoted-printable.
+ * listsw	- Whether to list the MIME contents.
  * verbose	- If 1, output verbose information during message composition
  *
  * Returns a CT structure describing the resulting MIME message.  If the
  * -auto flag is set and a MIME-Version header is encountered, the return
  * value is NULL.
  */
-CT build_mime(char *, int, int, int, int, bool, size_t, int);
+CT build_mime(char *, int, int, int, int, bool, bool, size_t, bool, int);

@@ -49,7 +49,6 @@ DEFINE_SWITCH_ARRAY(VIAMAIL, switches);
 #undef X
 
 extern bool debugsw;
-extern bool verbsw;
 
 /*
  * static prototypes

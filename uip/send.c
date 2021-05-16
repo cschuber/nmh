@@ -120,11 +120,6 @@ DEFINE_SWITCH_ARRAY(USE, anyl);
 #undef X
 
 extern bool debugsw;		/* from sendsbr.c */
-extern bool forwsw;
-extern int inplace;
-extern bool pushsw;
-extern bool unique;
-extern bool verbsw;
 
 
 int

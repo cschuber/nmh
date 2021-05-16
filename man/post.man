@@ -41,6 +41,7 @@ post \- deliver an nmh message
 .RB [ \-tls ]
 .RB [ \-initialtls ]
 .RB [ \-notls ]
+.RB [ \-snoop ]
 .I file
 .ad
 .SH DESCRIPTION
