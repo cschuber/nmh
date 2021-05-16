@@ -302,8 +302,7 @@ pop_init (char *host, char *port, char *user, char *proxy, int snoop,
 			return NOTOK;
 		    if (netsec_negotiate_sasl(nsc, server_mechs,
 					      &errstr) != OK) {
-			strncpy(response, errstr, sizeof(response));
-			response[sizeof(response) - 1] = '\0';
+			trunccpy(response, errstr, sizeof(response));
 			free(errstr);
 			return NOTOK;
 		    }
