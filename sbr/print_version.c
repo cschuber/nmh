@@ -5,6 +5,7 @@
  * complete copyright information.
  */
 
+#include "config/version.h"
 #include "h/mh.h"
 #include "print_version.h"
 

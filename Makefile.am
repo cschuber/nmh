@@ -331,6 +331,7 @@ noinst_LIBRARIES = \
 ## them, but that might change in the future.
 ##
 noinst_HEADERS = \
+    config/version.h \
     h/icalendar.h \
     h/mh.h \
     h/mhparse.h \

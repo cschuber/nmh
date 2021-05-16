@@ -5,6 +5,7 @@
  * complete copyright information.
  */
 
+#include "config/version.h"
 #include "h/mh.h"
 #include "m_getfld.h"
 #include "concat.h"

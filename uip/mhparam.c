@@ -8,6 +8,7 @@
  * complete copyright information.
  */
 
+#include "config/version.h"
 #include "h/mh.h"
 #include "sbr/getarguments.h"
 #include "sbr/smatch.h"
