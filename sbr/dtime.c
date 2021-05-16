@@ -265,7 +265,7 @@ char *
 dasctime (struct tws *tw, int flags)
 {
     char buffer[77];
-    char tzbuffer[DTZ_BUFFER_SIZE];
+    char tzbuffer[DTZ_BUFFER_SIZE + 1];   /* Allow for leading space. */
     static char result[80];
     int twf;
 
