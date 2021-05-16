@@ -28,6 +28,7 @@
 #include "error.h"
 #include "utils.h"
 #include <pwd.h>
+#include "globals.h"
 
 static FILE *cfile;
 

@@ -14,6 +14,7 @@
 #include "seq_del.h"
 #include "seq_add.h"
 #include "utils.h"
+#include "globals.h"
 
 /*
  * We scan through the folder and act upon all messages

@@ -38,6 +38,7 @@
 #include "mhmisc.h"
 #include "sbr/m_maildir.h"
 #include "mhfree.h"
+#include "sbr/globals.h"
 
 #define MHSTORE_SWITCHES \
     X("auto", 0, AUTOSW) \

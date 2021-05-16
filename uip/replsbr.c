@@ -26,6 +26,7 @@
 #include "sbr/done.h"
 #include <sys/file.h>
 #include "replsbr.h"
+#include "sbr/globals.h"
 
 short ccto = -1;
 short cccc = -1;

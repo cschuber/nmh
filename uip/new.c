@@ -34,6 +34,7 @@
 #include "sbr/utils.h"
 #include "sbr/lock_file.h"
 #include "sbr/m_maildir.h"
+#include "sbr/globals.h"
 
 #define NEW_SWITCHES \
     X("mode", 1, MODESW) \

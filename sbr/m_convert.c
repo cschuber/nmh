@@ -13,6 +13,7 @@
 #include "seq_getnum.h"
 #include "error.h"
 #include "utils.h"
+#include "globals.h"
 
 /*
  * error codes for sequence

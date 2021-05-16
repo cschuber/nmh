@@ -33,6 +33,7 @@
 #include "sbr/utils.h"
 #include "sbr/done.h"
 #include "sbr/m_maildir.h"
+#include "sbr/globals.h"
 
 /*
  * We allocate space to record the names of folders

@@ -9,6 +9,7 @@
 #include "seq_nameok.h"
 #include "seq_add.h"
 #include "error.h"
+#include "globals.h"
 
 
 /*

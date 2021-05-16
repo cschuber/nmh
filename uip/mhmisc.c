@@ -14,6 +14,7 @@
 #include "sbr/utils.h"
 #include "sbr/makedir.h"
 #include "mhmisc.h"
+#include "sbr/globals.h"
 
 /*
  * limit actions to specified parts or content types

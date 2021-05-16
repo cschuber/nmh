@@ -9,6 +9,7 @@
 #include "context_del.h"
 #include "error.h"
 #include "utils.h"
+#include "globals.h"
 
 /*
  * Delete a key/value pair from the context/profile list.

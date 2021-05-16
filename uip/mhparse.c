@@ -34,6 +34,7 @@
 # include <iconv.h>
 #endif /* HAVE_ICONV */
 #include "sbr/base64.h"
+#include "sbr/globals.h"
 
 
 extern bool debugsw;

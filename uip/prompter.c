@@ -26,6 +26,7 @@
 #include <setjmp.h>
 
 #include <termios.h>
+#include "sbr/globals.h"
 
 #define	QUOTE '\\'
 

@@ -29,6 +29,7 @@
 #include "sbr/m_mktemp.h"
 #include "mhfree.h"
 #include "mhoutsbr.h"
+#include "sbr/globals.h"
 
 #define MHBUILD_SWITCHES \
     X("auto", 0, AUTOSW) \

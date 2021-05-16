@@ -37,6 +37,7 @@
 #include "mhmisc.h"
 #include "sbr/m_maildir.h"
 #include "mhfree.h"
+#include "sbr/globals.h"
 
 #define MHLIST_SWITCHES \
     X("check", -5, CHECKSW) \

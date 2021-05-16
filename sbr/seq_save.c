@@ -16,6 +16,7 @@
 #include "signals.h"
 #include "lock_file.h"
 #include "m_mktemp.h"
+#include "globals.h"
 
 
 /*

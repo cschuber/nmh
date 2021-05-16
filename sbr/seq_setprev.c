@@ -11,6 +11,7 @@
 #include "brkstring.h"
 #include "seq_add.h"
 #include "utils.h"
+#include "globals.h"
 
 /*
  * Add all the messages currently SELECTED to

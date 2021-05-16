@@ -43,6 +43,7 @@
 #include "sbr/m_popen.h"
 #include "mhfree.h"
 #include "mhshowsbr.h"
+#include "sbr/globals.h"
 
 #define MHSHOW_SWITCHES \
     X("check", 0, CHECKSW) \

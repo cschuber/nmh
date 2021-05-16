@@ -67,6 +67,7 @@
 
 #ifdef HAVE_GETUTXENT
 #include <utmpx.h>
+#include "sbr/globals.h"
 #endif /* HAVE_GETUTXENT */
 
 #define SLOCAL_SWITCHES \

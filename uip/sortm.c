@@ -32,6 +32,7 @@
 #include "sbr/done.h"
 #include "sbr/utils.h"
 #include "sbr/m_maildir.h"
+#include "sbr/globals.h"
 
 #define SORTM_SWITCHES \
     X("datefield field", 0, DATESW) \

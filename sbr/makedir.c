@@ -16,6 +16,7 @@
 #include "error.h"
 #include "makedir.h"
 #include <sys/file.h>
+#include "globals.h"
 
 int
 makedir (const char *dir)

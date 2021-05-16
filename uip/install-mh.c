@@ -23,6 +23,7 @@
 #include "sbr/m_maildir.h"
 #include "sbr/makedir.h"
 #include "sbr/read_line.h"
+#include "sbr/globals.h"
 
 #define INSTALLMH_SWITCHES \
     X("auto", 0, AUTOSW) \

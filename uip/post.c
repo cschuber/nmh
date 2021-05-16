@@ -43,6 +43,7 @@
 #include <time.h>
 
 #include "mts/smtp/smtp.h"
+#include "sbr/globals.h"
 
 #ifndef CYRUS_SASL
 # define SASLminc(a) (a)

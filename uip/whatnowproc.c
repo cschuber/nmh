@@ -14,6 +14,7 @@
 #include "sbr/context_save.h"
 #include "sbr/error.h"
 #include "sbr/done.h"
+#include "sbr/globals.h"
 
 
 /*

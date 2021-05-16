@@ -9,6 +9,7 @@
 #include "seq_getnum.h"
 #include "seq_print.h"
 #include "error.h"
+#include "globals.h"
 
 
 /*

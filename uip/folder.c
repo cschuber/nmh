@@ -35,6 +35,7 @@
 #include "sbr/done.h"
 #include "sbr/utils.h"
 #include "sbr/m_maildir.h"
+#include "sbr/globals.h"
 
 #define FOLDER_SWITCHES \
     X("all", 0, ALLSW) \

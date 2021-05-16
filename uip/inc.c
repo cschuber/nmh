@@ -71,6 +71,7 @@
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"
 #include "sbr/maildir_read_and_sort.h"
+#include "sbr/globals.h"
 
 #ifndef TLS_SUPPORT
 # define TLSminc(a) (a)

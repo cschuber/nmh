@@ -48,6 +48,7 @@
 #include "mhoutsbr.h"
 #include "mhshowsbr.h"
 #include <fcntl.h>
+#include "sbr/globals.h"
 
 #define MHFIXMSG_SWITCHES \
     X("decodetext 8bit|7bit|binary", 0, DECODETEXTSW) \

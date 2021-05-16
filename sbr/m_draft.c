@@ -21,6 +21,7 @@
 #include "utils.h"
 #include "m_maildir.h"
 #include "done.h"
+#include "globals.h"
 
 
 /* Does not return NULL. */

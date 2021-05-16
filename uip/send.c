@@ -37,6 +37,7 @@
 #endif
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"
+#include "sbr/globals.h"
 
 #ifndef CYRUS_SASL
 # define SASLminc(a) (a)

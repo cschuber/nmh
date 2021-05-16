@@ -210,8 +210,6 @@ struct swit {
 	{ NULL, 0, 0 } \
     }
 
-extern struct swit anoyes[];	/* standard yes/no switches */
-
 /*
  * general folder attributes
  */
@@ -435,74 +433,9 @@ typedef struct nmh_creds *nmh_creds_t;
 # define abs(a) ((a) > 0 ? (a) : -(a))
 #endif
 
-/*
- * GLOBAL VARIABLES
- */
 #define CTXMOD	0x01		/* context information modified */
 #define	DBITS	"\020\01CTXMOD"
-extern char ctxflags;
 
-extern char *invo_name;		/* command invocation name         */
-extern char *mypath;		/* user's $HOME                    */
-extern char *defpath;		/* pathname of user's profile      */
-extern char *ctxpath;		/* pathname of user's context      */
-extern struct node *m_defs;	/* list of profile/context entries */
-
-/*
- * These standard strings are defined in config.c.  They are the
- * only system-dependent parameters in nmh, and thus by redefining
- * their values and reloading the various modules, nmh will run
- * on any system.
- */
-extern char *buildmimeproc;
-extern char *catproc;
-extern char *components;
-extern char *context;
-extern char *current;
-extern char *credentials_file;
-extern int credentials_no_perm_check;
-extern char *defaultfolder;
-extern char *digestcomps;
-extern char *distcomps;
-extern char *draft;
-extern char *fileproc;
-extern char *foldprot;
-extern char *formatproc;
-extern char *forwcomps;
-extern char *inbox;
-extern char *incproc;
-extern char *lproc;
-extern char *mailproc;
-extern char *mh_defaults;
-extern char *mh_profile;
-extern char *mh_seq;
-extern char *mhlformat;
-extern char *mhlforward;
-extern char *mhlproc;
-extern char *mhlreply;
-extern char *moreproc;
-extern char *msgprot;
-extern char *nmhaccessftp;
-extern char *nmhaccessurl;
-extern char *nmhstorage;
-extern char *nmhcache;
-extern char *nmhprivcache;
-extern char *nsequence;
-extern char *packproc;
-extern char *postproc;
-extern char *pfolder;
-extern char *psequence;
-extern char *rcvdistcomps;
-extern char *rcvstoreproc;
-extern char *replcomps;
-extern char *replgroupcomps;
-extern char *rmmproc;
-extern char *sendproc;
-extern char *showmimeproc;
-extern char *showproc;
-extern char *usequence;
 extern char *user_agent;
 extern char *version_num;
 extern char *version_str;
-extern char *whatnowproc;
-extern char *whomproc;

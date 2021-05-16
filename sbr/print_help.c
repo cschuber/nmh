@@ -10,6 +10,7 @@
 #include "context_find.h"
 #include "print_sw.h"
 #include "print_help.h"
+#include "globals.h"
 
 
 void

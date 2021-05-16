@@ -38,6 +38,7 @@
 #include "sbr/done.h"
 #include "sbr/m_maildir.h"
 #include "sbr/terminal.h"
+#include "sbr/globals.h"
 
 #define FMTTEST_SWITCHES \
     X("form formatfile", 0, FORMSW) \

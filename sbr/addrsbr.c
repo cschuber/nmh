@@ -16,6 +16,7 @@
 #include "mf.h"
 #include "mts.h"
 #include "utils.h"
+#include "globals.h"
 
 /* High level parsing of addresses:
 

@@ -32,6 +32,7 @@
 #include "mhshowsbr.h"
 #include "sbr/m_mktemp.h"
 #include "sbr/path.h"
+#include "sbr/globals.h"
 #ifdef HAVE_ICONV
 #   include <iconv.h>
 #endif /* ! HAVE_ICONV */

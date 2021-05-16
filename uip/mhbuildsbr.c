@@ -57,6 +57,7 @@
 # include <sys/time.h>
 #endif
 #include <time.h>
+#include "sbr/globals.h"
 
 
 static char prefix[] = "----- =_aaaaaaaaaa";

@@ -13,6 +13,7 @@
 #include "utils.h"
 #include "arglist.h"
 #include "error.h"
+#include "globals.h"
 
 
 int

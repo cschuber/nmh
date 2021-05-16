@@ -35,6 +35,7 @@
 #include "sbr/utils.h"
 #include "sbr/m_maildir.h"
 #include "replsbr.h"
+#include "sbr/globals.h"
 
 #define REPL_SWITCHES \
     X("group", 0, GROUPSW) \

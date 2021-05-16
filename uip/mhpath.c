@@ -26,6 +26,7 @@
 #include "sbr/done.h"
 #include "sbr/utils.h"
 #include "sbr/m_maildir.h"
+#include "sbr/globals.h"
 
 #define MHPATH_SWITCHES \
     X("version", 0, VERSIONSW) \

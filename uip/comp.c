@@ -37,6 +37,7 @@
 #include "sbr/done.h"
 #include "sbr/m_maildir.h"
 #include <fcntl.h>
+#include "sbr/globals.h"
 
 #define COMP_SWITCHES \
     X("draftfolder +folder", 0, DFOLDSW) \

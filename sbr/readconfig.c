@@ -14,6 +14,7 @@
 #include "readconfig.h"
 #include "error.h"
 #include "utils.h"
+#include "globals.h"
 
 static void checkconfig(void);
 

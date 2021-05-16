@@ -40,6 +40,7 @@
 #include "sbr/done.h"
 #include "sbr/m_maildir.h"
 #include "forwsbr.h"
+#include "sbr/globals.h"
 
 
 #define	IFORMAT	"digest-issue-%s"

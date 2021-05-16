@@ -8,6 +8,7 @@
 #include "h/mh.h"
 #include "concat.h"
 #include "context_find.h"
+#include "globals.h"
 
 
 char *

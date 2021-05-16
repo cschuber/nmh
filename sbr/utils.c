@@ -23,6 +23,7 @@
 #include <fcntl.h>
 #include <limits.h>
 #include "read_line.h"
+#include "globals.h"
 
 extern char *mhdocdir;
 
