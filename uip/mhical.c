@@ -26,6 +26,7 @@
 #include "sbr/done.h"
 #include "sbr/utils.h"
 #include <time.h>
+#include "sbr/globals.h"
 
 typedef enum act {
     ACT_NONE,

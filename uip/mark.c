@@ -31,6 +31,7 @@
 #include "sbr/done.h"
 #include "sbr/utils.h"
 #include "sbr/m_maildir.h"
+#include "sbr/globals.h"
 
 #define MARK_SWITCHES \
     X("add", 0, ADDSW) \

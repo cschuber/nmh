@@ -41,6 +41,7 @@
 #include <sys/types.h>
 #include "sbr/terminal.h"
 #include "sbr/path.h"
+#include "sbr/globals.h"
 
 /*
  * MAJOR BUG:

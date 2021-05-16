@@ -36,6 +36,7 @@
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"
 #include <fcntl.h>
+#include "sbr/globals.h"
 
 #define REFILE_SWITCHES \
     X("draft", 0, DRAFTSW) \

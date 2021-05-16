@@ -14,6 +14,7 @@
 #include "utils.h"
 #include "mts.h"
 #include "m_maildir.h"
+#include "globals.h"
 
 struct nmh_creds {
     char *host;		/* Hostname corresponding to credentials */

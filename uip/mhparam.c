@@ -19,6 +19,7 @@
 #include "sbr/mts.h"
 #include "sbr/done.h"
 #include "sbr/utils.h"
+#include "sbr/globals.h"
 
 #define MHPARAM_SWITCHES \
     X("components", 0, COMPSW) \

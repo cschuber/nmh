@@ -20,6 +20,7 @@
 #include <pwd.h>
 
 #include "popsbr.h"
+#include "sbr/globals.h"
 
 #ifndef CYRUS_SASL
 # define SASLminc(a) (a)

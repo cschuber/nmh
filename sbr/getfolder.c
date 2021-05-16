@@ -8,6 +8,7 @@
 #include "h/mh.h"
 #include "getfolder.h"
 #include "context_find.h"
+#include "globals.h"
 
 
 /* Does not return NULL. */

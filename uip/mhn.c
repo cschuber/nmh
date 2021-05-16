@@ -43,6 +43,7 @@
 #include "sbr/m_maildir.h"
 #include "mhfree.h"
 #include "mhshowsbr.h"
+#include "sbr/globals.h"
 
 #define MHN_SWITCHES \
     X("auto", 0, AUTOSW) \

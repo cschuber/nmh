@@ -21,6 +21,7 @@
 #include <sys/time.h>
 #include "sbr/done.h"
 #include "sbr/base64.h"
+#include "sbr/globals.h"
 
 #define IMAPTEST_SWITCHES \
     X("host hostname", 0, HOSTSW) \

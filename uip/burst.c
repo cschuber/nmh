@@ -34,6 +34,7 @@
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"
 #include "mhfree.h"
+#include "sbr/globals.h"
 
 #define BURST_SWITCHES \
     X("inplace", 0, INPLSW) \

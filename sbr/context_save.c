@@ -17,6 +17,7 @@
 #include <signal.h>
 #include "signals.h"
 #include "lock_file.h"
+#include "globals.h"
 
 void
 context_save (void)

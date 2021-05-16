@@ -54,6 +54,7 @@
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"
 #include "sbr/message_id.h"
+#include "sbr/globals.h"
 
 static int expand_alias(const char *, const char **addr, const char **host, const char **);
 #ifdef OAUTH_SUPPORT

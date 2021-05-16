@@ -10,6 +10,7 @@
 #include "context_replace.h"
 #include "error.h"
 #include "utils.h"
+#include "globals.h"
 
 
 void

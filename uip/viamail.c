@@ -26,6 +26,7 @@
 #include "sbr/done.h"
 #include "sbr/m_mktemp.h"
 #include "sbr/base64.h"
+#include "sbr/globals.h"
 
 #define VIAMAIL_SWITCHES \
     X("to mailpath", 0, TOSW) \

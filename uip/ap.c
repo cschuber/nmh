@@ -22,6 +22,7 @@
 #include "sbr/done.h"
 #include "sbr/utils.h"
 #include "sbr/terminal.h"
+#include "sbr/globals.h"
 
 #define	NADDRS	100
 

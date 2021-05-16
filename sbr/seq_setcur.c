@@ -8,6 +8,7 @@
 #include "h/mh.h"
 #include "seq_setcur.h"
 #include "seq_add.h"
+#include "globals.h"
 
 
 void

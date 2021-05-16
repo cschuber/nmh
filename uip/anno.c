@@ -65,6 +65,7 @@
 #include "sbr/utils.h"
 #include "sbr/done.h"
 #include "sbr/m_maildir.h"
+#include "sbr/globals.h"
 
 #define ANNO_SWITCHES \
     X("component field", 0, COMPSW) \

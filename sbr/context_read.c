@@ -33,6 +33,7 @@
 #include "m_maildir.h"
 #include "makedir.h"
 #include "utils.h"
+#include "globals.h"
 
 void
 context_read (void)

@@ -35,6 +35,7 @@
 #include "h/mime.h"
 #include "sbr/done.h"
 #include "sbr/m_maildir.h"
+#include "sbr/globals.h"
 
 #define SHOW_SWITCHES \
     X("checkmime", 0, CHECKMIMESW) \

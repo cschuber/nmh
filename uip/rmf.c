@@ -28,6 +28,7 @@
 #include "sbr/utils.h"
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"
+#include "sbr/globals.h"
 
 #define RMF_SWITCHES \
     X("interactive", 0, INTRSW) \

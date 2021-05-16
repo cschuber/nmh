@@ -19,6 +19,7 @@
 #include "sbr/utils.h"
 #include "sbr/m_mktemp.h"
 #include "forwsbr.h"
+#include "sbr/globals.h"
 
 /*
  * Take from replsbr.c - a buffer big enough to read in data header lines

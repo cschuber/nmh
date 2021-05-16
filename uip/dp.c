@@ -21,6 +21,7 @@
 #include "sbr/fmt_scan.h"
 #include "h/tws.h"
 #include "sbr/terminal.h"
+#include "sbr/globals.h"
 
 #define	NDATES 100
 

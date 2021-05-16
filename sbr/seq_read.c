@@ -17,6 +17,7 @@
 #include "error.h"
 #include "utils.h"
 #include "lock_file.h"
+#include "globals.h"
 
 /*
  * static prototypes

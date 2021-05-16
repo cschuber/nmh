@@ -33,6 +33,7 @@
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"
 #include "sbr/makedir.h"
+#include "sbr/globals.h"
 
 #define RCVSTORE_SWITCHES \
     X("create", 0, CRETSW) \

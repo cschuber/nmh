@@ -17,6 +17,7 @@
 #include "arglist.h"
 #include "error.h"
 #include "m_mktemp.h"
+#include "globals.h"
 
 /*
  * 1) If we are using an external rmmproc, then exec it.

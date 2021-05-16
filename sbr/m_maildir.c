@@ -11,6 +11,7 @@
 #include "path.h"
 #include "utils.h"
 #include "m_maildir.h"
+#include "globals.h"
 
 #define	CWD	"./"
 #define	DOT	"."

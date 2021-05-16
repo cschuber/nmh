@@ -29,6 +29,7 @@
 #include "sbr/mts.h"
 #include "sbr/done.h"
 #include "sbr/m_mktemp.h"
+#include "sbr/globals.h"
 
 #define RCVDIST_SWITCHES \
     X("form formfile", 4, FORMSW) \

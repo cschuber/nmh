@@ -35,6 +35,7 @@
 #include <fcntl.h>
 #include "sbr/done.h"
 #include "forwsbr.h"
+#include "sbr/globals.h"
 
 #define DIST_SWITCHES \
     X("annotate", 0, ANNOSW) \

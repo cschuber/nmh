@@ -12,6 +12,7 @@
 #include "error.h"
 #include "utils.h"
 #include "m_maildir.h"
+#include "globals.h"
 
 /* We allocate the `mi' array 1024 elements at a time */
 #define	NUMMSGS  1024

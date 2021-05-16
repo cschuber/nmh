@@ -33,6 +33,7 @@
 #include "mhshowsbr.h"
 #include "sbr/m_maildir.h"
 #include "sbr/m_mktemp.h"
+#include "sbr/globals.h"
 
 enum clobber_policy_t {
   NMH_CLOBBER_ALWAYS = 0,

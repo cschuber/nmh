@@ -11,6 +11,7 @@
 #include "seq_list.h"
 #include "seq_getnum.h"
 #include "utils.h"
+#include "globals.h"
 
 /* allocate this much buffer space at a time */
 #define MAXBUFFER 1024

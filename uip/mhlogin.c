@@ -22,6 +22,7 @@
 #include "sbr/oauth.h"
 #include "sbr/oauth_prof.h"
 #include "sbr/lock_file.h"
+#include "sbr/globals.h"
 
 #define MHLOGIN_SWITCHES \
     X("user username", 0, USERSW) \

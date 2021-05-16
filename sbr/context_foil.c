@@ -10,6 +10,7 @@
 #include "path.h"
 #include "utils.h"
 #include "context_foil.h"
+#include "globals.h"
 
 /*
  * Foil search of users .mh_profile

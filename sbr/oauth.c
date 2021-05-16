@@ -32,6 +32,7 @@
 #include "oauth_prof.h"
 #include "utils.h"
 #include "lock_file.h"
+#include "globals.h"
 
 #define JSON_TYPE "application/json"
 
