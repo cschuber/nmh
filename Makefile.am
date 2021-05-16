@@ -450,6 +450,7 @@ noinst_HEADERS = \
     sbr/utils.h \
     sbr/vector.h \
     sbr/vfgets.h \
+    test/server.h \
     thirdparty/jsmn/jsmn.h \
     uip/aliasbr.h \
     uip/annosbr.h \

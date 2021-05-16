@@ -19,6 +19,8 @@
 #include <sys/uio.h>
 #include <signal.h>
 
+#include "server.h"
+
 static const char *PIDFN = NULL;
 
 static void killpidfile(void);
