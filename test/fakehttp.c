@@ -14,10 +14,9 @@
 #include <string.h>
 #include <unistd.h>
 
-#define PIDFN "/tmp/fakehttp.pid"
+#include "server.h"
 
-int serve(const char *, const char *);
-void putcrlf(int, char *);
+#define PIDFN "/tmp/fakehttp.pid"
 
 static void
 strip_cr(char *buf, ssize_t *len)

@@ -14,6 +14,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include "server.h"
+
 #ifndef min
 # define min(a,b) ((a) < (b) ? (a) : (b))
 #endif
@@ -32,9 +34,6 @@ enum {
 	/* Looking for the blank line required by XOAUTH2 after 334 response. */
 	SMTP_XOAUTH_ERR
 };
-
-void putcrlf(int, char *);
-int serve(const char *, const char *);
 
 static int getsmtp(int, char *);
 

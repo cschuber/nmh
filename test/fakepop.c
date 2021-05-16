@@ -13,6 +13,8 @@
 #include <sys/types.h>
 #include <limits.h>
 
+#include "server.h"
+
 #define PIDFILE "/tmp/fakepop.pid"
 #define LINESIZE 1024
 #define BUFALLOC 4096
@@ -27,9 +29,6 @@
 				       "log in?"); \
 				continue; \
 			}
-
-void putcrlf(int, char *);
-int serve(const char *, const char *);
 
 static void putpopbulk(int, char *);
 static int getpop(int, char *, ssize_t);
