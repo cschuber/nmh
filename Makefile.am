@@ -1079,7 +1079,6 @@ uninstall-hook:
 ## Our rules to build our internal libraries (libmh.a, libmts.a)
 ##
 sbr_libmh_a_SOURCES = \
-    config/config.c \
     config/version.c \
     sbr/addrsbr.c \
     sbr/ambigsw.c \
@@ -1129,6 +1128,7 @@ sbr_libmh_a_SOURCES = \
     sbr/geteditor.c \
     sbr/getfolder.c \
     sbr/getpass.c \
+    sbr/globals.c \
     sbr/icalendar.l \
     sbr/icalparse.y \
     sbr/lock_file.c \
