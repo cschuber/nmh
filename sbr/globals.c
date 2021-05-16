@@ -1,4 +1,4 @@
-/* config.c -- master nmh configuration file
+/* globals.c -- global variable definitions
  *
  * This code is Copyright (c) 2002, by the authors of nmh.  See the
  * COPYRIGHT file in the root directory of the nmh distribution for
@@ -6,9 +6,6 @@
  */
 
 #include "h/mh.h"
-#include "sbr/context_read.h"
-#include "sbr/m_maildir.h"
-#include <pwd.h>
 
 
 /* 
