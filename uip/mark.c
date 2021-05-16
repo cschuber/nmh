@@ -58,6 +58,9 @@ DEFINE_SWITCH_ENUM(MARK);
 DEFINE_SWITCH_ARRAY(MARK, switches);
 #undef X
 
+/* Formatting ctxflags. */
+#define	DBITS "\020\01CTXMOD"
+
 /*
  * static prototypes
  */
