@@ -435,7 +435,3 @@ typedef struct nmh_creds *nmh_creds_t;
 
 #define CTXMOD	0x01		/* context information modified */
 #define	DBITS	"\020\01CTXMOD"
-
-extern char *user_agent;
-extern char *version_num;
-extern char *version_str;
