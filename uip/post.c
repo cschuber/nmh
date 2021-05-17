@@ -931,8 +931,7 @@ putfmt (char *name, char *str, int *eai, FILE *out)
 	    else
 		tmpaddrs.m_next = mp;
 	    np = mp;
-	}
-	else {
+	} else {
 	    admonish(cp, "%s", error);
 	    if (hdr->flags & HTRY)
 		badadr++;
@@ -1047,8 +1046,7 @@ putfmt (char *name, char *str, int *eai, FILE *out)
 	    mp = np;
 	    np = np->m_next;
 	    mnfree (mp);
-	}
-	else {
+	} else {
 	    /* Address includes a host, so no alias substitution is needed. */
 
 	    /*
@@ -1093,8 +1091,7 @@ putfmt (char *name, char *str, int *eai, FILE *out)
 	    if (keep) {
 		mp->m_next = NULL;
 		msgflags |= (hdr->set & (MVIS | MINV));
-	    }
-	    else
+	    } else
 		mnfree (mp);
 	}
 
@@ -1357,8 +1354,7 @@ putgrp (char *name, char *group, FILE *out, unsigned int flags)
 	if (len + linepos + 2 > outputlinelen) {
 	    fprintf (out, ",\n%*s", nameoutput, "");
 	    linepos = nameoutput;
-	}
-	else {
+	} else {
 	    fputs (", ", out);
 	    linepos += 2;
 	}
@@ -1528,9 +1524,7 @@ make_bcc_file (int dashstuff)
 	  fprintf (out, "BCC: %s\n",allbcc);
 	  free(allbcc);
        }
-    }
-    else
-    {
+    } else {
        fprintf (out, "BCC:\n");
     }
 

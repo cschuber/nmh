@@ -388,8 +388,7 @@ route_addr (char *buffer)
     if (my_lex (buffer) == LX_AT) {
 	if (route (buffer) == NOTOK)
 	    return NOTOK;
-    }
-    else
+    } else
 	cp = pp;
 
     if (local_part (buffer) == NOTOK)

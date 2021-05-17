@@ -62,8 +62,7 @@ nmh_getpass(const char *prompt)
   if (!istty || !(fout = fin = fopen("/dev/tty", "w+"))) {
     fout = stderr;
     fin = stdin;
-  }
-  else /* Reading directly from terminal here */
+  } else /* Reading directly from terminal here */
     {
       (void)tcgetattr(fileno(fin), &oterm);
       term = oterm; /* Save original info */

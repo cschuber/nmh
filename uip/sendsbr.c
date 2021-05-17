@@ -481,8 +481,7 @@ annoaux (int fd)
 	    && (fd2 = dup (fileno (stderr))) != NOTOK) {
 	dup2 (fd3, fileno (stderr));
 	close (fd3);
-    }
-    else
+    } else
 	fd2 = NOTOK;
     for (ap = brkstring (cp = mh_xstrdup(cp), " ", NULL); *ap; ap++)
 	m_convert (mp, *ap);

@@ -826,11 +826,9 @@ again: ;
 		    *ehlo = NULL;
 		    if (ehlo >= EHLOkeys + MAXEHLO)
 			doingEHLO = 0;
-		}
-		else
+		} else
 		    doingEHLO = 0;
-	    }
-	    else
+	    } else
 		doingEHLO = 2;
 	}
 

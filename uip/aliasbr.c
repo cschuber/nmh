@@ -80,8 +80,7 @@ akresult (struct aka *ak)
 	    cp = concat (cp, ",", pp, NULL);
 	    free (dp);
 	    free (pp);
-	}
-	else
+	} else
 	    cp = pp;
     }
 

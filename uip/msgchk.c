@@ -393,8 +393,7 @@ remotemail (char *host, char *port, char *user, char *proxy, int notifysw,
 
 	    printf ("%d message%s (%d bytes)",
 		    nmsgs, PLURALS(nmsgs), nbytes);
-	}
-	else
+	} else
 	    notifysw = 0;
 
 	status = false;

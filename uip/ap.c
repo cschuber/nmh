@@ -169,8 +169,7 @@ process (char *arg, int length)
 	    p->pq_text = mh_xstrdup(cp);
 	    p->pq_error = mh_xstrdup(error);
 	    status++;
-	}
-	else {
+	} else {
 	    p->pq_text = getcpy (mp->m_text);
 	    mnfree (mp);
 	}

@@ -435,8 +435,7 @@ get_content (FILE *in, char *file, int toplevel)
 			    ct->c_file, VRSN_FIELD);
 		free(vrsn);
 	    }
-	}
-	else if (!strcasecmp (hp->name, TYPE_FIELD)) {
+	} else if (!strcasecmp (hp->name, TYPE_FIELD)) {
 	/* Get Content-Type field */
 	    struct str2init *s2i;
 	    CI ci = &ct->c_ctinfo;
@@ -463,8 +462,7 @@ get_content (FILE *in, char *file, int toplevel)
 		s2i++;
 	    ct->c_type = s2i->si_val;
 	    ct->c_ctinitfnx = s2i->si_init;
-	}
-	else if (!strcasecmp (hp->name, ENCODING_FIELD)) {
+	} else if (!strcasecmp (hp->name, ENCODING_FIELD)) {
 	/* Get Content-Transfer-Encoding field */
 	    char c, *cp, *dp;
 	    struct str2init *s2i;
@@ -504,16 +502,13 @@ get_content (FILE *in, char *file, int toplevel)
 	    /* Call the Init function for this encoding */
 	    if (s2i->si_init && (*s2i->si_init) (ct) == NOTOK)
 		goto out;
-	}
-	else if (!strcasecmp (hp->name, ID_FIELD)) {
+	} else if (!strcasecmp (hp->name, ID_FIELD)) {
 	/* Get Content-ID field */
 	    ct->c_id = add (hp->value, ct->c_id);
-	}
-	else if (!strcasecmp (hp->name, DESCR_FIELD)) {
+	} else if (!strcasecmp (hp->name, DESCR_FIELD)) {
 	/* Get Content-Description field */
 	    ct->c_descr = add (hp->value, ct->c_descr);
-	}
-	else if (!strcasecmp (hp->name, DISPO_FIELD)) {
+	} else if (!strcasecmp (hp->name, DISPO_FIELD)) {
 	/* Get Content-Disposition field */
 	    if (get_dispo(hp->value, ct, 0) == NOTOK)
 		goto out;
@@ -838,8 +833,7 @@ magic_skip:
 		add_param(&ct->c_dispo_first, &ct->c_dispo_last, "filename",
 			  r1bindex(ci->ci_magic, '/'), 0);
 	    }
-        }
-	else
+        } else
             inform("extraneous information in message %s's %s: field\n"
                 "    (%s)", ct->c_file, TYPE_FIELD, cp);
     }
@@ -2148,8 +2142,7 @@ open7Bit (CT ct, char **file)
 	    if (len + 1 + (cc = 2 + strlen (ci->ci_comment)) >= CPERLIN) {
 		fputs ("\n\t", ce->ce_fp);
 		len = 8;
-	    }
-	    else {
+	    } else {
 		putc (' ', ce->ce_fp);
 		len++;
 	    }

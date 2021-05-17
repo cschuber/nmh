@@ -697,8 +697,7 @@ multiline (void)
 	if (buffer[LEN(TRM)] == 0)
 	    return DONE;
         strncpy (response, buffer + LEN(TRM), sizeof(response));
-    }
-    else
+    } else
 	strncpy (response, buffer,
 		 min (strlen(buffer) + 1, sizeof(response) - 1));
 
