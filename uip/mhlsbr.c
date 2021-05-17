@@ -1354,10 +1354,10 @@ putcomp (struct mcomp *c1, struct mcomp *c2, int flag)
 	    if (!(c1->c_flags & SPLIT))
 		c1->c_flags |= HDROUTPUT;
 
-	cchdr = true;
-	if ((count = c1->c_cwidth - strlen(text) - 2) > 0)
-	    while (count--)
-		putstr (" ", c1->c_flags);
+            cchdr = true;
+            if ((count = c1->c_cwidth - strlen(text) - 2) > 0)
+                while (count--)
+                    putstr (" ", c1->c_flags);
 	}
 	else
 	    c1->c_flags |= HDROUTPUT;		/* for BODYCOMP */
