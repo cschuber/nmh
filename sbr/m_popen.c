@@ -78,8 +78,7 @@ m_pclose (void)
 	clearerr (stdout);
 	close (sd);
 	sd = NOTOK;
-    }
-    else
+    } else
 	fclose (stdout);
 
     pidwait (m_pid, OK);

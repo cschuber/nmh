@@ -342,8 +342,7 @@ WhatNow (int argc, char **argv)
 
 	    if (*(argp+1) == NULL) {
 		strcpy(buf, "$SHELL -c \"cd&&pwd\"");
-	    }
-	    else {
+	    } else {
 		writesomecmd(buf, BUFSIZ, "cd", "pwd", argp);
 	    }
 	    if ((f = popen_in_dir(cwd, buf, "r")) != NULL) {
@@ -352,8 +351,7 @@ WhatNow (int argc, char **argv)
 		}
                 trim_suffix_c(cwd, '\n');
 		pclose(f);
-	    }
-	    else {
+	    } else {
 		advise("popen", "could not get directory");
 	    }
 
@@ -477,8 +475,7 @@ WhatNow (int argc, char **argv)
 		}
 
 		pclose(f);
-	    }
-	    else {
+	    } else {
 		advise("popen", "could not get file from shell");
 	    }
 

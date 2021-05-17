@@ -308,8 +308,7 @@ annosbr (int fd, char *file, char *comp, char *text, bool inplace, bool datesw, 
 		    if (*text == '/') {
 			if (strcmp(cp, text) == 0)
 				break;
-		    }
-		    else {
+		    } else {
 			if ((sp = strrchr(cp, '/')) != NULL)
 			    cp = sp + 1;
 

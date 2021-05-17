@@ -396,23 +396,19 @@ attr (struct msgs *mp, char *cp)
 			? mp->curmsg - 1
 			: mp->hghmsg;
 		start = first;
-	    }
-	    else if (!strcmp (dp, "next")) {
+	    } else if (!strcmp (dp, "next")) {
 		convdir = 1;
 		first = (mp->curmsg >= mp->lowmsg)
 			    ? mp->curmsg + 1
 			    : mp->lowmsg;
 		start = first;
-	    }
-	    else if (!strcmp (dp, "first")) {
+	    } else if (!strcmp (dp, "first")) {
 		convdir = 1;
 		start = mp->lowmsg;
-	    }
-	    else if (!strcmp (dp, "last")) {
+	    } else if (!strcmp (dp, "last")) {
 		convdir = -1;
 		start = mp->hghmsg;
-	    }
-	    else {
+	    } else {
 		return BADLST;
 	    }
 	} else {

@@ -34,8 +34,7 @@ snprintb (char *buffer, size_t n, unsigned v, char *bits)
 		    *bp++ = c;
 		    n--;
 		}
-	    }
-	    else
+	    } else
 		for (; *bits > 32; bits++)
 		    continue;
 	if (n > 1)

@@ -537,8 +537,7 @@ mhl (int argc, char **argv)
 	    *cp++ = '\n';
 	    *cp = 0;
 	    fputs(buf, stdout);
-	}
-	else
+	} else
 	    printf ("\n------- End of Forwarded Message%s\n",
 		    PLURALS(vecp));
     }
@@ -993,8 +992,7 @@ mhlfile (FILE *fp, char *mname, int ofilen, int ofilec)
                 if (ofilec == 1 || linefeed_typed()) {
 		    if ((global.c_flags & CLEARSCR))
 			nmh_clear_screen ();
-		}
-		else
+		} else
 		    putchar('\n');
 		break;
 
@@ -1358,8 +1356,7 @@ putcomp (struct mcomp *c1, struct mcomp *c2, int flag)
             if ((count = c1->c_cwidth - strlen(text) - 2) > 0)
                 while (count--)
                     putstr (" ", c1->c_flags);
-	}
-	else
+	} else
 	    c1->c_flags |= HDROUTPUT;		/* for BODYCOMP */
     }
 
@@ -1448,15 +1445,13 @@ oneline (char *stuff, unsigned long flags)
                     *cp++ = ' ';
                     spc = true;
                 }
-	    }
-	    else {
+	    } else {
 		*cp++ = *onelp;
 		spc = false;
 	    }
 
 	*cp = 0;
-    }
-    else {
+    } else {
 	while (*onelp && *onelp != '\n')
 	    onelp++;
 	if (*onelp == '\n') {
@@ -1486,8 +1481,7 @@ putstr (char *string, unsigned long flags)
 	    if (lm >= 8) {
 		putch ('\t', flags);
 		lm -= 8;
-	    }
-	    else {
+	    } else {
 		putch (' ', flags);
 		lm--;
 	    }

@@ -523,19 +523,16 @@ do_spec(char *sp)
 	cp = do_name(cp, 0);
 	if (! infunction)
 	    fp->f_type = wid? FT_COMPF : FT_COMP;
-    }
-    else if (c == '(') {
+    } else if (c == '(') {
 	cp = do_func(cp);
 	if (! infunction) {
 	    if (ftbl->flags & TFL_PUTS) {
 		LV( wid? FT_STRF : FT_STR, ftbl->extra);
-	    }
-	    else if (ftbl->flags & TFL_PUTN) {
+	    } else if (ftbl->flags & TFL_PUTN) {
 		LV( wid? FT_NUMF : FT_NUM, ftbl->extra);
 	    }
 	}
-    }
-    else {
+    } else {
 	CERROR("component or function name expected");
     }
     if (ljust)
@@ -877,8 +874,7 @@ do_if(char *sp)
 		cp = do_name(cp, 0);
 		fp->f_type = FT_LS_COMP;
 		LV (FT_IF_S, 0);
-	    }
-	    else if (c == '(') {
+	    } else if (c == '(') {
 		cp = do_func(cp);
 		/* see if we can merge the load and the "if" */
 		if (ftbl->f_type >= IF_FUNCS)
@@ -893,8 +889,7 @@ do_if(char *sp)
 			LV (FT_IF_V_NE, 0);
 		    }
 		}
-	    }
-	    else {
+	    } else {
 		CERROR("'(' or '{' expected");	/*}*/
 	    }
 	}
@@ -914,8 +909,7 @@ do_if(char *sp)
 	    cp = compile (cp);		/* compile ELSE stmts */
 	    fif->f_skip = next_fp - fif;
 	    c = *cp++;
-	}
-	else if (c == '?') {		/* another ELSIF */
+	} else if (c == '?') {		/* another ELSIF */
 	    LV(FT_GOTO, 0);
 	    fif = fp;			/* loc of GOTO */
 	    fexpr->f_skip = next_fp - fexpr;

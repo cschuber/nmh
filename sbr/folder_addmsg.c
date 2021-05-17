@@ -134,8 +134,7 @@ folder_addmsg (struct msgs **mpp, char *msgfile, int selected,
 	    if (deleting) {
 		(void)snprintf(oldmsg, sizeof (oldmsg), "%s/%s", from_dir, msgfile);
 		(void)ext_hook("ref-hook", oldmsg, newmsg);
-	    }
-	    else
+	    } else
 		(void)ext_hook("add-hook", newmsg, NULL);
 
 	    return msgnum;
@@ -191,8 +190,7 @@ folder_addmsg (struct msgs **mpp, char *msgfile, int selected,
             if (deleting) {
                 (void)snprintf(oldmsg, sizeof (oldmsg), "%s/%s", from_dir, msgfile);
                 (void)ext_hook("ref-hook", oldmsg, newmsg);
-            }
-            else
+            } else
                 (void)ext_hook("add-hook", newmsg, NULL);
 
             return msgnum;

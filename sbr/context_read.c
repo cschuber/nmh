@@ -71,8 +71,7 @@ context_read (void)
 
 	if ((ib = fopen(defpath, "r")) == NULL)
 	    die("unable to read the `%s' profile specified by your MH environment variable", defpath);
-    }
-    else {
+    } else {
 	defpath = concat(mypath, "/", mh_profile, NULL);
 
 	if ((ib = fopen(defpath, "r")) == NULL)

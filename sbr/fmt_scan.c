@@ -947,8 +947,7 @@ fmt_scan (struct format *format, charstring_t scanlp, int width, int *dat,
 			    snprintf (buffer, sizeof(buffer), "%s@%s",
 				mn->m_mbox, mn->m_host);
 			    str= buffer;
-			}
-			else
+			} else
 			    str = mn->m_text;
 			break;
 		  }

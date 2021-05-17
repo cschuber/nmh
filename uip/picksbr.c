@@ -571,8 +571,7 @@ gcompile (struct nexus *n, char *astr)
     if (*sp == '^') {
 	n->n_circf = 1;
 	sp++;
-    }
-    else
+    } else
 	n->n_circf = 0;
     for (;;) {
 	if (ep >= dp)
@@ -917,8 +916,7 @@ tws_special (char *ap)
 	    return NULL;
 	if ((i -= tw->tw_wday) > 0)
 	    i -= 7;
-    }
-    else {
+    } else {
 	if (*ap != '-')
 	    return NULL;
 	/* -ddd days ago */

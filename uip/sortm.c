@@ -470,8 +470,7 @@ get_fields (char *datesw, int msg, struct smsg *smsg)
 	    }
 
 	    *cp2 = '\0';
-	}
-	else
+	} else
 	    subjcomp = "";
 
 	smsg->s_subj = subjcomp;
