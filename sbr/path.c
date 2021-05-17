@@ -239,9 +239,9 @@ etcpath (char *file)
 	case '~':
 	    /* Expand ~username */
 	    if ((cp = strchr(pp = file + 1, '/'))) {
-                first_slash = cp++;
+		first_slash = cp++;
 	    }
-	    if (*pp == '\0') {
+	    if (*pp == '/') {
 		if (first_slash) {
 		    *first_slash = '\0';
 		}

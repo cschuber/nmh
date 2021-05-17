@@ -1071,6 +1071,7 @@ rm -f "$MH_TEST_DIR/test1.ics"
 # exercise failed getpwnam(3) branch in etcpath()
 start_test 'exercise failed getpwnam(3) branch in etcpath()'
 user='~nmh_user_that_does_not_exist'
+#### Assumes a shell that expands ~.
 if id $user 2>/dev/null; then
     echo "$0: user $user exists, cannot run this test"
     exit 1
@@ -1079,7 +1080,21 @@ cat >"$expected" <<EOF
 mhical: unable to open format file $user/mhical.12hour: No such file or directory
 EOF
 printf 'BEGIN:VCALENDAR\nEND:VCALENDAR\n' |
-    uip/mhical -form "$user/mhical.12hour" > "$actual" 2>&1 || true
+    mhical -form "$user/mhical.12hour" > "$actual" 2>&1 || true
+check "$expected" "$actual"
+
+# exercise ~/ branch in etcpath()
+start_test 'exercise ~/ branch in etcpath()'
+file='~/mhical.file_that_does_not_exist'
+if test -e $file 2>/dev/null; then
+    echo "$0: file $file exists, cannot run this test"
+    exit 1
+fi
+cat >"$expected" <<EOF
+mhical: unable to open format file ~/mhical.12hour: No such file or directory
+EOF
+printf 'BEGIN:VCALENDAR\nEND:VCALENDAR\n' |
+    mhical -form "~/mhical.12hour" > "$actual" 2>&1 || true
 check "$expected" "$actual"
 
 
