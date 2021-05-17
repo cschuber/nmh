@@ -226,6 +226,7 @@ etcpath (char *file)
     static char epath[PATH_MAX];
     char *cp;
     char *pp;
+    char *first_slash = NULL;
     struct passwd *pw;
 
     context_read();
@@ -237,16 +238,21 @@ etcpath (char *file)
 
 	case '~':
 	    /* Expand ~username */
-	    if ((cp = strchr(pp = file + 1, '/')))
-		*cp++ = '\0';
+	    if ((cp = strchr(pp = file + 1, '/'))) {
+                first_slash = cp++;
+	    }
 	    if (*pp == '\0') {
+		if (first_slash) {
+		    *first_slash = '\0';
+		}
 		pp = mypath;
 	    } else {
-		if ((pw = getpwnam (pp)))
+		if ((pw = getpwnam (pp))) {
+		    if (first_slash) {
+			*first_slash = '\0';
+		    }
 		    pp = pw->pw_dir;
-		else {
-		    if (cp)
-			*--cp = '/';
+		} else {
 		    goto try_it;
 		}
 	    }
