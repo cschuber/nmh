@@ -243,18 +243,18 @@ etcpath (char *file)
             /* Expand ~username */
             bool unknown_user = false;
             char *pp;
-            struct passwd *pw;
 
             if ((cp = strchr(pp = file + 1, '/'))) {
-                pp = dir = strdup(file);
-                dir[cp-file] = '\0';
+                dir = strdup(pp);
+                dir[cp-pp] = '\0';
                 base = strdup(cp + 1);
             }
 
             if (file[1] == '/') {
                 pp = mypath;
             } else {
-                if ((pw = getpwnam (pp))) {
+                struct passwd *pw;
+                if (dir && (pw = getpwnam (dir))) {
                     pp = pw->pw_dir;
                 } else {
                     unknown_user = true;
@@ -276,12 +276,13 @@ etcpath (char *file)
         default:
             /* Check nmh Mail directory */
             cp = m_mailpath(file);
-            if (strlen(cp) >= sizeof(epath)) {
+            size_t need = strlen(cp) + 1;
+            if (need > sizeof epath) {
+                inform ("etcpath(%s) overflow when checking Mail directory, continuing", cp);
                 free (cp);
-                inform("etcpath(%s) overflow when checking Mail directory, continuing", cp);
                 goto failed;
             }
-            TRUNCCPY(epath, cp);
+            memcpy(epath, cp, need);
             free (cp);
             if (access (epath, R_OK) != NOTOK) {
                 goto succeeded;
@@ -291,9 +292,10 @@ etcpath (char *file)
     /* Check nmh `etc' directory */
     count = snprintf (epath, sizeof(epath), NMHETCDIR "/%s", file);
     if ((size_t) count >= sizeof(epath)) {
-        inform("etcpath(%s/%s) overflow when checking etc directory, continuing", NMHETCDIR, file);
+        inform ("etcpath(%s/%s) overflow when checking etc directory, continuing",
+                NMHETCDIR, file);
         goto failed;
-    } else if (access(epath, R_OK) == NOTOK) {
+    } else if (access (epath, R_OK) == NOTOK) {
         goto failed;
     }
 succeeded:
