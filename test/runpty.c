@@ -22,7 +22,14 @@
 
 static void run_command(char *argv[], int master_in, int master_out);
 static int open_master_pty(const char *desc);
-static void die(const char *fmt, ...);
+static void die(const char *fmt, ...)
+#if __GNUC__ > 2
+    __attribute__((__noreturn__))
+#endif
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
+    __attribute__((format(printf, 1, 2)))
+#endif
+    ;
 
 int
 main(int argc, char *argv[])
