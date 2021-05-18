@@ -213,6 +213,9 @@ compath (char *f)
  * Find the location of a format or configuration
  * file, and return its absolute pathname.
  *
+ * etcpath() does get pass string constants, so don't modify
+ * the argument.
+ *
  * 1) If already absolute pathname, then leave unchanged.
  * 2) Next, if it begins with ~user, then expand it.
  * 3) Next, check in nmh Mail directory.
@@ -224,58 +227,81 @@ char *
 etcpath (char *file)
 {
     static char epath[PATH_MAX];
+    char *dir = NULL;
+    char *base = NULL;
     char *cp;
-    char *pp;
-    char *first_slash = NULL;
-    struct passwd *pw;
+    int count;
 
     context_read();
 
     switch (*file) {
-	case '/':
-	    /* If already absolute pathname, return it */
-	    return file;
+        case '/':
+            /* If already absolute pathname, return it */
+            return file;
 
-	case '~':
-	    /* Expand ~username */
-	    if ((cp = strchr(pp = file + 1, '/'))) {
-		first_slash = cp++;
-	    }
-	    if (*pp == '/') {
-		if (first_slash) {
-		    *first_slash = '\0';
-		}
-		pp = mypath;
-	    } else {
-		if ((pw = getpwnam (pp))) {
-		    if (first_slash) {
-			*first_slash = '\0';
-		    }
-		    pp = pw->pw_dir;
-		} else {
-		    goto try_it;
-		}
-	    }
+        case '~': {
+            /* Expand ~username */
+            bool unknown_user = false;
+            char *pp;
+            struct passwd *pw;
 
-	    snprintf (epath, sizeof(epath), "%s/%s", pp, FENDNULL(cp));
-	    if (cp)
-		*--cp = '/';
+            if ((cp = strchr(pp = file + 1, '/'))) {
+                pp = dir = strdup(file);
+                dir[cp-file] = '\0';
+                base = strdup(cp + 1);
+            }
 
-	    if (access (epath, R_OK) != NOTOK)
-		return epath;
+            if (file[1] == '/') {
+                pp = mypath;
+            } else {
+                if ((pw = getpwnam (pp))) {
+                    pp = pw->pw_dir;
+                } else {
+                    unknown_user = true;
+                }
+            }
 
+            if (! unknown_user) {
+                count = snprintf (epath, sizeof(epath), "%s/%s", pp, FENDNULL(base));
+                if ((size_t) count >= sizeof(epath)) {
+                    inform("etcpath(%s) overflow, continuing", file);
+                    goto failed;
+                }
+                if (access (epath, R_OK) != NOTOK) {
+                    goto succeeded;
+                }
+            }
+        }
             /* FALLTHRU */
-try_it:
-	default:
-	    /* Check nmh Mail directory */
-	    cp = m_mailpath(file);
-            TRUNCCPY(epath, cp);   /* FIXME: should not truncate. */
-	    free (cp);
-	    if (access (epath, R_OK) != NOTOK)
-		return epath;
+        default:
+            /* Check nmh Mail directory */
+            cp = m_mailpath(file);
+            if (strlen(cp) >= sizeof(epath)) {
+                free (cp);
+                inform("etcpath(%s) overflow when checking Mail directory, continuing", cp);
+                goto failed;
+            }
+            TRUNCCPY(epath, cp);
+            free (cp);
+            if (access (epath, R_OK) != NOTOK) {
+                goto succeeded;
+            }
     }
 
     /* Check nmh `etc' directory */
-    snprintf (epath, sizeof(epath), NMHETCDIR "/%s", file);
-    return access(epath, R_OK) != NOTOK ? epath : file;
+    count = snprintf (epath, sizeof(epath), NMHETCDIR "/%s", file);
+    if ((size_t) count >= sizeof(epath)) {
+        inform("etcpath(%s/%s) overflow when checking etc directory, continuing", NMHETCDIR, file);
+        goto failed;
+    } else if (access(epath, R_OK) == NOTOK) {
+        goto failed;
+    }
+succeeded:
+    free(base);
+    free(dir);
+    return epath;
+failed:
+    free(base);
+    free(dir);
+    return file;
 }
