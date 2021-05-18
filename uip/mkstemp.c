@@ -18,6 +18,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
+#include <assert.h>
 
 #if ! defined HAVE_MKSTEMPS
 #   define HAVE_MKSTEMPS 0
@@ -94,21 +95,22 @@ build_template(const char *directory, const char *prefix, const char *suffix)
     if ((template = malloc(len))) {
         char *tp = template;
 
-        (void) strncpy(tp, directory, directory_len);
+        memcpy(tp, directory, directory_len);
         tp += directory_len;
 
         if (pathsep_len == 1) { *tp++ = '/'; }
 
-        (void) strncpy(tp, prefix, prefix_len);
+        memcpy(tp, prefix, prefix_len);
         tp += prefix_len;
 
-        (void) memcpy(tp, pattern, sizeof pattern);
+        memcpy(tp, pattern, sizeof pattern - 1);
         tp += sizeof pattern - 1;
 
-        (void) strncpy(tp, suffix, suffix_len);
-        /* tp += suffix_len; */
+        memcpy(tp, suffix, suffix_len);
+        tp += suffix_len;
 
-        template[len-1] = '\0';
+        *tp = '\0';
+        assert(tp == template + len - 1);
 
         return template;
     }
