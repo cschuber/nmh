@@ -20,6 +20,20 @@
 #include <stdio.h>
 #include <assert.h>
 
+#if NMH
+#include "h/mh.h"
+#include "sbr/getarguments.h"
+#include "sbr/smatch.h"
+#include "sbr/ambigsw.h"
+#include "sbr/print_version.h"
+#include "sbr/print_help.h"
+#include "sbr/error.h"
+#include "sbr/done.h"
+#include "sbr/utils.h"
+#include "sbr/globals.h"
+#endif
+
+
 #if ! defined HAVE_MKSTEMPS
 #   define HAVE_MKSTEMPS 0
 #endif /* ! HAVE_MKSTEMPS */
@@ -88,49 +102,42 @@ build_template(const char *directory, const char *prefix, const char *suffix)
     }
     prefix_len = strlen(prefix);
     suffix_len = strlen(suffix);
-    /* sizeof pattern includes its final NULL, so don't add another. */
-    len =
-        directory_len + pathsep_len + prefix_len + sizeof pattern + suffix_len;
+    len = directory_len + pathsep_len +
+        prefix_len + LEN(pattern) + suffix_len + 1;
 
-    if ((template = malloc(len))) {
-        char *tp = template;
-
-        memcpy(tp, directory, directory_len);
-        tp += directory_len;
-
-        if (pathsep_len == 1) { *tp++ = '/'; }
-
-        memcpy(tp, prefix, prefix_len);
-        tp += prefix_len;
-
-        memcpy(tp, pattern, sizeof pattern - 1);
-        tp += sizeof pattern - 1;
-
-        memcpy(tp, suffix, suffix_len);
-        tp += suffix_len;
-
-        *tp = '\0';
-        assert(tp == template + len - 1);
-
-        return template;
+    if (!(template = malloc(len))) {
+#if NMH
+        advise("", "build_template: malloc(%zu) failed", len);   /* "" prints errno! */
+#else
+        perror("malloc");
+#endif
+        return NULL;
     }
 
-    perror("malloc");
-    return NULL;
+    char *tp = template;
+
+    memcpy(tp, directory, directory_len);
+    tp += directory_len;
+
+    if (pathsep_len == 1) { *tp++ = '/'; }
+
+    memcpy(tp, prefix, prefix_len);
+    tp += prefix_len;
+
+    memcpy(tp, pattern, sizeof pattern - 1);
+    tp += sizeof pattern - 1;
+
+    memcpy(tp, suffix, suffix_len);
+    tp += suffix_len;
+
+    *tp = '\0';
+    assert(tp == template + len - 1);
+
+    return template;
 }
 
 
 #if NMH
-#include "h/mh.h"
-#include "sbr/getarguments.h"
-#include "sbr/smatch.h"
-#include "sbr/ambigsw.h"
-#include "sbr/print_version.h"
-#include "sbr/print_help.h"
-#include "sbr/error.h"
-#include "sbr/done.h"
-#include "sbr/utils.h"
-#include "sbr/globals.h"
 
 #if HAVE_MKSTEMPS
 #   define MHFIXMSG_SWITCHES \
