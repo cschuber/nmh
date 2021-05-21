@@ -15,6 +15,7 @@
 #endif
 
 #ifdef MULTIBYTE_SUPPORT
+#include <inttypes.h>
 #include <locale.h>
 #include <wchar.h>
 #include <wctype.h>
@@ -219,8 +220,8 @@ dumpctype(void)
 
 	for (r = range; r->max; r++) {
 		for (wc = r->min; wc <= r->max; wc++) {
-			printf("%6x  %2d  %c%c%c%c%c%c%c%c%c%c%c%c\n",
-				wc, wcwidth(wc),
+			printf("%6" PRIxMAX "  %2d  %c%c%c%c%c%c%c%c%c%c%c%c\n",
+				(uintmax_t)wc, wcwidth(wc),
 				iswcntrl(wc) ? 'c' : '-',
 				iswprint(wc) ? 'p' : '-',
 				iswgraph(wc) ? 'g' : '-',

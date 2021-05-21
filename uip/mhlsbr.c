@@ -1318,7 +1318,7 @@ putcomp (struct mcomp *c1, struct mcomp *c2, int flag)
     if ((ovtxt = c1->c_ovtxt ? c1->c_ovtxt : global.c_ovtxt) == NULL)
 	ovtxt = "";
     if (wid < ovoff + strlen (ovtxt) + 5)
-	mhladios(NULL, "component: %s width(%d) too small for overflow(%zu)",
+	mhladios(NULL, "component: %s width(%u) too small for overflow(%zu)",
 		c1->c_name, wid, ovoff + strlen (ovtxt) + 5);
     onelp = NULL;
 

@@ -5,6 +5,8 @@
  * complete copyright information.
  */
 
+#include <inttypes.h>
+
 #include "h/mh.h"
 #include "ssequal.h"
 #include "m_convert.h"
@@ -81,7 +83,8 @@ m_convert (struct msgs *mp, char *name)
     cp = delimp;
     if (*cp != '\0' && *cp != '-' && *cp != ':' && *cp != '=') {
 badelim:
-	inform("illegal argument delimiter: `%c'(0%o)", *delimp, *delimp);
+	inform("illegal argument delimiter: `%c' (%#" PRIx8 ")",
+            *delimp, (uint8_t)*delimp);
 	return 0;
     }
 

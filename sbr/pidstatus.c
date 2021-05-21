@@ -59,7 +59,7 @@ pidstatus (int status, FILE *fp, char *cp)
     fputs(mesg, fp);
 
     if (num != -1) {
-        fprintf(fp, " %#x", num);
+        fprintf(fp, " %#x", (unsigned)num);
         if (lookup) {
             errno = 0;
             signame = strsignal(num);

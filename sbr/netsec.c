@@ -837,7 +837,7 @@ retry:
 	     * At that point, just give up.
 	     */
 	    netsec_err(errstr, "Internal error: wanted to printf() a total of "
-		       "%d bytes, but our buffer size was only %d bytes",
+		       "%d bytes, but our buffer size was only %u bytes",
 		       rc, nsc->ns_outbufsize);
 	    return NOTOK;
 	}

@@ -19,6 +19,7 @@
  * Ruud de Rooij <ruud@ruud.org>  Sun, 28 May 2000 17:28:55 +0200
  */
 
+#include <inttypes.h>
 #include "h/mh.h"
 #include "sbr/pidwait.h"
 #include "sbr/dtime.h"
@@ -458,8 +459,9 @@ usr_delivery (int fd, char *delivery, int su)
 	    || (st.st_uid != 0 && (su || st.st_uid != pw->pw_uid))
 	    || st.st_mode & (S_IWGRP|S_IWOTH)) {
 	if (verbose) {
-	    verbose_printf ("WARNING: %s has bad ownership/modes (su=%d,uid=%d,owner=%d,mode=0%o)\n",
-		    delivery, su, (int) pw->pw_uid, (int) st.st_uid, (int) st.st_mode);
+	    verbose_printf("WARNING: %s has bad ownership/modes "
+                "(su=%d,uid=%d,owner=%d,mode=0%" PRIoMAX ")\n",
+		delivery, su, (int)pw->pw_uid, (int)st.st_uid, (uintmax_t)st.st_mode);
 	}
 	return -1;
     }

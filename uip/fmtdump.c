@@ -463,7 +463,7 @@ c_typestr(int t)
 
 	buf[0] = '\0';
 	if (t & ~(CT_ADDR|CT_DATE))
-                snprintf(buf, sizeof buf, "0x%x ", t);
+                snprintf(buf, sizeof buf, "0x%x ", (unsigned)t);
 	strcat(buf, "<");
 	i = 0;
 	FNORD(CT_ADDR, "ADDR");
@@ -480,7 +480,7 @@ c_flagsstr(int t)
 
 	buf[0] = '\0';
 	if (t & ~(CF_TRUE|CF_PARSED|CF_DATEFAB|CF_TRIMMED))
-                snprintf(buf, sizeof buf, "0x%x ", t);
+                snprintf(buf, sizeof buf, "0x%x ", (unsigned)t);
 	strcat(buf, "<");
 	i = 0;
 	FNORD(CF_TRUE, "TRUE");

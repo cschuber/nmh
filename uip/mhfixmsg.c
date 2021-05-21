@@ -2005,7 +2005,7 @@ build_multipart (CT first_part, CT new_part, int type, int subtype)
     NEW0(ct);
 
     if (bp_uses > 0) {
-        snprintf(bp_uses_buf, sizeof bp_uses_buf - 1, "-%d", bp_uses++);
+        snprintf(bp_uses_buf, sizeof bp_uses_buf - 1, "-%u", bp_uses++);
     } else {
         bp_uses_buf[0] = '\0';
     }

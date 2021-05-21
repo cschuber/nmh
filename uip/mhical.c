@@ -473,7 +473,7 @@ convert_common (contentline *clines, act action)
             node->value = tmp;
         } else {
             /* Should never get here. */
-            die("Unknown action: %d", action);
+            die("Unknown action: %u", action);
         }
     }
 
@@ -734,7 +734,7 @@ display (FILE *file, contentline *clines, char *nfs)
             if (not_shown > 0) {
                 char buf[32];
 
-                (void) snprintf (buf, sizeof buf, ", and %d more", not_shown);
+                (void) snprintf (buf, sizeof buf, ", and %u more", not_shown);
                 charstring_append_cstring (attendees, buf);
             }
         }
