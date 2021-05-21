@@ -5,6 +5,8 @@
  * distribution for complete copyright information.
  */
 
+#include <inttypes.h>
+
 #include "h/mh.h"
 #include "charstring.h"
 #include "dtime.h"
@@ -82,8 +84,8 @@ parse_datetime (const char *datetime, const char *zone, bool dst,
     if (items_matched == 7) {
         /* The 'Z' must be capital according to RFC 5545 Sec. 3.3.5. */
         if (utc_indicator != 'Z') {
-            inform("%s has invalid timezone-indicator byte: %#x",
-                    datetime, utc_indicator);
+            inform("%s has invalid timezone-indicator byte: %#" PRIx8,
+                    datetime, (uint8_t)utc_indicator);
             return NOTOK;
         }
     } else if (zone == NULL) {

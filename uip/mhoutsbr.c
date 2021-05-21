@@ -345,7 +345,7 @@ writeQuoted (CT ct, FILE *out)
 	 */
 	cp = bufp;
 	if (gotlen >= 5 && has_prefix(cp, "From ")) {
-	    fprintf (out, "=%02X", 'F');
+	    fprintf(out, "=%02X", (unsigned)'F');
 	    cp++;
 	    n += 3;
 	}
@@ -372,7 +372,7 @@ writeQuoted (CT ct, FILE *out)
 
 		case '=':
 three_print:
-		    fprintf (out, "=%02X", *cp & 0xff);
+		    fprintf(out, "=%02X", *(unsigned char *)cp);
 		    n += 3;
 		    break;
 	    }
