@@ -944,7 +944,8 @@ netsec_flush(netsec_context *nsc, char **errstr)
 		    free(nsc->ns_snoop_savebuf);
 		    nsc->ns_snoop_savebuf = NULL;
 		}
-		fprintf(stderr, "%.*s\n", outlen, snoopoutbuf);
+		fwrite(snoopoutbuf, 1, outlen, stderr);
+		putc('\n', stderr);
 	    }
 
 	    /*
