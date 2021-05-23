@@ -348,15 +348,16 @@ nmh_strcasestr (const char *s1, const char *s2)
 
 
 /* trunccpy copies at most size-1 chars from non-NULL src to non-NULL,
- * non-overlapping, dst, and ensures dst is NUL terminated.  If size is
- * zero then it aborts as dst cannot be NUL terminated.
+ * non-overlapping, dest, and ensures dest is NUL terminated.  If size
+ * is zero then it aborts as dest cannot be NUL terminated.
  *
  * It's to be used when truncation is intended and correct, e.g.
- * reporting a possibly very long external string back to the user.  One
- * of its advantages over strncpy(3) is it doesn't pad in the common
+ * reporting a possibly very long external string back to the user.
+ * If truncation is not expected then abortcpy() should be used.  One of
+ * trunccpy's advantages over strncpy(3) is it doesn't pad in the common
  * case of no truncation. */
 void
-trunccpy(char *dst, const char *src, size_t size)
+trunccpy(char *dest, const char *src, size_t size)
 {
     if (!size) {
         inform("trunccpy: zero-length destination: \"%.20s\"",
@@ -364,12 +365,60 @@ trunccpy(char *dst, const char *src, size_t size)
         abort();
     }
 
-    if (strnlen(src, size) < size) {
-        strcpy(dst, src);
-    } else {
-        memcpy(dst, src, size - 1);
-        dst[size - 1] = '\0';
+    size_t len = strnlen(src, size);
+    if (len == size) {
+        memcpy(dest, src, size - 1);
+        dest[size - 1] = '\0';
+        return;
     }
+
+    memcpy(dest, src, len + 1);
+}
+
+
+/* abortcpy copies the NUL-terminated string from non-NULL src to dest
+ * if it, including its terminator fits in given size.  Otherwise,
+ * it abort(3)s after printing a message on stderr.
+ *
+ * It's to be used when truncation is a bug and not to be tolerated.
+ * One of abortcpy's advantages over strncpy(3) is it doesn't pad in
+ * the common case of no truncation.
+ *
+ * If a user is suffering from an abort() then they can be told to set
+ * environment variable MHNOABORT to the ordinal of the truncation to
+ * abort to override the default of 1.  Setting it to -1 never aborts.
+ * Setting it to 0 is treated as 1.  MHNOABORT is deliberately
+ * undocumented so it isn't routinely set. */
+void
+abortcpy(char *dest, const char *src, size_t size)
+{
+    if (!size) {
+        inform("abortcpy: zero-length destination: \"%.20s\"",
+            src ? src : "null");
+        abort();
+    }
+
+    size_t len = strnlen(src, size);
+    if (len == size) {
+        static int lives;
+        if (!lives) {
+            char *v = getenv("MHNOABORT");
+            lives = v ? atoi(v) : 1;   /* Might now be 0 or negative. */
+        }
+
+        if (lives > 0)
+            lives--;
+        if (!lives) {
+            inform("abortcpy: would overflow, aborting: %zu \"%.20s\"", size, src);
+            abort();
+        }
+
+        memcpy(dest, src, size - 1);
+        dest[size - 1] = '\0';
+        return;
+    }
+
+    memcpy(dest, src, len + 1);
 }
 
 
