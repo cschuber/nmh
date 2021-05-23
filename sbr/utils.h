@@ -64,8 +64,12 @@ char *rfind_str(const char [], size_t, const char *) PURE;
 char *nmh_strcasestr(const char *, const char *) PURE;
 
 void trunccpy(char *, const char *, size_t);
-/* A convenience for the common case of dst being an array. */
-#define TRUNCCPY(dst, src) trunccpy(dst, src, sizeof (dst))
+/* A convenience for the common case of dest being an array. */
+#define TRUNCCPY(dest, src) trunccpy(dest, src, sizeof (dest))
+
+void abortcpy(char *, const char *, size_t);
+/* A convenience for the common case of dest being an array. */
+#define ABORTCPY(dest, src) abortcpy(dest, src, sizeof (dest))
 
 bool has_prefix(const char *, const char *) PURE;
 bool has_suffix(const char *, const char *) PURE;
