@@ -538,9 +538,9 @@ AddFolder(char *name, int force)
 static void
 PrintFolders(void)
 {
-    unsigned int i, j, len;
+    unsigned int i, j;
     bool has_private = false;
-    unsigned int maxfolderlen = 0, maxseqlen = 0;
+    int len, maxfolderlen = 0, maxseqlen = 0;
     int maxnum = 0, maxseq = 0;
 
     if (!Total) {
