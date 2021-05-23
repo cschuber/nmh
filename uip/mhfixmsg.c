@@ -1798,7 +1798,7 @@ decode_part (CT ct)
 static size_t
 get_valid_base64 (CT ct, char **remainderp) {
     const size_t len = ct->c_end - ct->c_begin;
-    char *buf, format[16];
+    char *buf, format[sizeof "%18446744073709551615c"];
     size_t pos;
     int fd;
 
@@ -1812,7 +1812,7 @@ get_valid_base64 (CT ct, char **remainderp) {
         return NOTOK;
     }
     buf = mh_xmalloc(len + 1);
-    snprintf(format, sizeof format, "%%%luc", (unsigned long) len);
+    snprintf(format, sizeof format, "%%%zuc", len);
     if (fscanf(ct->c_fp, format, buf) == EOF) {
         advise (ct->c_file, "unable to read");
         return NOTOK;
