@@ -538,7 +538,6 @@ AddFolder(char *name, int force)
 static void
 PrintFolders(void)
 {
-    char tmpname[BUFSIZ];
     unsigned int i, j, len;
     bool has_private = false;
     unsigned int maxfolderlen = 0, maxseqlen = 0;
@@ -588,19 +587,16 @@ PrintFolders(void)
     for (i = 0; i < nFolders; i++) {
 	for (j = 0; j < svector_size (sequencesToDo); j++) {
 	    if (ivector_at (folders[i].nSeq, j) > 0 || showzero) {
-		/* Add `+' to end of name of current folder */
-		if (strcmp(curfolder, folders[i].name))
-		    TRUNCCPY(tmpname, folders[i].name);
-		else
-		    snprintf(tmpname, sizeof(tmpname), "%s+", folders[i].name);
+                char *name = folders[i].name;
+                char cur = !strcmp(name, curfolder) ? '+' : ' ';
 
 		if (folders[i].error) {
-		    printf("%-*s is unreadable\n", maxfolderlen+1, tmpname);
+		    printf("%-*s%c is unreadable\n", maxfolderlen, name, cur);
 		    continue;
 		}
 
-		printf("%-*s has %*d in sequence %-*s%s; out of %*d\n",
-		       maxfolderlen+1, tmpname,
+		printf("%-*s%c has %*d in sequence %-*s%s; out of %*d\n",
+		       maxfolderlen, name, cur,
 		       num_digits(maxseq), ivector_at (folders[i].nSeq, j),
 		       maxseqlen, svector_at (sequencesToDo, j),
 		       !has_private ? "" : ivector_at (folders[i].private, j)
