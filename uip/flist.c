@@ -604,7 +604,7 @@ PrintFolders(void)
 		       num_digits(maxseq), ivector_at (folders[i].nSeq, j),
 		       maxseqlen, svector_at (sequencesToDo, j),
 		       !has_private ? "" : ivector_at (folders[i].private, j)
-			   ? " (private)" : "	       ",
+			   ? " (private)" : "          ",
 		       num_digits(maxnum), folders[i].nMsgs);
 	    }
 	}
