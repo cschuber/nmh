@@ -276,12 +276,13 @@ etcpath (char *file)
         default:
             /* Check nmh Mail directory */
             cp = m_mailpath(file);
-            if (strlen(cp) >= sizeof(epath)) {
+            size_t need = strlen(cp) + 1;
+            if (need > sizeof epath) {
                 free (cp);
                 inform("etcpath(%s) overflow when checking Mail directory, continuing", cp);
                 goto failed;
             }
-            TRUNCCPY(epath, cp);
+            memcpy(epath, cp, need);
             free (cp);
             if (access (epath, R_OK) != NOTOK) {
                 goto succeeded;
