@@ -586,6 +586,9 @@ PrintFolders(void)
 	}
     }
 
+    int maxnum_digits = num_digits(maxnum);
+    int maxseq_digits = num_digits(maxseq);
+
     /* Now print all the folder/sequence information */
     for (i = 0; i < nFolders; i++) {
 	for (j = 0; j < svector_size (sequencesToDo); j++) {
@@ -604,11 +607,11 @@ PrintFolders(void)
 		}
 
 		printf("has %*d in sequence %-*s%s; out of %*d\n",
-		       num_digits(maxseq), ivector_at (folders[i].nSeq, j),
+                       maxseq_digits, ivector_at(folders[i].nSeq, j),
 		       maxseqlen, svector_at (sequencesToDo, j),
 		       !has_private ? "" : ivector_at (folders[i].private, j)
 			   ? " (private)" : "          ",
-		       num_digits(maxnum), folders[i].nMsgs);
+                       maxnum_digits, folders[i].nMsgs);
 	    }
 	}
     }
