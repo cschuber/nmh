@@ -762,7 +762,7 @@ parse_format_string (CT ct, char *cp, char *buffer, int buflen, char *dir)
 
 		case 'm':
 		    /* insert message number */
-		    trunccpy(bp, r1bindex(ct->c_file, '/'), buflen);
+		    abortcpy(bp, r1bindex(ct->c_file, '/'), buflen);
 		    break;
 
 		case 'P':
