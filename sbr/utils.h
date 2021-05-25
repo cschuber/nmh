@@ -17,6 +17,7 @@ void *mh_xmalloc(size_t) MALLOC ALLOC_SIZE(1);
 void *mh_xrealloc(void *, size_t) ALLOC_SIZE(2);
 void *mh_xcalloc(size_t, size_t) MALLOC ALLOC_SIZE(1, 2);
 char *mh_xstrdup(const char *) MALLOC;
+void *xmemtostr(void const *src, size_t len) MALLOC;   /* Can't use ALLOC_SIZE. */
 
 /* Set p to point to newly allocated, uninitialised, memory. */
 #define NEW(p) ((p) = mh_xmalloc(sizeof *(p)))

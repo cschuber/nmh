@@ -5,6 +5,7 @@
  * complete copyright information.
  */
 
+#include <stdint.h>
 #include "h/mh.h"
 #include "read_yes_or_no_if_tty.h"
 #include "concat.h"
@@ -100,6 +101,26 @@ mh_xstrdup(const char *src)
     n = strlen(src) + 1; /* Ignore possibility of overflow. */
     dest = mh_xmalloc(n);
     memcpy(dest, src, n);
+
+    return dest;
+}
+
+
+/* xmemtostr creates a string from memory by copying len bytes from src
+ * and adding a terminating NUL.  The destination is a new malloc'd area
+ * which is the minimum size required and is returned.  If the copied
+ * memory contains its own NUL byte then the returned string will appear
+ * shorter than len but the bytes following it will still have been
+ * copied. */
+void *
+xmemtostr(void const *src, size_t len)
+{
+    if (len == SIZE_MAX)
+        die("xmemtostr overflow: %zu", len);
+
+    char *dest = mh_xmalloc(len + 1);
+    memcpy(dest, src, len);
+    dest[len] = '\0';
 
     return dest;
 }
