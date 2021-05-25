@@ -41,7 +41,7 @@ seq_list(struct msgs *mp, char *seqname)
      */
     if (!strcmp (current, seqname)) {
 	if (mp->curmsg) {	
-	    trunccpy(buffer, m_name(mp->curmsg), len);
+	    abortcpy(buffer, m_name(mp->curmsg), len);
 	    return buffer;
 	}
         return NULL;
