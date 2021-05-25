@@ -860,7 +860,7 @@ parse_display_string (CT ct, char *cp, int *xstdin, int *xlist,
 		    }
 		} else {
 		    /* insert filename containing content */
-		    trunccpy(bp, file, buflen);
+		    abortcpy(bp, file, buflen);
 
 		    /*
 		     * Old comments below are left here for posterity.
