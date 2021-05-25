@@ -1284,7 +1284,7 @@ compose_content(CT ct, bool rfc934, bool listsw, int verbose)
 			 * insert temporary filename where
 			 * content should be written
 			 */
-			trunccpy(bp, ce->ce_file, buflen);
+			abortcpy(bp, ce->ce_file, buflen);
 			break;
 
 		    case 's':
