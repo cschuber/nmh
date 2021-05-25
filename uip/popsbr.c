@@ -696,7 +696,7 @@ multiline (void)
     if (has_prefix(buffer, TRM)) {
 	if (buffer[LEN(TRM)] == 0)
 	    return DONE;
-        TRUNCCPY(response, buffer + LEN(TRM));
+        ABORTCPY(response, buffer + LEN(TRM));
     } else
 	strncpy (response, buffer,
 		 min (strlen(buffer) + 1, sizeof(response) - 1));
