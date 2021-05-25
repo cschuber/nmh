@@ -511,7 +511,6 @@ print_folders (void)
     int maxhghmsg = 0, maxcurmsg = 0, total_msgs = 0;
     int nummsgdigits, lowmsgdigits;
     int hghmsgdigits, curmsgdigits;
-    char tmpname[BUFSIZ];
 
     /*
      * compute a few values needed to for
@@ -576,23 +575,23 @@ print_folders (void)
      */
     if (all || fshort || ftotal < 1) {
 	for (i = 0; i < total_folders; i++) {
+	    char *name = fi[i].name;
+
 	    if (fshort) {
-		puts(fi[i].name);
+		puts(name);
 		continue;
 	    }
 
-	    /* Add `+' to end of name, if folder is current */
-	    if (strcmp (folder, fi[i].name))
-		TRUNCCPY(tmpname, fi[i].name);
-	    else
-		snprintf (tmpname, sizeof(tmpname), "%s+", fi[i].name);
+	    if (!strcmp(name, folder)) {
+		int spaces = maxlen - strlen(name);
+		printf("%s+%*s ", name, spaces, "");
+	    } else
+		printf("%-*s  ", maxlen, name);
 
 	    if (fi[i].error) {
-		printf ("%-*s is unreadable\n", maxlen+1, tmpname);
+                puts("is unreadable");
 		continue;
 	    }
-
-	    printf ("%-*s ", maxlen+1, tmpname);
 
 	    curprinted = false; /* remember if we print cur */
 	    if (fi[i].nummsg == 0) {
