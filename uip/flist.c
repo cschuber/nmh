@@ -587,16 +587,20 @@ PrintFolders(void)
     for (i = 0; i < nFolders; i++) {
 	for (j = 0; j < svector_size (sequencesToDo); j++) {
 	    if (ivector_at (folders[i].nSeq, j) > 0 || showzero) {
-                char *name = folders[i].name;
-                char cur = !strcmp(name, curfolder) ? '+' : ' ';
+		char *name = folders[i].name;
+
+		if (!strcmp(name, curfolder)) {
+		    int spaces = maxfolderlen - strlen(name);
+		    printf("%s+%*s ", name, spaces, "");
+		} else
+		    printf("%-*s  ", maxfolderlen, name);
 
 		if (folders[i].error) {
-		    printf("%-*s%c is unreadable\n", maxfolderlen, name, cur);
+		    puts("is unreadable");
 		    continue;
 		}
 
-		printf("%-*s%c has %*d in sequence %-*s%s; out of %*d\n",
-		       maxfolderlen, name, cur,
+		printf("has %*d in sequence %-*s%s; out of %*d\n",
 		       num_digits(maxseq), ivector_at (folders[i].nSeq, j),
 		       maxseqlen, svector_at (sequencesToDo, j),
 		       !has_private ? "" : ivector_at (folders[i].private, j)
