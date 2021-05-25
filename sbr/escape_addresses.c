@@ -25,7 +25,7 @@ escape_local_part (char *name, size_t namesize)
 {
   /* wsp (whitespace) is horizontal tab or space, according to
      RFC 5234. */
-  char *specials_less_dot_plus_wsp = "	 \"(),:;<>@[\\]";
+  char *specials_less_dot_plus_wsp = "\t \"(),:;<>@[\\]";
   escape_component (name, namesize, specials_less_dot_plus_wsp);
 }
 
