@@ -490,11 +490,10 @@ finish:
 static void
 parse_capability(const char *cap, unsigned int len)
 {
-    char *str = mh_xmalloc(len + 1);
     char **caplist;
     int i;
 
-    trunccpy(str, cap, len + 1);
+    char *str = xmemtostr(cap, len);
     caplist = brkstring(str, " ", NULL);
 
     if (imap_capabilities) {
