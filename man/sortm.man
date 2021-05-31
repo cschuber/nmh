@@ -134,7 +134,7 @@ dates, their original message order is preserved.
 .SH DEFAULTS
 .nf
 .RB ` +folder "' defaults to the current folder"
-.RB ` msgs"' defaults to all without -noall, no default with -noall"
+.RB ` msgs "' defaults to all without -noall, has no default with -noall"
 .RB ` \-all '
 .RB ` \-datefield "' defaults to date"
 .RB ` \-notextfield '
