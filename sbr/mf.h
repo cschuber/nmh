@@ -20,4 +20,4 @@ struct adrx {
  * prototypes
  */
 char *legal_person(const char *);
-struct adrx *getadrx(const char *, int);
+struct adrx *getadrx(const char *, bool);

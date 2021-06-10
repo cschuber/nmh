@@ -81,12 +81,12 @@ static char *grp = NULL;
 static char *note = NULL;
 static char err[BUFSIZ];
 static char adr[BUFSIZ];
-static int eai = 0;
+static bool eai;
 
 void
 enable_eai(void)
 {
-    eai = 1;
+    eai = true;
 }
 
 

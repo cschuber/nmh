@@ -146,7 +146,7 @@ static struct adrx  adrxs2;
 
 /* eai = Email Address Internationalization */
 struct adrx *
-getadrx (const char *addrs, int eai)
+getadrx(const char *addrs, bool eai)
 {
     int parse;
     char *bp;
