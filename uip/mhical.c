@@ -42,7 +42,7 @@ static void convert_to_cancellation (contentline *);
 static void convert_common (contentline *, act);
 static void dump_unfolded (FILE *, contentline *);
 static void output (FILE *, contentline *, int);
-static void display (FILE *, contentline *, char *);
+static void display (FILE *, tzdesc_t *, contentline *, char *);
 static const char *identity (const contentline *) PURE;
 static char *format_params (char *, param_list *);
 static char *fold (char *, int);
@@ -88,6 +88,7 @@ main (int argc, char *argv[])
     bool contenttype = false;
     bool unfold = false;
     vevent *v, *nextvevent;
+    tzdesc_t timezones = NULL;
     char *form = "mhical.24hour", *format = NULL;
     char **argp, **arguments, *cp;
     int parser_status = 0;
@@ -212,7 +213,7 @@ main (int argc, char *argv[])
     /* vevents is accessed by parser as global. */
     parser_status += icalparse();
 
-    for (v = &vevents; v; v = nextvevent) {
+    for (v = &vevents; v; v = v->next) {
         if (! unfold  &&  v != &vevents  &&  v->contentlines  &&
             v->contentlines->name  &&
             strcasecmp (v->contentlines->name, "END")  &&
@@ -229,7 +230,7 @@ main (int argc, char *argv[])
             } else {
                 char *nfs = new_fs (form, format, NULL);
 
-                display (outputfile, v->contentlines, nfs);
+                display (outputfile, &timezones, v->contentlines, nfs);
                 free_fs ();
             }
         } else {
@@ -243,13 +244,16 @@ main (int argc, char *argv[])
                 output (outputfile, v->contentlines, contenttype);
             }
         }
+    }
 
+    for (v = &vevents; v; v = nextvevent) {
         free_contentlines (v->contentlines);
         nextvevent = v->next;
         if (v != &vevents) {
             free (v);
         }
     }
+    free_timezones (timezones);
 
     if (infile) {
         if (fclose (inputfile) != 0) {
@@ -587,9 +591,8 @@ output (FILE *file, contentline *clines, int contenttype)
  *   - attendees (limited to number specified in initialization)
  */
 static void
-display (FILE *file, contentline *clines, char *nfs)
+display (FILE *file, tzdesc_t *timezones, contentline *clines, char *nfs)
 {
-    tzdesc_t timezones = load_timezones (clines);
     bool in_vtimezone;
     bool in_valarm;
     contentline *node;
@@ -600,6 +603,10 @@ display (FILE *file, contentline *clines, char *nfs)
     charstring_t attendees = charstring_create (BUFSIZ);
     const unsigned int max_attendees = 20;
     unsigned int num_attendees;
+
+    if (*timezones == NULL) {
+        *timezones = load_timezones (clines);
+    }
 
     /* Don't call on the END:VCALENDAR line. */
     if (clines  &&  clines->next) {
@@ -673,7 +680,7 @@ display (FILE *file, contentline *clines, char *nfs)
                     in_vtimezone = true;
                 } else if (! strcasecmp ("DTSTART", node->name)) {
                     /* Got it:  DTSTART outside of a VTIMEZONE section. */
-                    char *datetime = format_datetime (timezones, node);
+                    char *datetime = format_datetime (*timezones, node);
                     c->c_text = datetime ? datetime : mh_xstrdup(node->value);
                 }
             }
@@ -682,7 +689,7 @@ display (FILE *file, contentline *clines, char *nfs)
 
     if ((c = fmt_findcomp ("dtend"))) {
         if ((node = find_contentline (clines, "DTEND", 0))  &&  node->value) {
-            char *datetime = format_datetime (timezones, node);
+            char *datetime = format_datetime (*timezones, node);
             c->c_text = datetime ? datetime : mh_xstrdup(node->value);
         } else if ((node = find_contentline (clines, "DTSTART", 0))  &&
                    node->value) {
@@ -691,7 +698,7 @@ display (FILE *file, contentline *clines, char *nfs)
                entire day and append 23:59:59 to it so that it signifies
                the end of the day.  And assume local timezone. */
             if (strchr(node->value, 'T')) {
-                char * datetime = format_datetime (timezones, node);
+                char * datetime = format_datetime (*timezones, node);
                 c->c_text = datetime ? datetime : mh_xstrdup(node->value);
             } else {
                 char *datetime;
@@ -699,7 +706,7 @@ display (FILE *file, contentline *clines, char *nfs)
 
                 node_copy = *node;
                 node_copy.value = concat(node_copy.value, "T235959", NULL);
-                datetime = format_datetime (timezones, &node_copy);
+                datetime = format_datetime (*timezones, &node_copy);
                 c->c_text = datetime ? datetime : mh_xstrdup(node_copy.value);
                 free(node_copy.value);
             }
@@ -753,7 +760,6 @@ display (FILE *file, contentline *clines, char *nfs)
 
     charstring_free (attendees);
     charstring_free (buffer);
-    free_timezones (timezones);
 }
 
 static const char *
