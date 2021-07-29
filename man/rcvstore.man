@@ -96,16 +96,23 @@ and
 .B \-nopublic
 switches may be used to force these sequences to be public or
 private sequences.
-.SS Locking and \-unseen
-If you use the \*(lqUnseen-Sequence\*(rq profile entry, rcvstore could
-try to read and update its sequence state while another
+.SS Locking and sequences
+If you use the \*(lqUnseen-Sequence\*(rq profile entry, or if you
+use the
+.B \-sequence
+argument, 
+.B rcvstore
+might try to update its sequence state while another
 .B nmh
-process is also trying to do so.  This can cause the sequence state to
-lose track.  To avoid this, just between asynchronous invocations of
-.BR rcvstore ,
-do not use it without an external locking mechanism, for example, a
+process is also trying to do so.  This can cause one of those updates
+to be lost.  To avoid this (just between asynchronous invocations of
+.BR rcvstore ),
+always use it with an external locking mechanism.  A
 .IR procmailrc (5)
-local lockfile, if you use the \*(lqUnseen-Sequence\*(rq profile entry.
+local lockfile would work, or if not using procmail, then consider using
+.IR dotlockfile (1)
+or
+.IR flock (1).
 .SH FILES
 .fc ^ ~
 .nf
