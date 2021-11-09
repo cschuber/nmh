@@ -949,6 +949,7 @@ logged_in (void)
     setutxent();
 
     while ((utp = getutxent()) != NULL) {
+        assert (user != NULL);
         if ( utp->ut_type == USER_PROCESS && utp->ut_user[0] != 0
                 && strncmp (user, utp->ut_user, sizeof(utp->ut_user)) == 0) {
             if (debug)

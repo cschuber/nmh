@@ -260,7 +260,8 @@ main(int argc, char **argv)
 
     GetFolderOrder();
     ScanFolders();
-    qsort(folders, nFolders, sizeof(struct Folder), (qsort_comp) CompareFolders);
+    if (folders)
+        qsort(folders, nFolders, sizeof(struct Folder), (qsort_comp) CompareFolders);
     PrintFolders();
     svector_free (sequencesToDo);
     done (0);
