@@ -254,7 +254,7 @@ etcpath (char *file)
                 pp = mypath;
             } else {
                 struct passwd *pw;
-                if ((pw = getpwnam (dir))) {
+                if (dir && (pw = getpwnam (dir))) {
                     pp = pw->pw_dir;
                 } else {
                     unknown_user = true;
@@ -278,8 +278,8 @@ etcpath (char *file)
             cp = m_mailpath(file);
             size_t need = strlen(cp) + 1;
             if (need > sizeof epath) {
-                free (cp);
                 inform ("etcpath(%s) overflow when checking Mail directory, continuing", cp);
+                free (cp);
                 goto failed;
             }
             memcpy(epath, cp, need);
