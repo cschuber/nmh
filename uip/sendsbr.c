@@ -532,7 +532,6 @@ handle_sendfrom(char **vec, int *vecp, char *draft, const char *auth_svc)
     /* Extract address and host from From: header line in draft. */
     if (get_from_header_info(draft, &addr, &host, &message) != OK) {
         if (addr  &&  strchr(addr, '@')) {
-            free((void *) addr);
             free((void *) host);
             die("%s for %s", message, addr);
         } else {
