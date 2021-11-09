@@ -99,6 +99,19 @@ printf 'BEGIN:VCALENDAR\nEND:VCALENDAR\n' |
 check /dev/null "$actual" 'keep first'
 check "$expected_err" "$actual_err"
 
+# nonexistent user without a file
+# This caused a seg fault with sbr/path.c commit cd2c6750fba54cd6d938106ecd122e8976792b6e.
+start_test 'nonexistent user without a file'
+user=$(nonexistent_user)
+cat >"$expected_err" <<EOF
+mhical: unable to open format file ~$user: No such file or directory
+EOF
+printf 'BEGIN:VCALENDAR\nEND:VCALENDAR\n' |
+    $NMH_TEST_PREFIX mhical -form "~$user" >"$actual" 2>"$actual_err" ||
+    true
+check /dev/null "$actual" 'keep first'
+check "$expected_err" "$actual_err"
+
 # file in Mail dir
 start_test 'file in Mail dir'
 file="${MH_TEST_DIR}/Mail/file"
