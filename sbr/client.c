@@ -100,7 +100,7 @@ client (char *server, char *service, char *response, int len_response,
      * error.
      */
 
-    if (res->ai_next)
+    if (res == NULL || res->ai_next)
 	snprintf(response, len_response, "no servers available (use -snoop "
 		 "for details)");
     else {
