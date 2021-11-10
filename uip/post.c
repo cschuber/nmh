@@ -926,9 +926,10 @@ putfmt (char *name, char *str, int *eai, FILE *out)
 
     for (count = 0; (cp = getname (str)); count++) {
 	if ((mp = getm (cp, NULL, 0, error, sizeof(error)))) {
-	    if (tmpaddrs.m_next)
+	    if (tmpaddrs.m_next) {
+		assert (np != NULL);
 		np->m_next = mp;
-	    else
+	    } else
 		tmpaddrs.m_next = mp;
 	    np = mp;
 	} else {
