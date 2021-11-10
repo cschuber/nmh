@@ -332,7 +332,7 @@ static char *usr_fstring;	/* for CERROR */
  * static prototypes
  */
 static struct ftable *lookup(char *);
-static void compile_error(char *, char *);
+static void compile_error(char *, char *) NORETURN;
 static char *compile (char *);
 static char *do_spec(char *);
 static char *do_name(char *, int);
