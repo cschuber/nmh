@@ -1495,6 +1495,7 @@ putstr (char *string, unsigned long flags)
     NMH_UNUSED (char_len);
 #endif
 
+    assert (string != NULL);
     while (*string) {
         flags &= ~INVISIBLE;
 #ifdef MULTIBYTE_SUPPORT

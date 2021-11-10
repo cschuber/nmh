@@ -473,6 +473,7 @@ AddFolder(char *name, int force)
 	/* Oops, error occurred.  Record it and continue. */
 	AllocFolders(&folders, &nFoldersAlloced, nFolders + 1);
 	f = &folders[nFolders++];
+        assert(f != NULL);
 	f->name = mh_xstrdup(name);
 	f->error = 1;
 	f->priority = AssignPriority(f->name);
@@ -509,6 +510,7 @@ AddFolder(char *name, int force)
 	/* save general folder information */
 	AllocFolders(&folders, &nFoldersAlloced, nFolders + 1);
 	f = &folders[nFolders++];
+        assert(f != NULL);
 	f->name = mh_xstrdup(name);
 	f->nMsgs = mp->nummsg;
 	f->nSeq = ivector_create (0);

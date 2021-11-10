@@ -498,6 +498,7 @@ usr_delivery (int fd, char *delivery, int su)
 	result  = vec[3];
 	string  = vec[4];
 
+        assert (result != NULL);
 	/* find out how to perform the action */
 	switch (result[0]) {
 	    case 'N':
@@ -548,6 +549,7 @@ usr_delivery (int fd, char *delivery, int su)
 	    }
 	}
 
+        assert (field != NULL);
 	/* check if the field matches */
 	switch (*field) {
 	    case '*': 

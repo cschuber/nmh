@@ -390,9 +390,10 @@ add_aka (struct aka *ak, char *pp)
     ad->ad_text = mh_xstrdup(pp);
     ad->ad_local = strchr(pp, '@') == NULL && strchr(pp, '!') == NULL;
     ad->ad_next = NULL;
-    if (ak->ak_addr)
+    if (ak->ak_addr) {
+	assert (ld != NULL);
 	ld->ad_next = ad;
-    else
+    } else
 	ak->ak_addr = ad;
 }
 

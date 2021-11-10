@@ -404,6 +404,7 @@ try_it_again:
 		done (1);
 
 	seq_setprev (mp);	/* set the previous sequence */
+	assert (mp != NULL);
 
 	/*
 	 * Find the first message in our set and use it as the input
