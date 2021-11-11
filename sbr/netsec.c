@@ -593,7 +593,6 @@ retry:
     if (startoffset > nsc->ns_inbufsize / 2) {
 	memmove(nsc->ns_inbuffer, nsc->ns_inptr, nsc->ns_inbuflen);
 	nsc->ns_inptr = nsc->ns_inbuffer;
-	startoffset = 0;
 	remaining = nsc->ns_inbufsize - nsc->ns_inbuflen;
 	end = nsc->ns_inptr + nsc->ns_inbuflen;
     }
