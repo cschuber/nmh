@@ -1102,7 +1102,7 @@ parse_json(jsmntok_t **tokens, size_t *tokens_len,
            const char *input, size_t input_len, FILE *log)
 {
     jsmn_parser p;
-    jsmnerr_t r;
+    int r;
 
     *tokens_len = JSMN_TOKENS;
     *tokens = mh_xmalloc(*tokens_len * sizeof **tokens);

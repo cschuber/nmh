@@ -1183,7 +1183,6 @@ sbr_libmh_a_SOURCES = \
     sbr/utils.c \
     sbr/vector.c \
     sbr/vfgets.c \
-    thirdparty/jsmn/jsmn.c \
     #
 
 sbr_libmh_a_LIBADD = $(LIBOBJS)
