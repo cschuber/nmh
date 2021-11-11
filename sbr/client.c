@@ -67,7 +67,6 @@ client (char *server, char *service, char *response, int len_response,
 	if (sd < 0) {
 	    if (debug)
 		fprintf(stderr, "socket() failed: %s\n", strerror(errno));
-	    rc = errno;
 	    continue;
 	}
 
@@ -83,8 +82,6 @@ client (char *server, char *service, char *response, int len_response,
 
 	    return sd;
 	}
-
-	rc = errno;
 
 	if (debug) {
 	    fprintf(stderr, "Connection failed: %s\n", strerror(errno));
