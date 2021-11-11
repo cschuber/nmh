@@ -326,7 +326,7 @@ static int
 addfile (struct aka *ak, char *file)
 {
     char *cp;
-    char buffer[BUFSIZ];
+    static char buffer[BUFSIZ];
     FILE *fp;
 
     if (!(fp = fopen (etcpath (file), "r"))) {
