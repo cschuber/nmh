@@ -633,8 +633,7 @@ m_getfld (m_getfld_state_t *gstate, char name[NAMESZ], char *buf, int *bufsz,
 	    /* Check for next character, which is either the space after
 	       the ':' or the first folded whitespace. */
 	    {
-		int next_char;
-		if (c == EOF  ||  (next_char = Peek (s)) == EOF) {
+		if (c == EOF  ||  Peek (s) == EOF) {
 		    *bufsz = *cp = *buf = 0;
 		    inform("eof encountered in field \"%s\"", name);
 		    leave_getfld (s);
@@ -900,7 +899,7 @@ m_unknown(m_getfld_state_t *gstate, FILE *iob)
         *cp = c;
     }
 
-    if (i == sizeof from-1  &&  strncmp (text, "From ", sizeof from-1) == 0) {
+    if (i == sizeof from-1  &&  strncmp (text, from, sizeof from-1) == 0) {
 	s->msg_style = MS_MBOX;
 	delimstr = "\nFrom ";
 	while ((c = Getc(s)) != EOF && c != '\n')
