@@ -598,6 +598,8 @@ imap_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 		    return NOTOK;
 	    } else {
 		rc = send_imap_command(nsc, 0, errstr, "AUTHENTICATE %s", mech);
+		if (rc != OK)
+		    return NOTOK;
 		line = netsec_readline(nsc, &len, errstr);
 		if (! line)
 		    return NOTOK;
