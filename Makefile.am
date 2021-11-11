@@ -193,7 +193,6 @@ AM_DISTCHECK_CONFIGURE_FLAGS = DISABLE_SETGID_MAIL=1 \
 ##
 CLEANFILES = \
     $(man_MANS) \
-    *.plist \
     config/version.c \
     etc/bash_completion_nmh \
     etc/mhn.defaults \
@@ -205,12 +204,12 @@ CLEANFILES = \
 clean-local:
 	@rm -rf RPM a.out.dSYM uip/a.out.dSYM
 	@rm -rf test/testdir
+	@rm -rf *.plist
 
 ##
 ## Stuff that should be cleaned via "make maintainer-clean"
 ##
 MAINTAINERCLEANFILES = \
-    *.plist \
     atags \
     cscope.files \
     cscope.in.out \
