@@ -460,7 +460,7 @@ compile (char *sp)
 	if (c == 0)
 	    return cp;
 
-	switch (c = *++cp) {
+	switch (*++cp) {
 	case '%':
 	    PUTC (*cp);
 	    cp++;
