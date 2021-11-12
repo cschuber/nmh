@@ -200,7 +200,6 @@ int
 main (int argc, char **argv)
 {
     int fd, status;
-    FILE *fp;
     char *cp, *mdlvr = NULL, buf[BUFSIZ];
     char mailbox[BUFSIZ], tmpfil[BUFSIZ];
     char **argp, **arguments;
@@ -361,9 +360,6 @@ main (int argc, char **argv)
        leave that for someone who cares about the temp-file-accessing
        functionality (they'll have to watch out for cases where we adios()). */
     (void) m_unlink (tmpfil);
-
-    if (!(fp = fdopen (fd, "r+")))
-	die("unable to access temporary file");
 
     /*
      * If no sender given, extract it
