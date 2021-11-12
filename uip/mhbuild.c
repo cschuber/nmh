@@ -205,12 +205,10 @@ main (int argc, char **argv)
 		contentidsw = false;
 		continue;
 
-	    case HEADERENCSW: {
-		int encoding;
-
+	    case HEADERENCSW:
 		if (!(cp = *argp++) || *cp == '-')
 		    die("missing argument to %s", argp[-2]);
-		switch (encoding = smatch (cp, encodingswitches)) {
+		switch (smatch (cp, encodingswitches)) {
 		case AMBIGSW:
 		    ambigsw (cp, encodingswitches);
 		    done (1);
@@ -229,7 +227,6 @@ main (int argc, char **argv)
 		    die("Internal error: algorithm %s", cp);
 		}
 		continue;
-	    }
 
 	    case AUTOHEADERENCSW:
 		header_encoding = CE_UNKNOWN;

@@ -289,13 +289,12 @@ writeExternalBody (CT ct, FILE *out)
 static int
 write8Bit (CT ct, FILE *out)
 {
-    int fd;
     size_t inbytes;
     char c, *file, buffer[BUFSIZ];
     CE ce = &ct->c_cefile;
 
     file = NULL;
-    if ((fd = (*ct->c_ceopenfnx) (ct, &file)) == NOTOK)
+    if ((*ct->c_ceopenfnx) (ct, &file) == NOTOK)
 	return NOTOK;
 
     c = '\n';
@@ -320,7 +319,6 @@ write8Bit (CT ct, FILE *out)
 static int
 writeQuoted (CT ct, FILE *out)
 {
-    int fd;
     char *cp, *file;
     char c = '\0';
     CE ce = &ct->c_cefile;
@@ -330,7 +328,7 @@ writeQuoted (CT ct, FILE *out)
     ssize_t gotlen;
 
     file = NULL;
-    if ((fd = (*ct->c_ceopenfnx) (ct, &file)) == NOTOK)
+    if ((*ct->c_ceopenfnx) (ct, &file) == NOTOK)
 	return NOTOK;
 
     while ((gotlen = getline(&bufp, &buflen, ce->ce_fp)) != -1) {
@@ -403,12 +401,12 @@ three_print:
 static int
 writeBase64ct (CT ct, FILE *out)
 {
-    int	fd, result;
+    int	result;
     char *file;
     CE ce = &ct->c_cefile;
 
     file = NULL;
-    if ((fd = (*ct->c_ceopenfnx) (ct, &file)) == NOTOK)
+    if ((*ct->c_ceopenfnx) (ct, &file) == NOTOK)
 	return NOTOK;
 
     result = writeBase64aux (ce->ce_fp, out,

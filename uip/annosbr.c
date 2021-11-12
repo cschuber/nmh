@@ -328,7 +328,7 @@ annosbr (int fd, char *file, char *comp, char *text, bool inplace, bool datesw, 
 	     *	This line wasn't a match so copy it to the temporary file.
 	     */
 
-	    if ((n = fputs(field, tmp)) == EOF || (c == '\n' && fputc('\n', tmp) == EOF))
+	    if (fputs(field, tmp) == EOF || (c == '\n' && fputc('\n', tmp) == EOF))
 		die("unable to write temporary file.");
 
 	} while (*field != '\0' && *field != '-');
