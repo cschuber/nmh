@@ -588,7 +588,7 @@ fix_addresses (char *str)
                 np->adr = mh_xstrdup (adr);
 
                 /* Need to flush getname() */
-                while ((cp = getname (""))) continue;
+                while (getname ("")) continue;
             } /* else the np->adr is OK, so use it as-is. */
 
             free (display_name);

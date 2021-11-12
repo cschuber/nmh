@@ -311,9 +311,7 @@ main (int argc, char **argv)
      * check for "Aliasfile:" profile entry
      */
     if ((cp = context_find ("Aliasfile"))) {
-	char *dp = NULL;
-
-	for (ap = brkstring(dp = mh_xstrdup(cp), " ", "\n"); ap && *ap; ap++) {
+	for (ap = brkstring(mh_xstrdup(cp), " ", "\n"); ap && *ap; ap++) {
 	    vec[vecp++] = "-alias";
 	    vec[vecp++] = *ap;
 	}

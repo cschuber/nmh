@@ -2105,7 +2105,6 @@ expand_pseudoheader (CT ct, CT *text_plain_ct, struct multipart *m,
     struct str2init *s2i;
     CT reply_ct;
     struct part *part;
-    int status;
 
     type_p = getcpy (type);
     if ((subtype_p = strchr (type_p, '/'))) {
@@ -2131,8 +2130,7 @@ expand_pseudoheader (CT ct, CT *text_plain_ct, struct multipart *m,
     ct->c_storeproc = mh_xstrdup(convert_command);
     ct->c_umask = ~m_gmprot ();
 
-    if ((status = show_content_aux (ct, 0, convert_command, NULL, NULL)) !=
-        OK) {
+    if (show_content_aux (ct, 0, convert_command, NULL, NULL) != OK) {
         inform("store of %s content failed, continuing...", type);
     }
     free (convert_command);
