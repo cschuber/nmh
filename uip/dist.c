@@ -340,9 +340,6 @@ try_it_again:
     close (in);
     close (out);
 
-    if ((in = open (msgnam, O_RDONLY)) == NOTOK)
-	adios (msgnam, "unable to open message");
-
     if (!file) {
 	context_replace (pfolder, folder);/* update current folder  */
 	seq_setcur (mp, mp->lowsel);	  /* update current message */
