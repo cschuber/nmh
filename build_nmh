@@ -46,6 +46,7 @@
 
 logfile=build_nmh.log
 usage="usage:
+  [-a to analyze with scan-build (Clang Static Analyzer)]
   [-b <branch>, only if downloading]
   [-c to run 'make distcheck' instead of 'make check']
   [-d to build nmh with optimization disabled]
@@ -172,6 +173,7 @@ exec 3>&1 4>&2 >"$tmpfile" 2>&1
 ####
 #### Interpret command arguments.
 ####
+analyze=
 branch=master
 check=check
 debug=0
@@ -185,8 +187,9 @@ yes=0
 #### in order for cleanup to be call:  just EXIT isn't sufficient.
 trap cleanup EXIT INT QUIT
 
-while getopts 'cb:dil:rsvy?' arg; do
+while getopts 'acb:dil:rsvy?' arg; do
   case $arg in
+    a  ) analyze='scan-build ' ;;
     b  ) branch="$OPTARG" ;;
     c  ) check=distcheck ;;
     d  ) debug=1 ;;
@@ -388,13 +391,20 @@ if [ -z "$CFLAGS" ]; then
   fi
 fi
 
-printf "\n./configure $config_opts${CFLAGS:+ CFLAGS=\"${CFLAGS}\"}\n"
-./configure $config_opts ${CFLAGS:+CFLAGS="${CFLAGS}"}
+printf "\n${analyze}./configure $config_opts${CFLAGS:+ CFLAGS=\"${CFLAGS}\"}\n"
+${analyze}./configure $config_opts ${CFLAGS:+CFLAGS="${CFLAGS}"}
 status=$?
+
+if [ "$analyze" ]; then
+  #### scan-build configure doesn't put -D_GNU_SOURCE_ in Makefile
+  tmpmakefile=/tmp/Makefile-$$
+  sed -e 's/^\(AM_CPPFLAGS =\) */\1 -D_GNU_SOURCE/' Makefile >$tmpmakefile
+  mv $tmpmakefile Makefile
+fi
 
 if [ $status -eq 0 ]; then
   [ $verbose -ge 1 ]  &&  echo building . . . >&3
-  make
+  ${analyze}make
   status=$?
 
   if [ $status -eq 0 ]; then
