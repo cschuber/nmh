@@ -251,20 +251,12 @@ dumpone(struct format *fmt)
 		litputs(fmt->f_text);
 		break;
 
-	case FT_LITF:
-		printf(", width %d, fill '", fmt->f_width);
-		litputc(fmt->f_fill);
-		fputs("' ", stdout);
-		litputs(fmt->f_text);
-		break;
-
 	case FT_CHAR:
 		putchar(' ');
 		putchar('\'');
 		litputc(fmt->f_char);
 		putchar('\'');
 		break;
-
 
 	case FT_IF_S:
 	case FT_IF_S_NULL:
@@ -351,7 +343,6 @@ f_typestr(int t)
 	case FT_COMP: return "COMP";
 	case FT_COMPF: return "COMPF";
 	case FT_LIT: return "LIT";
-	case FT_LITF: return "LITF";
 	case FT_CHAR: return "CHAR";
 	case FT_NUM: return "NUM";
 	case FT_NUMF: return "NUMF";

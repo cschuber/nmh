@@ -77,7 +77,7 @@ struct format {
 #define FT_COMP          1       /* the text of a component                 */
 #define FT_COMPF         2       /* comp text, filled                       */
 #define FT_LIT           3       /* literal text                            */
-#define FT_LITF          4       /* literal text, filled                    */
+                                 /* FT_LITF removed because it was unused   */
 #define FT_CHAR          5       /* a single ASCII character                */
 #define FT_NUM           6       /* "value" as decimal number               */
 #define FT_NUMF          7       /* "value" as filled dec number            */
