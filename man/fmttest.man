@@ -271,7 +271,6 @@ register.
 COMP	Output component
 COMPF	Formatted output component
 LIT	Output literal text
-LITF	Formatted literal text output
 CHAR	Output single character
 NUM	Output the \fInum\fR register
 NUMF	Formatted output of the \fInum\fR register

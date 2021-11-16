@@ -434,21 +434,6 @@ fmt_scan (struct format *format, charstring_t scanlp, int width, int *dat,
 		charstring_push_back (scanlp, c);
 	    }
 	    break;
-	case FT_LITF:
-	    sp = fmt->f_text;
-	    rjust = false;
-	    i = fmt->f_width;
-	    if (i < 0) {
-		i = -i;
-		rjust = true;		/* XXX should do something with this */
-	    }
-	    while ((c = *sp++) && --i >= 0 && charstring_chars (scanlp) < max) {
-		charstring_push_back (scanlp, c);
-	    }
-	    while (--i >= 0 && charstring_chars (scanlp) < max) {
-		charstring_push_back (scanlp, fmt->f_fill);
-	    }
-	    break;
 
 	case FT_STR:
 	    cpstripped (scanlp, max - charstring_chars (scanlp), str);
