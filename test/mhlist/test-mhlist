@@ -506,6 +506,104 @@ start_test 'bump plain and enriched to the top.  add a bogus type as well.'
 run_prog mhlist -prefer foo/bar -prefer text/plain -prefer text/enriched $msgnum > $actual 2>&1
 check "$expected" "$actual"
 
+start_test 'binary message/rfc822'
+cat >"$expected" <<EOF
+ msg part  type/subtype              size description
+  14       multipart/mixed            341
+     1     message/rfc822             157
+EOF
+cat > `mhpath new` <<EOF
+From: Test <test@example.com>
+To: Some User <user@example.com>
+Date: Fri, 29 Sep 2006 00:00:00
+Subject: message with binary message/rfc822 attachment
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----- =_aaaaaaaaaa0"
+
+and some garbage before the attachment
+
+------- =_aaaaaaaaaa0
+Content-Type: message/rfc822; name="1552"; charset="us-ascii"
+Content-Transfer-Encoding: binary
+
+From: Test <test@example.com>
+To: <another_user@example.com>
+Date: Thu, 28 Sep 2006 00:00:00
+Subject: message/rfc822 attachment
+
+This is an RFC-822 message.
+
+------- =_aaaaaaaaaa0--
+EOF
+
+run_prog mhlist last > $actual 2>&1
+check "$expected" "$actual"
+
+
+start_test 'quoted-printable message/rfc822'
+cat >"$expected" <<EOF
+mhlist: "message/rfc822" type in message 15 should be encoded in 7bit, 8bit, or binary continuing...
+EOF
+cat > `mhpath new` <<EOF
+From: Test <test@example.com>
+To: Some User <user@example.com>
+Date: Fri, 29 Sep 2006 00:00:00
+Subject: message with quoted-printable message/rfc822 attachment
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----- =_aaaaaaaaaa0"
+
+and some garbage before the attachment
+
+------- =_aaaaaaaaaa0
+Content-Type: message/rfc822; name="1552"; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+From: Test <test@example.com>
+To: <another_user@example.com>
+Date: Thu, 28 Sep 2006 00:00:00
+Subject: message/rfc822 attachment
+
+This is an RFC-822 message.
+
+------- =_aaaaaaaaaa0--
+EOF
+
+! run_prog mhlist last > $actual 2>&1
+check "$expected" "$actual"
+
+
+start_test '8bit message/external-body'
+cat >"$expected" <<EOF
+mhlist: "message/external-body" type in message 16 should be encoded in 7bit continuing...
+EOF
+cat > `mhpath new` <<EOF
+From: Test <test@example.com>
+To: Some User <user@example.com>
+Date: Fri, 29 Sep 2006 00:00:00
+Subject: message with 8bit message/external-body attachment
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----- =_aaaaaaaaaa0"
+
+and some garbage before the attachment
+
+------- =_aaaaaaaaaa0
+Content-Type: message/external-body; name="1552"; charset="us-ascii"
+Content-Id: ext-id
+Content-Transfer-Encoding: 8bit
+
+From: Test <test@example.com>
+To: <another_user@example.com>
+Date: Thu, 28 Sep 2006 00:00:00
+Subject: message/rfc822 attachment
+
+This is an RFC-822 message.
+
+------- =_aaaaaaaaaa0--
+EOF
+
+! run_prog mhlist last > $actual 2>&1
+check "$expected" "$actual"
+
 
 finish_test
 exit $failed

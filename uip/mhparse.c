@@ -1403,13 +1403,6 @@ InitMessage (CT ct)
 {
     CI ci = &ct->c_ctinfo;
 
-    if ((ct->c_encoding != CE_7BIT) && (ct->c_encoding != CE_8BIT)) {
-	inform("\"%s/%s\" type in message %s should be encoded in "
-	    "7bit or 8bit, continuing...", ci->ci_type, ci->ci_subtype,
-	    ct->c_file);
-	return NOTOK;
-    }
-
     /* check for missing subtype */
     if (!*ci->ci_subtype)
 	ci->ci_subtype = add ("rfc822", ci->ci_subtype);
@@ -1419,6 +1412,14 @@ InitMessage (CT ct)
 
     switch (ct->c_subtype) {
 	case MESSAGE_RFC822:
+	    /* RFC 2046 § 5.2.1 allows only 7bit, 8bit, or binary encoding */
+	    if (ct->c_encoding != CE_7BIT  &&  ct->c_encoding != CE_8BIT  &&
+		ct->c_encoding != CE_BINARY) {
+		inform("\"%s/%s\" type in message %s should be encoded in "
+		       "7bit, 8bit, or binary continuing...",
+		       ci->ci_type, ci->ci_subtype, ct->c_file);
+		return NOTOK;
+	    }
 	    break;
 
 	case MESSAGE_EXTERNAL:
@@ -1427,6 +1428,14 @@ InitMessage (CT ct)
 		struct exbody *e;
 		CT p;
 		FILE *fp;
+
+                /* RFC 2046 § 5.2.3 allows only 7bit encoding */
+		if (ct->c_encoding != CE_7BIT) {
+		    inform("\"%s/%s\" type in message %s should be encoded in "
+			   "7bit continuing...",
+			   ci->ci_type, ci->ci_subtype, ct->c_file);
+		    return NOTOK;
+		}
 
 		NEW0(e);
 		ct->c_ctparams = (void *) e;
@@ -1506,6 +1515,9 @@ no_body:
 	    break;
 
 	default:
+	    /* Ignore message/partial because nmh doesn't support it.
+	       RFC 2046 § 5.2.4 says that the encoding "should" be 7bit.
+	       That's not "must", so allow any encoding. */
 	    break;
     }
 
