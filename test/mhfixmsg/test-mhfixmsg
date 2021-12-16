@@ -1735,11 +1735,11 @@ check "`mhpath last`" "$actual" 'keep first'
 check "$expected.err" "$actual.err"
 
 
-# check that input is passed through to output when there's a parse error
+# check that stdin is passed through to output when there's a parse error
 # (the charset string is missing its closing quote) with -outfile, and
 # input from stdin.  Don't check err output, because it contains the name
 # of a tmp file.  It's similar to that of the previous check.
-start_test "input is passed through to output when there's a parse error"
+start_test "stdin is passed through to output when there's a parse error"
 set +e
 run_prog mhfixmsg -file - -outfile - <`mhpath last` >"$actual" 2>/dev/null
 set -e
