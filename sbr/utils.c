@@ -618,7 +618,7 @@ nmh_version_changed (int older)
         const float old_version =
             context_version  &&  has_prefix(context_version, "nmh-")
             ?  strtof (context_version + 4, NULL)
-            :  99999999;
+            :  99999999.0;
 
         if (context_version == NULL  ||  old_version < current_version) {
             context_replace ("Version", "nmh-" VERSION);
