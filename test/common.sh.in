@@ -29,19 +29,26 @@ test -z "$ICONV_ENABLED"  &&  ICONV_ENABLED="@ICONV_ENABLED@"
 test -z "$OAUTH_SUPPORT"  &&  OAUTH_SUPPORT="@OAUTH_SUPPORT@"
 test -z "$CURL_USER_AGENT"  &&  CURL_USER_AGENT="@CURL_USER_AGENT@"
 
+# Set standard environment variables so tests have a sane, reliable environment.
+
+export TZ='UTC+0'
+
 #### Make sure that HOME is set to avoid run-time warning from w3m about
 #### not being able to create config directory.
 HOME="$MH_TEST_DIR"
 export HOME
 
-unset MAILDROP MHBUILD MHCONTEXT MHMTSUSERCONF MHN MHSHOW MHSTORE
-unset MHLDEBUG MHWDEBUG PAGER XOAUTH SMTPUTF8
+unset EDITOR MAILDROP PAGER
+
 #### Set LC_ALL in individual tests as needed.  Unset these so
 #### that we don't depend on user's settings in other tests.
 unset LANG LC_ALL LC_CTYPE
 # Don't have libcurl(3) use the environment's proxy for tests'
 # connections to 127.0.0.1.
 unset http_proxy ALL_PROXY all_proxy
+
+unset MHBUILD MHCONTEXT MHMTSUSERCONF MHN MHSHOW MHSTORE
+unset MHLDEBUG MHWDEBUG XOAUTH SMTPUTF8
 
 #### Use a test dir for tmp files when MHTMPDIR applies.
 MHTMPDIR="$MH_TEST_DIR"/Mail
