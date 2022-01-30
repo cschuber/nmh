@@ -24,6 +24,12 @@ NEW FEATURES
   3) Add a postproc entry that points to the post that you use.  That can
      be viewed with "mhparam postproc".
 - scan(1) -file argument can be a Maildir directory.
+- Updated mhn.defaults to prefer mpv(1) over xv(1) and replace mpeg_play(1),
+  and to use it for all video types, not just video/mpeg.  And prefer all
+  other searched-for pdf viewers over acroread(1).
+- Added mhshow-suffix-video.mp4 to mhn.defaults, for use by mhshow(1) and
+  send(1).
+- Removed support from mhn.defaults for application/x-ivs and text/richtext.
 
 -----------------
 OBSOLETE FEATURES

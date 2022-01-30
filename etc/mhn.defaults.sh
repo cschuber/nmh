@@ -25,18 +25,18 @@ fi
 TMP=/tmp/nmh_temp.$$
 trap "rm -f $TMP" 0 1 2 3 13 15
 
-if [ ! -z `$SEARCHPROG "$SEARCHPATH" par` ]; then
+if [ -n `$SEARCHPROG "$SEARCHPATH" par` ]; then
     #### The widths here correspond to those for the text browsers below.
     textfmt=' | par 64'
     replfmt=" | sed 's/^\(.\)/> \1/; s/^$/>/;' | par 64"
-elif [ ! -z `$SEARCHPROG "$SEARCHPATH" fmt` ]; then
+elif [ -n `$SEARCHPROG "$SEARCHPATH" fmt` ]; then
     textfmt=' | fmt'
     replfmt=" | fmt | sed 's/^\(.\)/> \1/; s/^$/>/;'"
 else
     textfmt=
     replfmt=
 fi
-[ ! -z `$SEARCHPROG "$SEARCHPATH" iconv` ]  &&
+[ -n `$SEARCHPROG "$SEARCHPATH" iconv` ]  &&
     charsetconv=' | iconv -f ${charset:-us-ascii} -t utf-8'"${textfmt}"  ||
     charsetconv=
 
@@ -49,51 +49,21 @@ mhstore-store-video/mpeg: %m%P.mpg
 mhstore-store-application/PostScript: %m%P.ps
 EOF
 
-PGM=`$SEARCHPROG "$SEARCHPATH" xwud`
-if [ ! -z "$PGM" ]; then
-    XWUD="$PGM" X11DIR="`echo $PGM | awk -F/ '{ for(i=2;i<NF;i++)printf "/%s", $i;}'`"/
-else
-    XWUD= X11DIR=
-fi
-
-PGM=`$SEARCHPROG "$SEARCHPATH" pnmtoxwd`
-if [ ! -z "$PGM" ]; then
-    NETPBM="$PGM" NETPBMDIR="`echo $PGM | awk -F/ '{ for(i=2;i<NF;i++)printf "/%s", $i;}'`"/
-else
-    NETPBM= NETPBMDIR=
-fi
-
-PGM=`$SEARCHPROG "$SEARCHPATH" xv`
-if [ ! -z "$PGM" ]; then
-    echo "mhshow-show-image: %l$PGM -geometry =-0+0 %f" >> $TMP
-elif [ ! -z $"NETPBM" -a ! -z "$XWUD" ]; then
-    echo "mhshow-show-image/gif: %l${NETPBMDIR}giftopnm | ${NETPBMDIR}ppmtopgm | ${NETPBMDIR}pgmtopbm | ${NETPBMDIR}pnmtoxwd | $XWUD -geometry =-0+0" >> $TMP
-    echo "mhshow-show-image/x-pnm: %l${NETPBMDIR}pnmtoxwd | $XWUD -geometry =-0+0" >> $TMP
-    echo "mhshow-show-image/x-pgm: %l${NETPBMDIR}pgmtopbm | ${NETPBMDIR}pnmtoxwd | $XWUD -geometry =-0+0" >> $TMP
-    echo "mhshow-show-image/x-ppm: %l${NETPBMDIR}ppmtopgm | ${NETPBMDIR}pgmtopbm | ${NETPBMDIR}pnmtoxwd | $XWUD -geometry =-0+0" >> $TMP
-    echo "mhshow-show-image/x-xwd: %l$XWUD -geometry =-0+0" >> $TMP
-
-    PGM=`$SEARCHPROG "$SEARCHPATH" djpeg`
-    if [ ! -z "$PGM" ]; then
-	echo "mhshow-show-image/jpeg: %l$PGM -Pg | ${NETPBMDIR}ppmtopgm | ${NETPBMDIR}pgmtopbm | ${NETPBMDIR}pnmtoxwd | $XWUD -geometry =-0+0" >> $TMP
-    fi
-fi
-
 if [ -f "/dev/audioIU" ]; then
     PGM=`$SEARCHPROG "$SEARCHPATH" recorder`
-    if [ ! -z "$PGM" ]; then
+    if [ -n "$PGM" ]; then
 	echo "mhstore-store-audio/basic: %m%P.au" >> $TMP
         echo "mhbuild-compose-audio/basic: ${AUDIODIR}recorder %f -au -pause > /dev/tty" >> $TMP
         echo "mhshow-show-audio/basic: %l${AUDIODIR}splayer -au" >> $TMP
     fi
 elif [ -f "/dev/audio" ]; then
     PGM=`$SEARCHPROG "$SEARCHPATH" raw2audio`
-    if [ ! -z "$PGM" ]; then
+    if [ -n "$PGM" ]; then
 	AUDIODIR="`echo $PGM | awk -F/ '{ for(i=2;i<NF;i++)printf "/%s", $i;}'`"/
 	echo "mhstore-store-audio/basic: | ${AUDIODIR}raw2audio -e ulaw -s 8000 -c 1 > %m%P.au" >> $TMP
         echo "mhstore-store-audio/x-next: %m%P.au" >> $TMP
 	AUDIOTOOL=`$SEARCHPROG "$SEARCHPATH" audiotool`
-	if [ ! -z "$AUDIOTOOL" ]; then
+	if [ -n "$AUDIOTOOL" ]; then
 	    echo "mhbuild-compose-audio/basic: $AUDIOTOOL %f && ${AUDIODIR}raw2audio -F < %f" >> $TMP
 	else
 	    echo "mhbuild-compose-audio/basic: trap \"exit 0\" 2 && ${AUDIODIR}record | ${AUDIODIR}raw2audio -F" >> $TMP
@@ -101,16 +71,16 @@ elif [ -f "/dev/audio" ]; then
 	echo "mhshow-show-audio/basic: %l${AUDIODIR}raw2audio 2>/dev/null | ${AUDIODIR}play" >> $TMP
 
 	PGM=`$SEARCHPROG "$SEARCHPATH" adpcm_enc`
-	if [ ! -z "$PGM" ]; then
+	if [ -n "$PGM" ]; then
 	    DIR="`echo $PGM | awk -F/ '{ for(i=2;i<NF;i++)printf "/%s", $i;}'`"/
-	    if [ ! -z "$AUDIOTOOL" ]; then
+	    if [ -n "$AUDIOTOOL" ]; then
 		echo "mhbuild-compose-audio/x-next: $AUDIOTOOL %f && ${DIR}adpcm_enc < %f" >> $TMP
 	    else
 		echo "mhbuild-compose-audio/x-next: ${AUDIODIR}record | ${DIR}adpcm_enc" >> $TMP
 	    fi
 	    echo "mhshow-show-audio/x-next: %l${DIR}adpcm_dec | ${AUDIODIR}play" >> $TMP
 	else
-	    if [ ! -z "$AUDIOTOOL" ]; then
+	    if [ -n "$AUDIOTOOL" ]; then
 		echo "mhbuild-compose-audio/x-next: $AUDIOTOOL %f" >> $TMP
 	    else
 		echo "mhbuild-compose-audio/x-next: ${AUDIODIR}record" >> $TMP
@@ -136,46 +106,41 @@ mhbuild-disposition-text/calendar: inline
 mhbuild-disposition-message/rfc822: inline
 EOF
 
-PGM=`$SEARCHPROG "$SEARCHPATH" mpeg_play`
-if [ ! -z "$PGM" ]; then
-	echo "mhshow-show-video/mpeg: %l$PGM %f" >> $TMP
-fi
-
 PGM=`$SEARCHPROG "$SEARCHPATH" okular`
-if [ ! -z "$PGM" ]; then
+if [ -n "$PGM" ]; then
     echo "mhshow-show-application/PostScript: %l$PGM %F" >> $TMP
 else
     PGM=`$SEARCHPROG "$SEARCHPATH" evince`
-    if [ ! -z "$PGM" ]; then
+    if [ -n "$PGM" ]; then
 	echo "mhshow-show-application/PostScript: %l$PGM %F" >> $TMP
     else
 	PGM=`$SEARCHPROG "$SEARCHPATH" gv`
-	if [ ! -z "$PGM" ]; then
+	if [ -n "$PGM" ]; then
 	    echo "mhshow-show-application/PostScript: %l$PGM %F" >> $TMP
 	fi
     fi
 fi
 
-PGM=`$SEARCHPROG "$SEARCHPATH" acroread`
-if [ ! -z "$PGM" ]; then
+PGM=`$SEARCHPROG "$SEARCHPATH" okular`
+if [ -n "$PGM" ]; then
     echo "mhshow-show-application/pdf: %l$PGM %F" >> $TMP
 else
-    PGM=`$SEARCHPROG "$SEARCHPATH" okular`
-    if [ ! -z "$PGM" ]; then
+    PGM=`$SEARCHPROG "$SEARCHPATH" evince`
+    if [ -n "$PGM" ]; then
 	echo "mhshow-show-application/pdf: %l$PGM %F" >> $TMP
     else
-	PGM=`$SEARCHPROG "$SEARCHPATH" evince`
-	if [ ! -z "$PGM" ]; then
+	PGM=`$SEARCHPROG "$SEARCHPATH" xpdf`
+	if [ -n "$PGM" ]; then
 	    echo "mhshow-show-application/pdf: %l$PGM %F" >> $TMP
-        else
-	    PGM=`$SEARCHPROG "$SEARCHPATH" xpdf`
-	    if [ ! -z "$PGM" ]; then
+	else
+	    PGM=`$SEARCHPROG "$SEARCHPATH" gv`
+	    if [ -n "$PGM" ]; then
 		echo "mhshow-show-application/pdf: %l$PGM %F" >> $TMP
-            else
-	        PGM=`$SEARCHPROG "$SEARCHPATH" gv`
-	        if [ ! -z "$PGM" ]; then
+	    else
+		PGM=`$SEARCHPROG "$SEARCHPATH" acroread`
+		if [ -n "$PGM" ]; then
 		    echo "mhshow-show-application/pdf: %l$PGM %F" >> $TMP
-	        fi
+		fi
 	    fi
 	fi
     fi
@@ -185,11 +150,6 @@ echo "mhshow-show-text/calendar: mhical -infile %F" >> $TMP
 echo "mhshow-show-application/ics: mhical -infile %F" >> $TMP
 echo "mhfixmsg-format-text/calendar: mhical -infile %F" >> $TMP
 echo "mhfixmsg-format-application/ics: mhical -infile %F" >> $TMP
-
-PGM=`$SEARCHPROG "$SEARCHPATH" ivs_replay`
-if [ ! -z "$PGM" ]; then
-	echo "mhshow-show-application/x-ivs: %l$PGM -o %F" >> $TMP
-fi
 
 # The application/vnd.openxmlformats-officedocument.wordprocessingml.document
 # through application/onenote associations are from
@@ -273,6 +233,7 @@ mhshow-suffix-text/sgml: .sgml
 mhshow-suffix-text/xml: .xml
 mhshow-suffix-video/mpeg: .mpeg
 mhshow-suffix-video/mpeg: .mpg
+mhshow-suffix-video/mp4: .mp4
 mhshow-suffix-video/quicktime: .moov
 mhshow-suffix-video/quicktime: .mov
 mhshow-suffix-video/quicktime: .qt
@@ -281,12 +242,8 @@ mhshow-suffix-video/x-msvideo: .avi
 mhshow-suffix-video/x-ms-wmv: .wmv
 EOF
 
-# I'd like to check if netscape is available and use it preferentially to lynx,
-# but only once I've added a new %-escape that makes more permanent temp files,
-# so netscape -remote can be used (without -remote you get a complaint dialog
-# that another netscape is already running and certain things can't be done).
 PGM=`$SEARCHPROG "$SEARCHPATH" w3m`
-if [ ! -z "$PGM" ]; then
+if [ -n "$PGM" ]; then
     echo 'mhshow-show-text/html: charset="%{charset}"; '"\
 %l$PGM"' -dump ${charset:+-I} ${charset:+"$charset"} -T text/html %F' >> $TMP
     echo 'mhfixmsg-format-text/html: charset="%{charset}"; '"\
@@ -297,7 +254,7 @@ $PGM "'-dump ${charset:+-I} ${charset:+"$charset"} -O utf-8 -T text/html %F '"\
 ${replfmt}" >> $TMP
 else
     PGM=`$SEARCHPROG "$SEARCHPATH" lynx`
-    if [ ! -z "$PGM" ]; then
+    if [ -n "$PGM" ]; then
 	echo 'mhshow-show-text/html: charset="%{charset}"; '"\
 %l$PGM"' -child -dump -force-html ${charset:+--assume_charset} ${charset:+"$charset"} %F' >> $TMP
         #### lynx indents with 3 spaces, remove them and any trailing spaces.
@@ -309,7 +266,7 @@ $PGM "'-child -dump -force_html ${charset:+--assume_charset} ${charset:+"$charse
 %F${replfmt}" >> $TMP
     else
         PGM=`$SEARCHPROG "$SEARCHPATH" elinks`
-        if [ ! -z "$PGM" ]; then
+        if [ -n "$PGM" ]; then
             echo "mhshow-show-text/html: %l$PGM -dump -force-html \
 -eval 'set document.browse.margin_width = 0' %F" >> $TMP
             echo "mhfixmsg-format-text/html: $PGM -dump -force-html \
@@ -322,19 +279,24 @@ $PGM "'-child -dump -force_html ${charset:+--assume_charset} ${charset:+"$charse
     fi
 fi
 
-PGM=`$SEARCHPROG "$SEARCHPATH" richtext`
-if [ ! -z "$PGM" ]; then
-	echo "mhshow-show-text/richtext: %l$PGM -p %F" >> $TMP
+PGM=`$SEARCHPROG "$SEARCHPATH" mpv`
+if [ -n "$PGM" ]; then
+    echo "mhshow-show-image: %l$PGM --keep-open %F" >> $TMP
+    echo "mhshow-show-video: %l$PGM %F" >> $TMP
 else
-    PGM=`$SEARCHPROG "$SEARCHPATH" rt2raw`
-    if [ ! -z "$PGM" ]; then
-	echo "mhshow-show-text/richtext: %l$PGM < %f | fmt -78 | more" >> $TMP
+    PGM=`$SEARCHPROG "$SEARCHPATH" xv`
+    if [ -n "$PGM" ]; then
+	echo "mhshow-show-image: %l$PGM -geometry =-0+0 %F" >> $TMP
+    fi
+    PGM=`$SEARCHPROG "$SEARCHPATH" mplayer`
+    if [ -n "$PGM" ]; then
+	echo "mhshow-show-video: %l$PGM %F" >> $TMP
     fi
 fi
 
-# staroffice to read .doc files
+# libreffice, or possibly staroffice, to read .doc files
 PGM=`$SEARCHPROG "$SEARCHPATH" soffice`
-if [ ! -z "$PGM" ]; then
+if [ -n "$PGM" ]; then
 	echo "mhshow-show-application/msword: %l$PGM %F" >> $TMP
 fi
 
@@ -346,7 +308,7 @@ case "`uname`" in
 	;;
   *)
 	PGM=`$SEARCHPROG "$SEARCHPATH" curl`
-	if [ ! -z "$PGM" ]; then
+	if [ -n "$PGM" ]; then
 		echo "nmh-access-url: $PGM -L" >> $TMP
 	fi
 	;;
@@ -357,21 +319,3 @@ esac
 echo '#: This file was generated by mhn.defaults.sh.'
 sort < $TMP | \
     sed -e 's|^\(mhshow-show-application/ics:.*\)|#: might need -notextonly -noinlineonly or -part/-type to show application/ics parts\n\1|'
-
-exit 0
-
-
-###############################################################################
-###############################################################################
-####
-#### Note the exit 0 above; everything below is unused.
-####
-###############################################################################
-###############################################################################
-
-: have to experiment more with this
-
-PGM=`$SEARCHPROG "$SEARCHPATH" ivs_record`
-if [ ! -z "$PGM" ]; then
-	echo "mhbuild-compose-application/x-ivs: $PGM -u localhost %F" >> $TMP
-fi
