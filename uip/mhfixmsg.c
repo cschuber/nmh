@@ -1339,6 +1339,7 @@ ensure_text_plain (CT *ct, CT parent, int *message_mods, int replacetextplain)
                 const int inserted =
                     insert_new_text_plain_part (*ct, new_subpart_number,
                                                 parent);
+
                 if (inserted) {
                     ++*message_mods;
                     if (verbosw) {
@@ -1725,7 +1726,7 @@ divide_part (CT ct)
     new_part->c_ceclosefnx = ct->c_ceclosefnx;
     new_part->c_cesizefnx = ct->c_cesizefnx;
 
-    /* c_ctline is used by reformat__part(), so it can preserve
+    /* c_ctline is used by reformat_part(), so it can preserve
        anything after the type/subtype. */
     new_part->c_ctline = mh_xstrdup (ct->c_ctline);
 
@@ -1918,8 +1919,8 @@ check_base64_encoding (CT *ctp)
 
 /*
  * Reformat content as plain text.
- * Some of the arguments aren't really needed now, but maybe will
- * be in the future for other than text types.
+ * Some of the arguments aren't really needed now, but maybe will be in the
+ * future for other than text types.
  */
 static int
 reformat_part (CT ct, char *file, char *type, char *subtype, int c_type)
@@ -2751,15 +2752,17 @@ convert_charsets (CT ct, char *dest_charset, int *message_mods)
         if (ct->c_subtype == TEXT_PLAIN) {
             char *const ct_charset = content_charset (ct);
 
-            status = convert_charset (ct, dest_charset, message_mods);
-            if (status == OK) {
-                if (verbosw) {
-                    report (NULL, ct->c_partno, ct->c_file,
-                            "convert %s to %s", ct_charset, dest_charset);
+            if (strcasecmp (ct_charset, dest_charset)) {
+                status = convert_charset (ct, dest_charset, message_mods);
+                if (status == OK) {
+                    if (verbosw) {
+                        report (NULL, ct->c_partno, ct->c_file,
+                                "convert %s to %s", ct_charset, dest_charset);
+                    }
+                } else {
+                    report ("iconv", ct->c_partno, ct->c_file,
+                            "failed to convert %s to %s", ct_charset, dest_charset);
                 }
-            } else {
-                report ("iconv", ct->c_partno, ct->c_file,
-                        "failed to convert %s to %s", ct_charset, dest_charset);
             }
             free (ct_charset);
         }
