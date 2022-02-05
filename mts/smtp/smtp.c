@@ -17,6 +17,7 @@
 #include "h/netsec.h"
 
 #include <sys/socket.h>
+#include <signal.h>
 #include "sbr/base64.h"
 
 /*
@@ -955,7 +956,12 @@ EHLOset (char *s)
 
     for (ehlo = EHLOkeys; *ehlo; ehlo++) {
 	ep = *ehlo;
-	if (has_prefix(ep, s)) {
+	/*
+	 * Make sure the character after the EHLO keyword is either
+	 * a NUL or a space; this makes sure we don't get tripped up
+	 * on things like AUTH= if we're looking for AUTH
+	 */
+	if (has_prefix(ep, s) && (ep[len] == '\0' || ep[len] == ' ')) {
 	    for (ep += len; *ep == ' '; ep++)
 		continue;
 	    return ep;
