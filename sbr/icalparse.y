@@ -34,10 +34,10 @@
     */
 
 #include "h/mh.h"
-#include "charstring.h"
+#include "sbr/charstring.h"
 #include "sbr/error.h"
 #include "h/icalendar.h"
-#include "utils.h"
+#include "sbr/utils.h"
 
 static char *append (contentline *, const char *, const size_t);
 static void new_content_line (contentline **);

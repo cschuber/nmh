@@ -9,7 +9,7 @@
 
 %{
 #include "h/mh.h"
-#include "charstring.h"
+#include "sbr/charstring.h"
 #include "h/icalendar.h"
 #include "icalparse.h"
 #include "sbr/base64.h"
