@@ -62,6 +62,7 @@ BUG FIXES
 - Fixed inc(1) and %(me) function escape to not obey Local-Mailbox profile
   component.
 - Fixed source charset in mhfixmsg textcharset verbose output.
+- Fixed mhfixmsg charset determination of content added with -reformat.
 - Fixed file descriptor leak in mhfixmsg when run on multiple input files.
 - Fixed memory corruption in post(1) and inc(1) when using XOAUTH2,
   with 4 or more entries in the oauth-authservice file.
