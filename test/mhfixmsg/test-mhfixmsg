@@ -271,11 +271,12 @@ EOF
 
 if [ $can_reformat_texthtml -eq 1 ]; then
   printf '%s\n' "mhfixmsg: 12, insert text/plain part
-mhfixmsg: 12 part 1, decode text/html; charset=\"Windows-1252\"" \
+mhfixmsg: 12 part 1, decode text/html; charset=\"Windows-1252\"
+mhfixmsg: 12 part 2, convert us-ascii to Windows-1252" \
        >"$expected.err"
 
   #### lynx inserts multiple blank lines, so squeeze them.
-  run_prog mhfixmsg last -textcharset '"Windows-1252"' -outfile - -verbose \
+  run_prog mhfixmsg last -textcharset Windows-1252 -outfile - -verbose \
            2>"$actual.err" | squeeze_lines >"$actual"
   check "$expected" "$actual" 'ignore space'
   check "$expected.err" "$actual.err"
@@ -354,11 +355,12 @@ EOF
 
 if [ $can_reformat_texthtml -eq 1 ]; then
   printf '%s\n' "mhfixmsg: 12, insert text/plain part
-mhfixmsg: 12 part 1, decode text/html; charset=\"Windows-1252\"" \
+mhfixmsg: 12 part 1, decode text/html; charset=\"Windows-1252\"
+mhfixmsg: 12 part 2, convert us-ascii to Windows-1252" \
        >"$expected.err"
 
   #### lynx inserts multiple blank lines, so squeeze them.
-  run_prog mhfixmsg last -textcharset '"Windows-1252"' -outfile - -verbose \
+  run_prog mhfixmsg last -textcharset Windows-1252 -outfile - -verbose \
            2>"$actual.err" | squeeze_lines >"$actual"
   check "$expected" "$actual" 'ignore space'
   check "$expected.err" "$actual.err"
@@ -429,10 +431,11 @@ ding-left: 4pt; border-left: #800000 2px solid; } --></style>
 EOF
 
 if [ $can_reformat_texthtml -eq 1 ]; then
-  printf '%s\n' 'mhfixmsg: 12, insert text/plain part' >"$expected.err"
+  printf '%s\n' "mhfixmsg: 12, insert text/plain part
+mhfixmsg: 12 part 2, convert us-ascii to Windows-1252" >"$expected.err"
 
   #### lynx inserts multiple blank lines, so squeeze them.
-  run_prog mhfixmsg last  -textcharset '"Windows-1252"' -nodecodetext \
+  run_prog mhfixmsg last  -textcharset Windows-1252 -nodecodetext \
            -outfile - -verbose 2>"$actual.err" | squeeze_lines >"$actual"
   check "$expected" "$actual" 'ignore space'
   check "$expected.err" "$actual.err"
@@ -815,7 +818,7 @@ if [ $can_reformat_texthtml -eq 1 ]; then
   #### lynx inserts multiple blank lines, so squeeze them.
   #### Truncate to avoid comparing the html portion because it can
   #### get reformatted.
-  run_prog mhfixmsg last -textcharset '"ISO-8859-1"' -outfile - | \
+  run_prog mhfixmsg last -textcharset ISO-8859-1 -outfile - | \
       squeeze_lines | head -22 >"$actual"
   check "$expected" "$actual" 'ignore space'
 else
@@ -1047,7 +1050,7 @@ Subject: multipart/related, not /alternative
 Content-Type: multipart/alternative; boundary="----=_Part_90310_101292502.1"
 
 ------=_Part_90310_101292502.1
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
 This is the real content.
@@ -1093,7 +1096,7 @@ EOF
 
 if [ $can_reformat_texthtml -eq 1 ]; then
   #### lynx inserts multiple blank lines, so squeeze them.
-  run_prog mhfixmsg last -textcharset '"us-ascii"'  -outfile - \
+  run_prog mhfixmsg last -textcharset us-ascii  -outfile - \
       | squeeze_lines >"$actual"
   check "$expected" "$actual" 'ignore space'
 else
@@ -1232,7 +1235,7 @@ MIME-Version: 1.0
 Content-Type: multipart/alternative; boundary="----=_Part_876302"
 
 ------=_Part_876302
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
 Yes, the text/plain part really was empty.

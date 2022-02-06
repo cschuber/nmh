@@ -7,6 +7,7 @@
 
 #include "h/mh.h"
 #include "sbr/charstring.h"
+#include "sbr/check_charset.h"
 #include "sbr/m_name.h"
 #include "sbr/m_gmprot.h"
 #include "sbr/m_getfld.h"
@@ -1932,8 +1933,7 @@ reformat_part (CT ct, char *file, char *type, char *subtype, int c_type,
 {
     int output_subtype, output_encoding;
     const char *reason = NULL;
-    char *charset = text_props && text_props->textcharset
-        ? mh_xstrdup (text_props->textcharset) : NULL;
+    char *charset = NULL;
     char *cp, *cf;
     int status;
 
@@ -1963,11 +1963,14 @@ reformat_part (CT ct, char *file, char *type, char *subtype, int c_type,
     status = show_content_aux (ct, 0, cp, NULL, NULL);
     free (cp);
 
-    /* Update charset based on -textcharset value. */
+    /* Update charset based on file contents or -textcharset value. */
+    charset = encoding(file);
     if (charset == NULL) {
-        charset = encoding(file);
+        charset = text_props && text_props->textcharset
+        ? mh_xstrdup (text_props->textcharset) : NULL;
     }
     if (charset == NULL) {
+        charset = mh_xstrdup(get_charset());
         advise(NULL, "Assuming %s for new text/plain part, "
                "use -textcharset to override", charset);
     }
