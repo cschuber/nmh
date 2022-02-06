@@ -256,13 +256,13 @@ else
     PGM=`$SEARCHPROG "$SEARCHPATH" lynx`
     if [ -n "$PGM" ]; then
 	echo 'mhshow-show-text/html: charset="%{charset}"; '"\
-%l$PGM"' -child -dump -force-html ${charset:+--assume_charset} ${charset:+"$charset"} %F' >> $TMP
+%l$PGM"' -child -dump -force-html ${charset:+-assume_charset} ${charset:+"$charset"} %F' >> $TMP
         #### lynx indents with 3 spaces, remove them and any trailing spaces.
         echo 'mhfixmsg-format-text/html: charset="%{charset}"; '"\
-$PGM "'-child -dump -force_html ${charset:+--assume_charset} ${charset:+"$charset"} %F | '"\
-expand | sed -e 's/^   //' -e 's/  *$//'" >> $TMP
+$PGM "'-child -dump -force_html ${charset:+-assume_charset} ${charset:+"$charset"} '"\
+"'-display_charset utf-8 %F | '"expand | sed -e 's/^   //' -e 's/  *$//'" >> $TMP
         echo 'mhbuild-convert-text/html: charset="%{charset}"; '"\
-$PGM "'-child -dump -force_html ${charset:+--assume_charset} ${charset:+"$charset"} '"\
+$PGM "'-child -dump -force_html ${charset:+-assume_charset} ${charset:+"$charset"} '"\
 %F${replfmt}" >> $TMP
     else
         PGM=`$SEARCHPROG "$SEARCHPATH" elinks`
