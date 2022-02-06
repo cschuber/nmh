@@ -23,3 +23,18 @@
  * free'd.
  */
 char *mime_type(const char *filename);
+
+/* Return a encoding for the specified file.
+ *
+ * If the system supports it, will use the MIMENCODINGPROC command to determine
+ * the encoding of the file.
+ *
+ * Arguments:
+ *
+ * filename	- The name of the file to determine the encoding of.
+ *
+ * Returns a pointer to an encoding.  Returns NULL if it cannot determine
+ * the encoding of the file.  Returns allocated storage that must be
+ * free'd.
+ */
+char *encoding(const char *filename);
