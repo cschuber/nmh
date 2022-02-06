@@ -100,17 +100,20 @@ bool debugsw; /* Needed by mhparse.c. */
  * static prototypes
  */
 typedef struct {
+    int reformat;
+    int replacetextplain;
+    char *textcharset;
+} text_properties;
+typedef struct {
     int fixboundary;
     int fixcompositecte;
     svector_t fixtypes;
-    int reformat;
-    int replacetextplain;
+    text_properties text_props;
     int decodetext;
     char *decodetypes;
     char *decodeheaderfieldbodies; /* Either NULL or "utf-8". */
     /* Whether to use CRLF linebreaks, per RFC 2046 Sec. 4.1.1, par.1. */
     int lf_line_endings;
-    char *textcharset;
     bool checkbase64;
 } fix_transformations;
 
@@ -125,11 +128,11 @@ static char *replace_substring (char **, const char *, const char *);
 static char *remove_parameter (char *, const char *);
 static int fix_composite_cte (CT, int *);
 static int set_ce (CT, int);
-static int ensure_text_plain (CT *, CT, int *, int);
+static int ensure_text_plain (CT *, CT, int *, const text_properties *);
 static int find_textplain_sibling (CT, int, int *);
-static int insert_new_text_plain_part (CT, int, CT);
-static CT build_text_plain_part (CT);
-static int insert_into_new_mp_alt (CT *, int *);
+static int insert_new_text_plain_part (CT, int, CT, const text_properties *);
+static CT build_text_plain_part (CT, const text_properties *);
+static int insert_into_new_mp_alt (CT *, int *, const text_properties *);
 static int insert_into_new_mp_mixed (CT *, const char *, int *);
 static CT divide_part (CT);
 static void copy_ctinfo (CI, CI);
@@ -137,11 +140,11 @@ static int decode_part (CT);
 static size_t get_valid_base64 (CT, char **);
 static size_t find_invalid_base64_pos (const char *);
 static int check_base64_encoding (CT *);
-static int reformat_part (CT, char *, char *, char *, int);
+static int reformat_part (CT, char *, char *, char *, int, const text_properties *);
 static CT build_multipart (CT, CT, int, int);
 static int boundary_in_content (FILE **, char *, const char *);
 static void transfer_noncontent_headers (CT, CT);
-static int set_ct_type (CT, int type, int subtype, int encoding);
+static int set_ct_type (CT, int type, int subtype, int encoding, const char *charset);
 static int decode_text_parts (CT, int, const char *, int *);
 static int should_decode(const char *, const char *, const char *);
 static int content_encoding (CT, const char **);
@@ -177,14 +180,14 @@ main (int argc, char **argv)
     bool chgflag = true;
     int status = OK;
     fix_transformations fx;
-    fx.reformat = fx.fixcompositecte = fx.fixboundary = 1;
+    fx.text_props.reformat = fx.fixcompositecte = fx.fixboundary = 1;
+    fx.text_props.replacetextplain = 0;
+    fx.text_props.textcharset = NULL;
     fx.fixtypes = NULL;
-    fx.replacetextplain = 0;
     fx.decodetext = CE_8BIT;
     fx.decodetypes = "text,application/ics";  /* Default, per man page. */
     fx.decodeheaderfieldbodies = NULL;
     fx.lf_line_endings = 0;
-    fx.textcharset = NULL;
     fx.checkbase64 = true;
 
     if (nmh_init(argv[0], true, false)) { return 1; }
@@ -261,10 +264,10 @@ main (int argc, char **argv)
                 if (! (cp = *argp++) || (*cp == '-' && cp[1])) {
                     die("missing argument to %s", argp[-2]);
                 }
-                fx.textcharset = cp;
+                fx.text_props.textcharset = cp;
                 continue;
             case NTEXTCHARSETSW:
-                fx.textcharset = 0;
+                fx.text_props.textcharset = NULL;
                 continue;
             case CHECKBASE64SW:
                 fx.checkbase64 = true;
@@ -297,16 +300,16 @@ main (int argc, char **argv)
                 svector_push_back (fx.fixtypes, cp);
                 continue;
             case REFORMATSW:
-                fx.reformat = 1;
+                fx.text_props.reformat = 1;
                 continue;
             case NREFORMATSW:
-                fx.reformat = 0;
+                fx.text_props.reformat = 0;
                 continue;
             case REPLACETEXTPLAINSW:
-                fx.replacetextplain = 1;
+                fx.text_props.replacetextplain = 1;
                 continue;
             case NREPLACETEXTPLAINSW:
-                fx.replacetextplain = 0;
+                fx.text_props.replacetextplain = 0;
                 continue;
             case FILESW:
                 if (! (cp = *argp++) || (*cp == '-' && cp[1])) {
@@ -632,9 +635,9 @@ mhfixmsgsbr (CT *ctp, char *maildir, const fix_transformations *fx,
     if (status == OK  &&  fx->fixcompositecte) {
         status = fix_composite_cte (*ctp, &message_mods);
     }
-    if (status == OK  &&  fx->reformat) {
+    if (status == OK  &&  fx->text_props.reformat) {
         status =
-            ensure_text_plain (ctp, NULL, &message_mods, fx->replacetextplain);
+            ensure_text_plain (ctp, NULL, &message_mods, &fx->text_props);
     }
     if (status == OK  &&  fx->decodetext) {
         status = decode_text_parts (*ctp, fx->decodetext, fx->decodetypes,
@@ -644,8 +647,8 @@ mhfixmsgsbr (CT *ctp, char *maildir, const fix_transformations *fx,
     if (status == OK  &&  fx->decodeheaderfieldbodies) {
         status = decode_header_field_bodies(*ctp, &message_mods);
     }
-    if (status == OK  &&  fx->textcharset != NULL) {
-        status = convert_charsets (*ctp, fx->textcharset, &message_mods);
+    if (status == OK  &&  fx->text_props.textcharset != NULL) {
+        status = convert_charsets (*ctp, fx->text_props.textcharset, &message_mods);
     }
 
     if (status == OK  &&  ! (*ctp)->c_umask) {
@@ -1317,7 +1320,7 @@ set_ce (CT ct, int encoding)
  * Make sure each text part has a corresponding text/plain part.
  */
 static int
-ensure_text_plain (CT *ct, CT parent, int *message_mods, int replacetextplain)
+ensure_text_plain (CT *ct, CT parent, int *message_mods, const text_properties *text_props)
 {
     int status = OK;
 
@@ -1330,7 +1333,7 @@ ensure_text_plain (CT *ct, CT parent, int *message_mods, int replacetextplain)
             parent->c_subtype == MULTI_ALTERNATE) {
             int new_subpart_number = 1;
             int has_text_plain =
-                find_textplain_sibling (parent, replacetextplain,
+                find_textplain_sibling (parent, text_props->replacetextplain,
                                         &new_subpart_number);
 
             if (! has_text_plain) {
@@ -1338,8 +1341,7 @@ ensure_text_plain (CT *ct, CT parent, int *message_mods, int replacetextplain)
                    text/plain subpart. */
                 const int inserted =
                     insert_new_text_plain_part (*ct, new_subpart_number,
-                                                parent);
-
+                                                parent, text_props);
                 if (inserted) {
                     ++*message_mods;
                     if (verbosw) {
@@ -1371,7 +1373,7 @@ ensure_text_plain (CT *ct, CT parent, int *message_mods, int replacetextplain)
                    parent multipart/related.  Look to see if there's
                    text/plain sibling. */
                 has_text_plain =
-                    find_textplain_sibling (parent, replacetextplain,
+                    find_textplain_sibling (parent, text_props->replacetextplain,
                                             &new_subpart_number);
             }
 
@@ -1391,7 +1393,7 @@ ensure_text_plain (CT *ct, CT parent, int *message_mods, int replacetextplain)
                 if (siblings) {
                     /* Parent is a multipart/related.  Insert a new
                        text/plain subpart in a new multipart/alternative. */
-                    if (insert_into_new_mp_alt (ct, message_mods)) {
+                    if (insert_into_new_mp_alt (ct, message_mods, text_props)) {
                         /* Not an error if text/plain couldn't be added. */
                     }
                 } else {
@@ -1400,7 +1402,7 @@ ensure_text_plain (CT *ct, CT parent, int *message_mods, int replacetextplain)
                        multipart/related to multipart/alternative. */
                     const int inserted =
                         insert_new_text_plain_part (*ct, new_subpart_number,
-                                                    parent);
+                                                    parent, text_props);
 
                     if (inserted) {
                         HF hf;
@@ -1443,7 +1445,7 @@ ensure_text_plain (CT *ct, CT parent, int *message_mods, int replacetextplain)
                 }
             }
         } else {
-            if (insert_into_new_mp_alt (ct, message_mods)) {
+            if (insert_into_new_mp_alt (ct, message_mods, text_props)) {
                 status = NOTOK;
             }
         }
@@ -1457,7 +1459,7 @@ ensure_text_plain (CT *ct, CT parent, int *message_mods, int replacetextplain)
         for (part = mp->mp_parts; status == OK && part; part = part->mp_next) {
             if ((*ct)->c_type == CT_MULTIPART) {
                 status = ensure_text_plain (&part->mp_part, *ct, message_mods,
-                                            replacetextplain);
+                                            text_props);
             }
         }
         break;
@@ -1468,7 +1470,7 @@ ensure_text_plain (CT *ct, CT parent, int *message_mods, int replacetextplain)
             struct exbody *e = (struct exbody *) (*ct)->c_ctparams;
 
             status = ensure_text_plain (&e->eb_content, *ct, message_mods,
-                                        replacetextplain);
+                                        text_props);
         }
         break;
     }
@@ -1524,13 +1526,14 @@ find_textplain_sibling (CT parent, int replacetextplain,
  * Insert a new text/plain part in a multipart part.
  */
 static int
-insert_new_text_plain_part (CT ct, int new_subpart_number, CT parent)
+insert_new_text_plain_part (CT ct, int new_subpart_number, CT parent,
+                            const text_properties *text_props)
 {
     struct multipart *mp = (struct multipart *) parent->c_ctparams;
     struct part *new_part;
 
     NEW(new_part);
-    if ((new_part->mp_part = build_text_plain_part (ct))) {
+    if ((new_part->mp_part = build_text_plain_part (ct, text_props))) {
         char buffer[16];
         snprintf (buffer, sizeof buffer, "%d", new_subpart_number);
 
@@ -1554,7 +1557,7 @@ insert_new_text_plain_part (CT ct, int new_subpart_number, CT parent)
  * Create a text/plain part to go along with non-plain sibling part.
  */
 static CT
-build_text_plain_part (CT encoded_part)
+build_text_plain_part (CT encoded_part, const text_properties *text_props)
 {
     CT tp_part = divide_part (encoded_part);
     char *tmp_plain_file = NULL;
@@ -1574,7 +1577,8 @@ build_text_plain_part (CT encoded_part)
             if (reformat_part (tp_part, tmp_plain_file,
                                tp_part->c_ctinfo.ci_type,
                                tp_part->c_ctinfo.ci_subtype,
-                               tp_part->c_type) == OK) {
+                               tp_part->c_type,
+                               text_props) == OK) {
                 return tp_part;
             }
         }
@@ -1592,10 +1596,10 @@ build_text_plain_part (CT encoded_part)
  * Slip new text/plain part into a new multipart/alternative.
  */
 static int
-insert_into_new_mp_alt (CT *ct, int *message_mods)
+insert_into_new_mp_alt (CT *ct, int *message_mods, const text_properties *text_props)
 {
-    /* The following will call decode_part(). */
-    CT tp_part = build_text_plain_part (*ct);
+    /* The following will call decode_part().  */
+    CT tp_part = build_text_plain_part (*ct, text_props);
     int status = OK;
 
     if (tp_part) {
@@ -1642,11 +1646,11 @@ insert_into_new_mp_mixed (CT *ct, const char *content, int *message_mods)
     int status = OK;
 
     if (set_ct_type(main_part, (*ct)->c_type, (*ct)->c_subtype,
-                    main_part->c_encoding) != OK) {
+                    main_part->c_encoding, NULL) != OK) {
         inform("failed to set Content-Type of main part");
         return NOTOK;
     }
-    if (set_ct_type(*ct, (*ct)->c_type, (*ct)->c_subtype, encoding) != OK) {
+    if (set_ct_type(*ct, (*ct)->c_type, (*ct)->c_subtype, encoding, NULL) != OK) {
         inform("failed to set Content-Type of new part");
         return NOTOK;
     }
@@ -1923,10 +1927,13 @@ check_base64_encoding (CT *ctp)
  * future for other than text types.
  */
 static int
-reformat_part (CT ct, char *file, char *type, char *subtype, int c_type)
+reformat_part (CT ct, char *file, char *type, char *subtype, int c_type,
+               const text_properties *text_props)
 {
     int output_subtype, output_encoding;
     const char *reason = NULL;
+    char *charset = text_props && text_props->textcharset
+        ? mh_xstrdup (text_props->textcharset) : NULL;
     char *cp, *cf;
     int status;
 
@@ -1956,6 +1963,21 @@ reformat_part (CT ct, char *file, char *type, char *subtype, int c_type)
     status = show_content_aux (ct, 0, cp, NULL, NULL);
     free (cp);
 
+    /* Update charset based on -textcharset value. */
+    if (charset == NULL) {
+        charset = encoding(file);
+    }
+    if (charset == NULL) {
+        advise(NULL, "Assuming %s for new text/plain part, "
+               "use -textcharset to override", charset);
+    }
+    /* This is necessary to update the charset in the part headers. */
+    replace_param(&ct->c_ctinfo.ci_first_pm,
+                  &ct->c_ctinfo.ci_last_pm, "charset",
+                  charset, 0);
+    /* This is necessary to output the correct charset. */
+    add_header (ct, mh_xstrdup (TYPE_FIELD), concat (ct->c_ctline, "\n", NULL));
+
     /* Unlink decoded content tmp file and free its filename to avoid
        leaks.  The file stream should already have been closed. */
     if (ct->c_cefile.ce_unlink) {
@@ -1974,13 +1996,15 @@ reformat_part (CT ct, char *file, char *type, char *subtype, int c_type)
 
     output_encoding = content_encoding (ct, &reason);
     if (status == OK  &&
-        set_ct_type (ct, c_type, output_subtype, output_encoding) == OK) {
+        set_ct_type (ct, c_type, output_subtype, output_encoding,
+                     charset) == OK) {
         ct->c_cefile.ce_file = file;
         ct->c_cefile.ce_unlink = 1;
     } else {
         ct->c_cefile.ce_unlink = 0;
         status = NOTOK;
     }
+    free (charset);
 
     return status;
 }
@@ -2162,7 +2186,7 @@ boundary_in_content (FILE **fp, char *file, const char *boundary)
 
 
 /*
- * Remove all non-Content headers.
+ * Skip all Content- headers.
  */
 static void
 transfer_noncontent_headers (CT old, CT new)
@@ -2210,7 +2234,7 @@ transfer_noncontent_headers (CT old, CT new)
  * Set content type.
  */
 static int
-set_ct_type (CT ct, int type, int subtype, int encoding)
+set_ct_type (CT ct, int type, int subtype, int encoding, const char *charset)
 {
     char *typename = ct_type_str (type);
     char *subtypename = ct_subtype_str (type, subtype);
@@ -2220,17 +2244,56 @@ set_ct_type (CT ct, int type, int subtype, int encoding)
     char *name_plus_nl = concat (type_subtypename, "\n", NULL);
     bool found_content_type = false;
     HF hf;
+    char *old_charset = NULL;
+    char *semicolon_on = strchr (ct->c_ctline, ';');
+    char *addl = mh_xstrdup(FENDNULL (semicolon_on));
     const char *cp = NULL;
     char *ctline;
     int status;
+
+    /* If charset is provided, find the old charset, if any. */
+    if (charset) {
+        for (hf = ct->c_first_hf; hf; hf = hf->next) {
+            if (! strcasecmp (hf->name, TYPE_FIELD)) {
+                const char *charset_begin = strcasestr (hf->value, "charset=");
+                if (charset_begin) {
+                    old_charset = concat (charset_begin + 8, NULL);
+                    for (char *c = old_charset; *c; ++c) {
+                        if (isspace ((unsigned char) *c)) {
+                            *c = '\0';
+                            break;
+                        }
+                    }
+                }
+            }
+            break;
+        }
+
+        if (addl) {
+            char *old = addl;
+
+            if (strcasestr (addl, "charset=") && old_charset) {
+                addl = mh_xstrdup (addl);
+                replace_substring(&addl, old_charset, charset);
+            } else {
+                /* no charset parameter, so add to existing parameters */
+                addl = addl
+                    ?  concat (addl, "; charset=", charset, NULL)
+                    :  concat ("; charset=", charset, NULL);
+            }
+            free (old);
+        }
+
+        free (old_charset);
+    }
 
     /* Update/add Content-Type header field. */
     for (hf = ct->c_first_hf; hf; hf = hf->next) {
         if (! strcasecmp (TYPE_FIELD, hf->name)) {
             found_content_type = true;
             free (hf->value);
-            hf->value = (cp = strchr (ct->c_ctline, ';'))
-                ?  concat (type_subtypename, cp, "\n", NULL)
+            hf->value = addl
+                ?  concat (type_subtypename, addl, "\n", NULL)
                 :  mh_xstrdup (name_plus_nl);
         }
     }
@@ -2242,9 +2305,10 @@ set_ct_type (CT ct, int type, int subtype, int encoding)
     }
 
     /* Some of these might not be used, but set them anyway. */
-    ctline = cp
-        ?  concat (type_subtypename, cp, NULL)
+    ctline = addl
+        ?  concat (type_subtypename, addl, NULL)
         :  concat (type_subtypename, NULL);
+    free (addl);
     free (ct->c_ctline);
     ct->c_ctline = ctline;
     /* Leave other ctinfo members as they were. */

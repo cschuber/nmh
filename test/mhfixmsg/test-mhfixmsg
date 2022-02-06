@@ -275,8 +275,8 @@ mhfixmsg: 12 part 1, decode text/html; charset=\"Windows-1252\"" \
        >"$expected.err"
 
   #### lynx inserts multiple blank lines, so squeeze them.
-  run_prog mhfixmsg last -outfile - -verbose 2>"$actual.err" | \
-    squeeze_lines >"$actual"
+  run_prog mhfixmsg last -textcharset '"Windows-1252"' -outfile - -verbose \
+           2>"$actual.err" | squeeze_lines >"$actual"
   check "$expected" "$actual" 'ignore space'
   check "$expected.err" "$actual.err"
 else
@@ -286,7 +286,7 @@ fi
 
 # check implicit -file with absolute pathname
 start_test "implicit -file with absolute pathname"
-run_test "mhfixmsg `mhpath last` -outfile /dev/null" ''
+run_test "mhfixmsg `mhpath last` -textcharset utf-8 -outfile /dev/null" ''
 
 
 # check handling of boundary string that appears in message body
@@ -358,8 +358,8 @@ mhfixmsg: 12 part 1, decode text/html; charset=\"Windows-1252\"" \
        >"$expected.err"
 
   #### lynx inserts multiple blank lines, so squeeze them.
-  run_prog mhfixmsg last -outfile - -verbose 2>"$actual.err" | \
-    squeeze_lines >"$actual"
+  run_prog mhfixmsg last -textcharset '"Windows-1252"' -outfile - -verbose \
+           2>"$actual.err" | squeeze_lines >"$actual"
   check "$expected" "$actual" 'ignore space'
   check "$expected.err" "$actual.err"
 else
@@ -432,8 +432,8 @@ if [ $can_reformat_texthtml -eq 1 ]; then
   printf '%s\n' 'mhfixmsg: 12, insert text/plain part' >"$expected.err"
 
   #### lynx inserts multiple blank lines, so squeeze them.
-  run_prog mhfixmsg last -nodecodetext -outfile - -verbose 2>"$actual.err" | \
-    squeeze_lines >"$actual"
+  run_prog mhfixmsg last  -textcharset '"Windows-1252"' -nodecodetext \
+           -outfile - -verbose 2>"$actual.err" | squeeze_lines >"$actual"
   check "$expected" "$actual" 'ignore space'
   check "$expected.err" "$actual.err"
 else
@@ -815,7 +815,8 @@ if [ $can_reformat_texthtml -eq 1 ]; then
   #### lynx inserts multiple blank lines, so squeeze them.
   #### Truncate to avoid comparing the html portion because it can
   #### get reformatted.
-  run_prog mhfixmsg last -outfile - | squeeze_lines | head -22 >"$actual"
+  run_prog mhfixmsg last -textcharset '"ISO-8859-1"' -outfile - | \
+      squeeze_lines | head -22 >"$actual"
   check "$expected" "$actual" 'ignore space'
 else
   cp -p "$MH_TEST_DIR/Mail/inbox/15" "$MH_TEST_DIR/Mail/inbox/15.backup"
@@ -1092,7 +1093,8 @@ EOF
 
 if [ $can_reformat_texthtml -eq 1 ]; then
   #### lynx inserts multiple blank lines, so squeeze them.
-  run_prog mhfixmsg last -outfile - | squeeze_lines >"$actual"
+  run_prog mhfixmsg last -textcharset '"us-ascii"'  -outfile - \
+      | squeeze_lines >"$actual"
   check "$expected" "$actual" 'ignore space'
 else
   rm -f "$expected"
@@ -1230,7 +1232,7 @@ MIME-Version: 1.0
 Content-Type: multipart/alternative; boundary="----=_Part_876302"
 
 ------=_Part_876302
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
 Yes, the text/plain part really was empty.
@@ -1281,7 +1283,7 @@ EOF
 
 if [ $can_reformat_texthtml -eq 1 ]; then
   #### lynx inserts multiple blank lines, so squeeze them.
-  run_prog mhfixmsg last -replacetextplain -outfile - | \
+  run_prog mhfixmsg last -textcharset utf-8 -replacetextplain -outfile - | \
     squeeze_lines > "$actual"
   check "$expected" "$actual" 'ignore space'
 else
@@ -1387,7 +1389,7 @@ EOF
   echo "rmmproc: ${MH_TEST_DIR}/Mail/rmmproc" >>"$MH"
   cp "${MH_TEST_DIR}/Mail/inbox/16" "${MH_TEST_DIR}/Mail/inbox/16.original"
 
-  run_test 'mhfixmsg 16' ''
+  run_test 'mhfixmsg 16 -textcharset utf-8' ''
   check "${MH_TEST_DIR}/Mail/inbox/16.backup" \
         "${MH_TEST_DIR}/Mail/inbox/16.original"
 
@@ -1396,7 +1398,7 @@ EOF
   start_test "-normmproc"
   cp "${MH_TEST_DIR}/Mail/inbox/21" "${MH_TEST_DIR}/Mail/inbox/22"
 
-  run_test 'mhfixmsg 21 -normmproc'
+  run_test 'mhfixmsg 21 -textcharset utf-8 -normmproc'
   check "${MH_TEST_DIR}/Mail/inbox/22" \
         "${MH_TEST_DIR}/Mail/inbox/${sbackup}21" 'keep first'
 fi
@@ -2141,6 +2143,7 @@ U2VlIFJGQyAyMDQ1IMKnNi44Lg==
 --
 Wait, this shouldn't be here.
 EOF
+
 cat >"$expected" <<EOF
 From: Test <test@example.com>
 Subject: 8-bit encoded base64 code
@@ -2165,6 +2168,90 @@ Wait, this shouldn't be here.
 EOF
 
 run_prog mhfixmsg last -outfile "$actual"
+check "$expected" "$actual"
+
+
+start_test "use correct encoding for new text/plain part"
+cat >"`mhpath new`" <<EOF
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="mime-boundary"
+Content-Transfer-Encoding: 8bit
+
+--mime-boundary
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=iso-8859-1
+
+&#233;
+
+--mime-boundary--
+EOF
+
+cat >"$expected" <<EOF
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="mime-boundary"
+Content-Transfer-Encoding: 8bit
+
+--mime-boundary
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+é
+
+--mime-boundary
+Content-Transfer-Encoding: 7bit
+Content-Type: text/html; charset=iso-8859-1
+
+&#233;
+
+--mime-boundary--
+EOF
+
+run_prog mhfixmsg last -textcharset utf-8 -outfile "$actual"
+check "$expected" "$actual"
+
+
+start_test "change text/plain charset"
+cat >"`mhpath new`" <<EOF
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="mime-boundary"
+Content-Transfer-Encoding: 8bit
+
+--mime-boundary
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+
+=E9
+
+--mime-boundary
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=iso-8859-1
+
+&#233;
+
+--mime-boundary--
+EOF
+
+cat >"$expected" <<EOF
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="mime-boundary"
+Content-Transfer-Encoding: 8bit
+
+--mime-boundary
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+
+é
+
+--mime-boundary
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=iso-8859-1
+
+&#233;
+
+--mime-boundary--
+EOF
+
+run_prog mhfixmsg last -decodetypes text/plain -textcharset utf-8 -outfile "$actual"
 check "$expected" "$actual"
 
 
