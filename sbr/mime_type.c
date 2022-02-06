@@ -15,9 +15,9 @@
 #include "path.h"
 #include "globals.h"
 
-#ifdef MIMETYPEPROC
+#if defined(MIMETYPEPROC) || defined(MIMEENCODINGPROC)
 static char *get_file_info(const char *, const char *);
-#endif /* MIMETYPEPROC */
+#endif /* MIMETYPEPROC || MIMEENCODINGPROC */
 
 /*
  * Try to use external command to determine mime type, and possibly
@@ -25,7 +25,7 @@ static char *get_file_info(const char *, const char *);
  * is responsible for free'ing returned memory.
  */
 char *
-mime_type(const char *file_name)
+mime_type(const char *filename)
 {
     char *content_type = NULL;  /* mime content type */
     char *p;
@@ -33,13 +33,13 @@ mime_type(const char *file_name)
 #ifdef MIMETYPEPROC
     char *mimetype;
 
-    if ((mimetype = get_file_info(MIMETYPEPROC, file_name))) {
+    if ((mimetype = get_file_info(MIMETYPEPROC, filename))) {
 #ifdef MIMEENCODINGPROC
         /* Try to append charset for text content. */
         char *mimeencoding;
 
         if (!strncasecmp(mimetype, "text", 4) &&
-            (mimeencoding = get_file_info(MIMEENCODINGPROC, file_name))) {
+            (mimeencoding = encoding(filename))) {
             content_type = concat(mimetype, "; charset=", mimeencoding, NULL);
             free(mimeencoding);
             free(mimetype);
@@ -68,7 +68,7 @@ mime_type(const char *file_name)
 	    fclose(fp);
 	}
 
-	if ((p = strrchr(file_name, '.')) != NULL) {
+	if ((p = strrchr(filename, '.')) != NULL) {
 	    for (np = m_defs; np; np = np->n_next) {
 		if (strncasecmp(np->n_name, "mhshow-suffix-", 14) == 0 &&
 		    strcasecmp(p, FENDNULL(np->n_field)) == 0) {
@@ -88,8 +88,8 @@ mime_type(const char *file_name)
 	    FILE *fp;
             int c;
 
-	    if (!(fp = fopen(file_name, "r"))) {
-		inform("unable to access file \"%s\"", file_name);
+	    if (!(fp = fopen(filename, "r"))) {
+		inform("unable to access file \"%s\"", filename);
 		return NULL;
 	    }
 
@@ -112,12 +112,25 @@ mime_type(const char *file_name)
 }
 
 
-#ifdef MIMETYPEPROC
+char *
+encoding(const char *filename)
+{
+    char *mimeencoding = NULL;
+
+#ifdef MIMEENCODINGPROC
+    mimeencoding = get_file_info(MIMEENCODINGPROC, filename);
+#endif /* MIMEENCODINGPROC */
+
+    return mimeencoding;
+}
+
+
+#if defined(MIMETYPEPROC) || defined(MIMEENCODINGPROC)
 /*
  * Get information using proc about a file.
  * Non-null return value must be free(3)'d. */
 static char *
-get_file_info(const char *proc, const char *file_name)
+get_file_info(const char *proc, const char *filename)
 {
     char *quotec;
     char *cmd;
@@ -127,8 +140,8 @@ get_file_info(const char *proc, const char *file_name)
     char *info;
     char *needle;
 
-    if (strchr(file_name, '\'')) {
-        if (strchr(file_name, '"')) {
+    if (strchr(filename, '\'')) {
+        if (strchr(filename, '"')) {
             inform("filenames containing both single and double quotes "
                 "are unsupported for attachment");
             return NULL;
@@ -137,7 +150,7 @@ get_file_info(const char *proc, const char *file_name)
     } else
         quotec = "'";
 
-    cmd = concat(proc, " ", quotec, file_name, quotec, NULL);
+    cmd = concat(proc, " ", quotec, filename, quotec, NULL);
     if (!cmd) {
         inform("concat with \"%s\" failed, out of memory?", proc);
         return NULL;
@@ -169,4 +182,4 @@ get_file_info(const char *proc, const char *file_name)
 
     return mh_xstrdup(info);
 }
-#endif /* MIMETYPEPROC */
+#endif /* MIMETYPEPROC || MIMEENCODINGPROC */
