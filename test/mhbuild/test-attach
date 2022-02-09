@@ -23,7 +23,7 @@ expected="$MH_TEST_DIR/$$.expected"
 #
 # Test out a simple draft, one part.
 #
-
+start_test "simple draft, one part"
 cat > "$draft" <<EOF
 To: Mr Test <mrtest@example.com>
 cc:
@@ -51,10 +51,9 @@ check "$draft" "$expected"
 
 #
 # Check out more common case, one (or more) attachments
-start_test "out more common case, one (or more) attachments"
 # along with message text.
 #
-
+start_test "out more common case, one (or more) attachments"
 cat > "$draft" <<EOF
 To: Mr Test <mrtest@example.com>
 cc:
@@ -103,7 +102,7 @@ check "$draft" "$expected"
 #
 # An empty Attach header
 #
-
+start_test "empty Attach header"
 cat > "$draft" <<EOF
 To: Mr Test <mrtest@example.com>
 cc:
@@ -129,9 +128,8 @@ check "$draft" "$expected"
 
 #
 # Check a completely empty message
-start_test "a completely empty message"
 #
-
+start_test "a completely empty message"
 cat > "$draft" <<EOF
 To: Mr Test <mrtest@example.com>
 cc:
@@ -155,7 +153,7 @@ check "$draft" "$expected"
 #
 # Make sure we fail if we run into a MIME-Version header
 #
-
+start_test "fail if we run into a MIME-Version header"
 cat > "$draft" <<EOF
 To: Mr Test <mrtest@example.com>
 cc:
@@ -193,7 +191,7 @@ check "$draft" "$expected"
 #
 # Make sure -dist does nothing but encode headers
 #
-
+start_test "-dist does nothing but encode headers"
 cat > "$draft" <<EOF
 To: Señor Test <mrtest@example.com>
 cc:
@@ -216,7 +214,7 @@ check "$draft" "$expected"
 # Two parts, one attachment; make sure mixing of multiparts at different
 # levels works.  This also tests Attach: instead of Nmh-Attach:.
 #
-
+start_test "two parts, one attachment"
 cat > "$draft" <<EOF
 To: Mr Test <mrtest@example.com>
 cc:
@@ -286,7 +284,7 @@ check "$draft" "$expected"
 # One attachment, text/plain containing some binary characters,
 # include NUL bytes.
 #
-
+start_test "One attachment, text/plain containing some binary characters"
 cat > "$draft" <<EOF
 To: Mr Test <mrtest@example.com>
 cc:
@@ -333,7 +331,6 @@ check "$draft" "$expected"
 
 # check that blank line is inserted between header and content
 start_test "that blank line is inserted between header and content"
-
 cat > "$MH_TEST_DIR/Mail/oneline" <<EOF
 There needs to be a blank line before this content line.
 EOF

@@ -23,7 +23,7 @@ expected="$MH_TEST_DIR/$$.expected"
 #
 # Try out a draft with some 8-bit encoded parameters
 #
-
+start_test "draft with some 8-bit encoded parameters"
 cat > "$draft" <<EOF
 To: Mr Test <mrtest@example.com>
 cc:
@@ -62,7 +62,7 @@ check "$draft" "$expected"
 #
 # Try out a draft with some long parameters
 #
-
+start_test "draft with some long parameters"
 cat > "$draft" <<EOF
 To: Mr Test <mrtest@example.com>
 cc:
@@ -104,7 +104,7 @@ check "$draft" "$expected"
 #
 # Try out attach with a filename with 8-bit characters
 #
-
+start_test "attach with a filename with 8-bit characters"
 cp "${srcdir}/test/mhbuild/tiny.jpg" "$MH_TEST_DIR/tïny.jpg"
 
 cat > "$draft" <<EOF
@@ -144,9 +144,9 @@ EOF
 check "$draft" "$expected"
 
 #
-# Alternate version; specify a disposion, but not an explicit filename
+# Alternate version; specify a disposition, but not an explicit filename
 #
-
+start_test "specify a disposition, but not an explicit filename"
 cat > "$draft" <<EOF
 To: Mr Test <mrtest@example.com>
 cc:
@@ -186,7 +186,7 @@ check "$draft" "$expected"
 # Test to make sure things fail if we try to put 8-bit characters when the
 # locale is US-ASCII
 #
-
+start_test "8-bit characters when the locale is US-ASCII"
 cat > "$draft" <<EOF
 To: Mr Test <mrtest@example.com>
 cc:
@@ -255,4 +255,5 @@ check "${draft}.nocontentid" "$expected"
 
 [ ${failed:=0} -eq 0 ]  &&  rm -f ${backup}
 
+finish_test
 exit ${failed:-0}
