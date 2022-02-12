@@ -286,8 +286,8 @@ fi
 
 PGM=`$SEARCHPROG "$SEARCHPATH" mpv`
 if [ -n "$PGM" ]; then
-    echo "mhshow-show-image: %l$PGM --keep-open %F" >> $TMP
-    echo "mhshow-show-video: %l$PGM %F" >> $TMP
+    echo "mhshow-show-image: %l$PGM --keep-open --really-quiet %F" >> $TMP
+    echo "mhshow-show-video: %l$PGM --really-quiet %F" >> $TMP
 else
     PGM=`$SEARCHPROG "$SEARCHPATH" xv`
     if [ -n "$PGM" ]; then
