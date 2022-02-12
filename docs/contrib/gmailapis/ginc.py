@@ -25,6 +25,7 @@ David Levine <levinedl@acm.org> 28 feb 2021
 
 from nmh_gmailapi import OAuthConfig, get_service
 from nmh_gmailapi import InvalidInvocation, UnableToRetrieveOAuthCredentials
+from google.auth.exceptions import TransportError
 from argparse import ArgumentParser, SUPPRESS
 from base64 import urlsafe_b64decode
 from collections import defaultdict
@@ -52,6 +53,10 @@ def ginc(argv):
         service = get_service(config, user, ['readonly'] if disposition == 'keep' else ['modify'])
     except UnableToRetrieveOAuthCredentials as err:
         print('{}: {}'.format(progname, err), file=sys.stderr)
+        return 1
+    except TransportError as err:
+        print('{}: {}'.format(progname, err), file=sys.stderr)
+        print('Check network connection?', file=sys.stderr)
         return 1
     except Exception as err:
         print('{}: {}'.format(progname, type(err)), file=sys.stderr)
