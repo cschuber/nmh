@@ -3,9 +3,9 @@
 
 """ginc.py
 
-Retrieves mail from user's Gmail inbox.  Assumes that messages are UTF-8
-encoded.  Obey's rcvstore behavior for updating Unseen-Sequence, which may
-be controlled by the user's profile.
+Retrieves mail from user's Gmail inbox.  Assumes that messages should end
+up  UTF-8 encoded.  Obeys rcvstore behavior for updating Unseen-Sequence,
+which may be controlled by the user's profile.
 
 This code is Copyright (c) 2021, by the authors of nmh.
 See the COPYRIGHT file in the root directory of the nmh distribution or
@@ -148,9 +148,10 @@ def decode_message(message):
 
     message -- the encoded message
     """
-    decoded_message = urlsafe_b64decode(message)
+    #### Should decode() header to ASCII rather than UTF-8.
+    decoded_message = urlsafe_b64decode(message).decode('utf-8', 'replace')
     #### Strip \r from each line.
-    return ('\n'.join([line for line in decoded_message.decode().splitlines()])+'\n').encode()
+    return ('\n'.join([line for line in decoded_message.splitlines()])+'\n').encode()
 
 
 def get_ginc_profile_entry():
@@ -211,7 +212,8 @@ def scan(progname, folder, count):
     raises CalledProcessError
     """
     try:
-        print(check_output(['scan', '+' + folder, 'last:' + str(count)]).decode(), end='')
+        print(check_output(['scan', '+' + folder,
+                            'last:' + str(count)]).decode('utf-8', 'replace'), end='')
     except CalledProcessError:
         print('{}: scan(1) failed'.format(progname), file=sys.stderr)
         raise
