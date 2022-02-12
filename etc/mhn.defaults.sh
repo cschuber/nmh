@@ -25,19 +25,24 @@ fi
 TMP=/tmp/nmh_temp.$$
 trap "rm -f $TMP" 0 1 2 3 13 15
 
-if [ -n `$SEARCHPROG "$SEARCHPATH" par` ]; then
+PGM=`$SEARCHPROG "$SEARCHPATH" par`
+if [ -n "$PGM" ]; then
     #### The widths here correspond to those for the text browsers below.
-    textfmt=' | par 64'
-    replfmt=" | sed 's/^\(.\)/> \1/; s/^$/>/;' | par 64"
-elif [ -n `$SEARCHPROG "$SEARCHPATH" fmt` ]; then
-    textfmt=' | fmt'
-    replfmt=" | fmt | sed 's/^\(.\)/> \1/; s/^$/>/;'"
+    textfmt=" | $PGM 64"
+    replfmt=" | sed 's/^\(.\)/> \1/; s/^$/>/;' | $PGM 64"
 else
-    textfmt=
-    replfmt=
+    PGM=`$SEARCHPROG "$SEARCHPATH" fmt`
+    if [ -n "$PGM" ]; then
+        textfmt=" | $PGM"
+        replfmt=" | $PGM | sed 's/^\(.\)/> \1/; s/^$/>/;'"
+    else
+        textfmt=
+        replfmt=
+    fi
 fi
-[ -n `$SEARCHPROG "$SEARCHPATH" iconv` ]  &&
-    charsetconv=' | iconv -f ${charset:-us-ascii} -t utf-8'"${textfmt}"  ||
+iconv=`$SEARCHPROG "$SEARCHPATH" iconv`
+[ -n "$iconv" ]  &&
+    charsetconv=" | $iconv -f ${charset:-us-ascii} -t utf-8${textfmt}"  ||
     charsetconv=
 
 cat >>"$TMP" <<'EOF'
@@ -101,7 +106,7 @@ fi
 ####
 cat <<EOF >>${TMP}
 mhbuild-convert-text/calendar: mhical -infile %F -contenttype
-mhbuild-convert-text: charset=%{charset}; iconv -f \${charset:-us-ascii} -t utf-8 %F${replfmt}
+mhbuild-convert-text: charset=%{charset}; $iconv -f \${charset:-us-ascii} -t utf-8 %F${replfmt}
 mhbuild-disposition-text/calendar: inline
 mhbuild-disposition-message/rfc822: inline
 EOF
