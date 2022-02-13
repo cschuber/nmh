@@ -27,10 +27,19 @@ trap "rm -f $TMP" 0 1 2 3 13 15
 
 PGM=`$SEARCHPROG "$SEARCHPATH" par`
 if [ -n "$PGM" ]; then
-    #### The widths here correspond to those for the text browsers below.
-    textfmt=" | $PGM 64"
-    replfmt=" | sed 's/^\(.\)/> \1/; s/^$/>/;' | $PGM 64"
-else
+    if par version | fgrep 1.52-i18n >/dev/null; then
+        #### Don't use patched par.
+        echo "mhn.defaults.sh: $PGM uses a patch that is known to improperly handle " 1>&2
+        echo 'some multibyte characters.  If fmt is installed, mhn.defaults will ' 1>&2
+        echo 'use it.' 1>&2
+        unset PGM
+    else
+        #### The widths here correspond to those for the text browsers below.
+        textfmt=" | $PGM 64"
+        replfmt=" | sed 's/^\(.\)/> \1/; s/^$/>/;' | $PGM 64"
+    fi
+fi
+if [ -z "$PGM" ]; then
     PGM=`$SEARCHPROG "$SEARCHPATH" fmt`
     if [ -n "$PGM" ]; then
         textfmt=" | $PGM"
