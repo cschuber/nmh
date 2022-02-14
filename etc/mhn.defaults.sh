@@ -27,7 +27,7 @@ trap "rm -f $TMP" 0 1 2 3 13 15
 
 PGM=`$SEARCHPROG "$SEARCHPATH" par`
 if [ -n "$PGM" ]; then
-    if par version | fgrep 1.52-i18n >/dev/null; then
+    if par version | grep '1\.52-i18n' >/dev/null; then
         #### Don't use patched par.
         echo "mhn.defaults.sh: $PGM uses a patch that is known to improperly handle " 1>&2
         echo 'some multibyte characters.  If fmt is installed, mhn.defaults will ' 1>&2
