@@ -30,7 +30,7 @@ including prerequisites such as autoconf, automake, make, and a C compiler.
 2. Run the following command and follow
 its instructions to update your Python version and/or packages as
 necessary:
->   nmh_gmailapi_prereqs.sh
+>   docs/contrib/gmailapis/nmh_gmailapi_prereqs.sh
 
 That, and some commands below, assume that `share/doc/nmh/contrib/gmailapis`
 was added to your search PATH.
