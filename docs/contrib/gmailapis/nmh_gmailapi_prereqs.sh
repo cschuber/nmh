@@ -28,7 +28,7 @@ fi
 missing=''
 for pkg in cryptography google-auth-httplib2 google-auth-oauthlib; do
     if ! pip show $pkg >/dev/null 2>&1; then
-        missing=" $pkg"
+        missing="$missing $pkg"
     fi
 done
 if [ -n "$missing" ]; then
