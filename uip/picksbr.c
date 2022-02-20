@@ -711,7 +711,8 @@ GREPaction(struct nexus *n, FILE *fp, int msgnum, long start, long stop)
 	/* Attempt to decode as a MIME header.	If it's the last header,
 	   body will be 1 and lf will be at least 1. */
 	if ((!body || lf)  &&
-	    decode_rfc2047 (linebuf, decoded_linebuf, sizeof decoded_linebuf)) {
+	    decode_rfc2047 (linebuf, decoded_linebuf, sizeof decoded_linebuf) >
+            0) {
 	    p1 = decoded_linebuf;
 	}
 

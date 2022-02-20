@@ -687,14 +687,15 @@ fmt_scan (struct format *format, charstring_t scanlp, int width, int *dat,
 	    break;
 
 	case FT_LS_DECODECOMP:
-	    if (decode_rfc2047(fmt->f_comp->c_text, buffer2, sizeof(buffer2)))
+	    if (decode_rfc2047(fmt->f_comp->c_text, buffer2, sizeof(buffer2)) >
+                0)
 		str = buffer2;
 	    else
 		str = fmt->f_comp->c_text;
 	    break;
 
 	case FT_LS_DECODE:
-	    if (str && decode_rfc2047(str, buffer2, sizeof(buffer2)))
+	    if (str && decode_rfc2047(str, buffer2, sizeof(buffer2)) > 0)
 		str = buffer2;
 	    break;
 

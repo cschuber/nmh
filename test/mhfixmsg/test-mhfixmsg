@@ -1878,6 +1878,33 @@ run_prog mhfixmsg -file - -outfile - -decodeheaderfieldbodies utf-8 \
 check "$expected" "$actual"
 
 
+start_test "test decoding of ASCII header value"
+cat >"$expected" <<EOF
+Subject: Here's a /Subject/ that's split across two encoded strings
+EOF
+cat >"`mhpath new`" <<EOF
+Subject: =?us-ascii?Q?Here's=20a=20=2FSubject=2F=20that's=20?=
+ =?us-ascii?Q?split=20across=20two=20encoded=20strings?=
+EOF
+run_prog mhfixmsg -file `mhpath last` -outfile "$actual" \
+         -decodeheaderfieldbodies utf-8
+check "$expected" "$actual"
+
+
+start_test "test attempt to decode with embedded NUL"
+#### It would be better to expect unchanged input, but decode_rfc2047()
+#### suppresses NULs instead of decoding them.
+cat >"$expected" <<EOF
+Subject: Here's a null: 
+EOF
+cat >"`mhpath new`" <<EOF
+Subject: =?us?Q?Here=27s=20a=20null=3A=20=00?=
+EOF
+run_prog mhfixmsg -file `mhpath last` -outfile "$actual" \
+         -decodeheaderfieldbodies utf-8
+check "$expected" "$actual"
+
+
 start_test "-checkbase64 with base64 code that ends with == plus footer"
 cat >"`mhpath new`" <<EOF
 From: Test <test@example.com>

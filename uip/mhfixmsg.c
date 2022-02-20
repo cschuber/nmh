@@ -156,6 +156,8 @@ static int less_restrictive (int, int);
 static int convert_charsets (CT, char *, int *);
 static int fix_always (CT *, const fix_transformations *, int *);
 static int decode_header_field_bodies (CT, int *);
+static charstring_t get_rfc2047_charset (const char *);
+static bool contains_nuls(const char *, ssize_t);
 static int fix_filename_param (char *, char *, PM *, PM *);
 static int fix_filename_encoding (CT);
 static int write_content (CT, const char *, char *, FILE *, int, int);
@@ -246,9 +248,7 @@ main (int argc, char **argv)
                 }
                 fx.decodeheaderfieldbodies = cp;
                 if (strcasecmp (cp, "utf-8")  && strcasecmp (cp, "utf8")) {
-                    /* Because UTF-8 strings can't have embedded nulls.  Other
-                       encodings support that, too, but we won't bother to
-                       enumerate them. */
+                    /* See comments in decode_header_field_bodies(). */
                     die("-decodeheaderfieldbodies only supports utf-8");
                 }
                 continue;
@@ -2990,33 +2990,90 @@ decode_header_field_bodies (CT ct, int *message_mods)
     HF hf;
 
     for (hf = ct->c_first_hf; hf; hf = hf->next) {
-        /* Only decode UTF-8 values. */
-        if (hf->value  &&  has_suffix(hf->value, "?=\n")  &&
-            (! strncasecmp (hf->value, " =?utf8?", 8)  ||
-             ! strncasecmp (hf->value, " =?utf-8?", 9))) {
-            /* Looks like an RFC 2047 encoded parameter. */
-            char decoded[PATH_MAX + 1];
+        /* Decode the header field body as follows.  We don't want to
+           produce a decoded string with embedded NULs because that
+           can interfere with parsing of the message header.
+           1. Check to see if the body looks like it's RFC 2047 encoded
+              by looking for the charset at the beginning.  If not
+              present, skip it.
+           2. Attempt to decode body, given any charset for the encoding.
+           3. If unable to decode or if any NUL octets in the decoded text,
+              leave the body encoded.  If unable to decode, that's allowed by
+              RFC 2047 § 6.2.  If any NULs, that seems to be in the same spirit.
+        */
+        charstring_t charset = get_rfc2047_charset (hf->value);
+        if (! charset) { continue; }
 
-            if (decode_rfc2047 (hf->value, decoded, sizeof decoded)) {
-                const size_t len = strlen(decoded);
-
-                /* decode_rfc2047() could truncate if the buffer fills up.
-                   Detect and discard if that happened. */
-                if (len < sizeof(decoded) - 1  &&  strcmp(hf->value, decoded)) {
-                    hf->value = mh_xrealloc (hf->value, len + 1);
-                    strncpy (hf->value, decoded, len + 1);
-                    ++*message_mods;
-                }
-            } else {
-                char *hf_value = cpytrim (hf->value);
-                inform("failed to decode %s parameter %s", hf->name, hf_value);
-                free (hf_value);
-                status = NOTOK;
+        char decoded[PATH_MAX + 1];
+        ssize_t len;  /* excludes terminating NUL, like strlen(3) */
+        if ((len = decode_rfc2047 (hf->value, decoded, sizeof decoded)) > 0) {
+            /* decode_rfc2047() could truncate if the buffer fills up.
+               Detect and discard if that happened.  Also discard if
+               there are any embedded NULs. */
+            if ((size_t) len < sizeof (decoded) - 1  &&
+                strcmp (hf->value, decoded)  &&
+                ! contains_nuls (decoded, len)) {
+                hf->value = mh_xrealloc (hf->value, len + 1);
+                strncpy (hf->value, decoded, len + 1);
+                ++*message_mods;
             }
+        } else {
+            char *hf_value = cpytrim (hf->value);
+            inform("failed to decode %s value %s", hf->name, hf_value);
+            free (hf_value);
+            status = NOTOK;
         }
+        charstring_free (charset);
     }
 
     return status;
+}
+
+
+/*
+ * Returns charset from an RFC 2047-encoded string.
+ */
+static charstring_t
+get_rfc2047_charset (const char *string)
+{
+    /* Look for charset near beginning of string.  Beginning of charset is
+       after "=?".  End of charset is just before "?". */
+    charstring_t charset = charstring_create(0);
+    const char *cp = string;
+
+    for (; *cp && isblank ((unsigned char) *cp); ++cp) {}
+    if (*cp == '\0'  ||  *cp != '='  || *++cp != '?') {
+        charstring_free (charset);
+        return NULL;
+    }
+    for (++cp; *cp && *cp != '?'; ++cp) {
+        charstring_push_back (charset, *cp);
+    }
+    if (*cp == '?') {
+        charstring_push_back (charset, '\0');
+    } else {
+        charstring_free (charset);
+        return NULL;
+    }
+
+    return charset;
+}
+
+
+/*
+ * Returns whether a string of the specific charset has any
+ * embedded NUL octects.
+ */
+static bool
+contains_nuls(const char *string, ssize_t len)
+{
+    for (const char *cp = string; len > 1; ++cp, --len) {
+        if (*cp == '\0') {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 
@@ -3032,7 +3089,7 @@ fix_filename_param (char *name, char *value, PM *first_pm, PM *last_pm)
         /* Looks like an RFC 2047 encoded parameter. */
         char decoded[PATH_MAX + 1];
 
-        if (decode_rfc2047 (value, decoded, sizeof decoded)) {
+        if (decode_rfc2047 (value, decoded, sizeof decoded) > 0) {
             /* Encode using RFC 2231. */
             replace_param (first_pm, last_pm, name, decoded, 0);
             fixed = true;
