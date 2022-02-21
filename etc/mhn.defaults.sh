@@ -281,12 +281,18 @@ $PGM "'-child -dump -force_html ${charset:+-assume_charset} ${charset:+"$charset
     else
         PGM=`$SEARCHPROG "$SEARCHPATH" elinks`
         if [ -n "$PGM" ]; then
+            #### M. Levinson noted that -eval "set document.codepage.assume='$charset'"
+            #### can be used with elinks, after setting charset as done above.  However,
+            #### quoting becomes a nightmare because the argument must be quoted.  And
+            #### with that, bad effects of malicious parameter value quoting, such as shown
+            #### in test/mhshow/test-textcharset, seems very difficult to avoid.  It might
+            #### be easier if the parameters are put into a temporary config-file.
             echo "mhshow-show-text/html: %l$PGM -dump -force-html \
--eval 'set document.browse.margin_width = 0' %F" >> $TMP
+-eval 'set document.browse.margin_width=0' %F" >> $TMP
             echo "mhfixmsg-format-text/html: $PGM -dump -force-html \
--no-numbering -eval 'set document.browse.margin_width = 0' %F" >> $TMP
+-no-numbering -eval 'set document.browse.margin_width=0' %F" >> $TMP
             echo "mhbuild-convert-text/html: $PGM -dump -force-html \
--no-numbering -eval 'set document.browse.margin_width = 0' %F${replfmt}" >> $TMP
+-no-numbering -eval 'set document.browse.margin_width=0' %F${replfmt}" >> $TMP
         else
             echo 'mhbuild-convert-text/html: cat %F' >> $TMP
         fi
