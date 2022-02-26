@@ -53,7 +53,6 @@ static char *address_headers[] = {
 
 #define ENCODELINELIMIT	76
 
-static void unfold_header(char **, int);
 static int field_encode_address(const char *, char **, int, const char *);
 static int field_encode_quoted(const char *, char **, const char *, int,
 			       int, int);
@@ -513,8 +512,8 @@ utf8len(const char *p)
  * original length here is fine.
  */
 
-static void
-unfold_header(char **value, int len)
+void
+unfold_header(char **value, size_t len)
 {
     char *str = mh_xmalloc(len + 1);
     char *p = str, *q = *value;

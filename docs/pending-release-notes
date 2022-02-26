@@ -64,6 +64,7 @@ BUG FIXES
 - Fixed source charset in mhfixmsg textcharset verbose output.
 - Fixed mhfixmsg charset determination of content added with -reformat.
 - Fixed file descriptor leak in mhfixmsg when run on multiple input files.
+- Fixed mhfixmsg(1) -decodeheaderfilebodies to support mixed encoded/undecoded.
 - Fixed memory corruption in post(1) and inc(1) when using XOAUTH2,
   with 4 or more entries in the oauth-authservice file.
 - Added alias expansion to From: address for use by sendfrom.

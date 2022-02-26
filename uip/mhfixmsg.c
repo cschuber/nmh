@@ -17,6 +17,7 @@
 #include "sbr/seq_setcur.h"
 #include "sbr/seq_save.h"
 #include "sbr/smatch.h"
+#include "sbr/encode_rfc2047.h"
 #include "sbr/fmt_rfc2047.h"
 #include "sbr/cpydata.h"
 #include "sbr/trimcpy.h"
@@ -156,7 +157,7 @@ static int less_restrictive (int, int);
 static int convert_charsets (CT, char *, int *);
 static int fix_always (CT *, const fix_transformations *, int *);
 static int decode_header_field_bodies (CT, int *);
-static charstring_t get_rfc2047_charset (const char *);
+static int decode_field_body (const char *, char **, int *);
 static bool contains_nuls(const char *, ssize_t);
 static int fix_filename_param (char *, char *, PM *, PM *);
 static int fix_filename_encoding (CT);
@@ -2990,73 +2991,60 @@ decode_header_field_bodies (CT ct, int *message_mods)
     HF hf;
 
     for (hf = ct->c_first_hf; hf; hf = hf->next) {
-        /* Decode the header field body as follows.  We don't want to
-           produce a decoded string with embedded NULs because that
-           can interfere with parsing of the message header.
-           1. Check to see if the body looks like it's RFC 2047 encoded
-              by looking for the charset at the beginning.  If not
-              present, skip it.
-           2. Attempt to decode body, given any charset for the encoding.
-           3. If unable to decode or if any NUL octets in the decoded text,
-              leave the body encoded.  If unable to decode, that's allowed by
-              RFC 2047 § 6.2.  If any NULs, that seems to be in the same spirit.
-        */
-        charstring_t charset = get_rfc2047_charset (hf->value);
-        if (! charset) { continue; }
-
-        char decoded[PATH_MAX + 1];
-        ssize_t len;  /* excludes terminating NUL, like strlen(3) */
-        if ((len = decode_rfc2047 (hf->value, decoded, sizeof decoded)) > 0) {
-            /* decode_rfc2047() could truncate if the buffer fills up.
-               Detect and discard if that happened.  Also discard if
-               there are any embedded NULs. */
-            if ((size_t) len < sizeof (decoded) - 1  &&
-                strcmp (hf->value, decoded)  &&
-                ! contains_nuls (decoded, len)) {
-                hf->value = mh_xrealloc (hf->value, len + 1);
-                strncpy (hf->value, decoded, len + 1);
-                ++*message_mods;
-            }
-        } else {
-            char *hf_value = cpytrim (hf->value);
-            inform("failed to decode %s value %s", hf->name, hf_value);
-            free (hf_value);
-            status = NOTOK;
-        }
-        charstring_free (charset);
+        status = decode_field_body(hf->name, &hf->value, message_mods);
     }
 
     return status;
 }
 
 
-/*
- * Returns charset from an RFC 2047-encoded string.
- */
-static charstring_t
-get_rfc2047_charset (const char *string)
+static int
+decode_field_body (const char *name, char **value, int *message_mods)
 {
-    /* Look for charset near beginning of string.  Beginning of charset is
-       after "=?".  End of charset is just before "?". */
-    charstring_t charset = charstring_create(0);
-    const char *cp = string;
+    /*
+       Decode the header field body as follows.  We don't want to produce a
+       decoded string with embedded NULs because that can interfere with
+       parsing of the message header.
+       1. Attempt to decode body, given any charset for the encoding.
+       2. If unable to decode or if any NUL octets in the decoded text, leave
+          the body encoded.  If unable to decode, that's allowed by
+          RFC 2047 § 6.2.  If any NULs, that seems to be in the same spirit.
+    */
+    ssize_t len = NMH_BUFSIZ;
+    char *buffer = mh_xmalloc (len);
+    int status = OK;
 
-    for (; *cp && isblank ((unsigned char) *cp); ++cp) {}
-    if (*cp == '\0'  ||  *cp != '='  || *++cp != '?') {
-        charstring_free (charset);
-        return NULL;
-    }
-    for (++cp; *cp && *cp != '?'; ++cp) {
-        charstring_push_back (charset, *cp);
-    }
-    if (*cp == '?') {
-        charstring_push_back (charset, '\0');
-    } else {
-        charstring_free (charset);
-        return NULL;
+    if (*value  &&  strstr (*value, "?=")) {
+        /* Looks like an RFC 2047 encoded parameter. */
+
+        if ((len = decode_rfc2047 (*value, buffer, len)) > 0) {
+            /* decode_rfc2047() could truncate if the buffer fills up.
+               Detect and discard if that happened.  Also discard if
+               there are any embedded NULs. */
+            if (len < NMH_BUFSIZ - 1  &&  ! contains_nuls (buffer, len)  &&
+                strcmp (*value, buffer)) {
+                char *cp;
+                /* Successfully decoded *value. */
+                unfold_header (&buffer, len);
+                len = strlen (buffer);
+                /* Restore the trailing newline that unfold_header() removed. */
+                cp = &buffer[len];
+                *cp++ = '\n';
+                *cp = '\0';
+                *value = mh_xrealloc (*value, len + 2);
+                strncpy (*value, buffer, len + 2);
+                ++message_mods;
+            }
+        } else {
+            char *val = cpytrim (*value);
+            inform ("failed to decode %s value %s", name, val);
+            free (val);
+            status = NOTOK;
+        }
     }
 
-    return charset;
+    free (buffer);
+    return status;
 }
 
 
