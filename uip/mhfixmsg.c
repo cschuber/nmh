@@ -56,7 +56,7 @@
     X("decodetext 8bit|7bit|binary", 0, DECODETEXTSW) \
     X("nodecodetext", 0, NDECODETEXTSW) \
     X("decodetypes", 0, DECODETYPESW) \
-    X("decodeheaderfieldbodies utf-8", 0, DECODEHEADERFIELDBODIESSW) \
+    X("decodeheaderfieldbodies charset", 0, DECODEHEADERFIELDBODIESSW) \
     X("nodecodeheaderfieldbodies", 0, NDECODEHEADERFIELDBODIESSW) \
     X("crlflinebreaks", 0, CRLFLINEBREAKSSW) \
     X("nocrlflinebreaks", 0, NCRLFLINEBREAKSSW) \
@@ -113,7 +113,7 @@ typedef struct {
     text_properties text_props;
     int decodetext;
     char *decodetypes;
-    char *decodeheaderfieldbodies; /* Either NULL or "utf-8". */
+    char *decodeheaderfieldbodies; /* Either NULL or the destination charset. */
     /* Whether to use CRLF linebreaks, per RFC 2046 Sec. 4.1.1, par.1. */
     int lf_line_endings;
     bool checkbase64;
@@ -156,8 +156,8 @@ static int least_restrictive_encoding (CT) PURE;
 static int less_restrictive (int, int);
 static int convert_charsets (CT, char *, int *);
 static int fix_always (CT *, const fix_transformations *, int *);
-static int decode_header_field_bodies (CT, int *);
-static int decode_field_body (const char *, char **, int *);
+static int decode_header_field_bodies (CT, const char *, int *);
+static int decode_field_body (const char *, char **, const char *, int *);
 static bool contains_nuls(const char *, ssize_t);
 static int fix_filename_param (char *, char *, PM *, PM *);
 static int fix_filename_encoding (CT);
@@ -248,10 +248,6 @@ main (int argc, char **argv)
                     die("missing argument to %s", argp[-2]);
                 }
                 fx.decodeheaderfieldbodies = cp;
-                if (strcasecmp (cp, "utf-8")  && strcasecmp (cp, "utf8")) {
-                    /* See comments in decode_header_field_bodies(). */
-                    die("-decodeheaderfieldbodies only supports utf-8");
-                }
                 continue;
             case NDECODEHEADERFIELDBODIESSW:
                 fx.decodeheaderfieldbodies = NULL;
@@ -647,7 +643,8 @@ mhfixmsgsbr (CT *ctp, char *maildir, const fix_transformations *fx,
         update_cte (*ctp);
     }
     if (status == OK  &&  fx->decodeheaderfieldbodies) {
-        status = decode_header_field_bodies(*ctp, &message_mods);
+        status = decode_header_field_bodies(*ctp, fx->decodeheaderfieldbodies,
+                                            &message_mods);
     }
     if (status == OK  &&  fx->text_props.textcharset != NULL) {
         status = convert_charsets (*ctp, fx->text_props.textcharset, &message_mods);
@@ -2964,7 +2961,7 @@ fix_always (CT *ctp, const fix_transformations *fx, int *message_mods)
  * does not modify any MIME parameter values.
  */
 static int
-decode_header_field_bodies (CT ct, int *message_mods)
+decode_header_field_bodies (CT ct, const char *dest_charset, int *message_mods)
 {
     int status = OK;
 
@@ -2974,7 +2971,8 @@ decode_header_field_bodies (CT ct, int *message_mods)
         struct part *part;
 
         for (part = m->mp_parts; status == OK  &&  part; part = part->mp_next) {
-            status = decode_header_field_bodies (part->mp_part, message_mods);
+            status = decode_header_field_bodies (part->mp_part, dest_charset,
+                                                 message_mods);
         }
         break;
     }
@@ -2983,7 +2981,8 @@ decode_header_field_bodies (CT ct, int *message_mods)
         if (ct->c_subtype == MESSAGE_EXTERNAL) {
             struct exbody *e = (struct exbody *) ct->c_ctparams;
 
-            status = decode_header_field_bodies (e->eb_content, message_mods);
+            status = decode_header_field_bodies (e->eb_content, dest_charset,
+                                                 message_mods);
         }
         break;
     }
@@ -2991,7 +2990,8 @@ decode_header_field_bodies (CT ct, int *message_mods)
     HF hf;
 
     for (hf = ct->c_first_hf; hf; hf = hf->next) {
-        status = decode_field_body(hf->name, &hf->value, message_mods);
+        status = decode_field_body(hf->name, &hf->value, dest_charset,
+                                   message_mods);
     }
 
     return status;
@@ -2999,7 +2999,8 @@ decode_header_field_bodies (CT ct, int *message_mods)
 
 
 static int
-decode_field_body (const char *name, char **value, int *message_mods)
+decode_field_body (const char *name, char **value, const char *dest_charset,
+                   int *message_mods)
 {
     /*
        Decode the header field body as follows.  We don't want to produce a
@@ -3017,7 +3018,7 @@ decode_field_body (const char *name, char **value, int *message_mods)
     if (*value  &&  strstr (*value, "?=")) {
         /* Looks like an RFC 2047 encoded parameter. */
 
-        if ((len = decode_rfc2047 (*value, buffer, len)) > 0) {
+        if ((len = decode_rfc2047 (*value, buffer, len, dest_charset)) > 0) {
             /* decode_rfc2047() could truncate if the buffer fills up.
                Detect and discard if that happened.  Also discard if
                there are any embedded NULs. */
@@ -3077,7 +3078,7 @@ fix_filename_param (char *name, char *value, PM *first_pm, PM *last_pm)
         /* Looks like an RFC 2047 encoded parameter. */
         char decoded[PATH_MAX + 1];
 
-        if (decode_rfc2047 (value, decoded, sizeof decoded) > 0) {
+        if (decode_rfc2047 (value, decoded, sizeof decoded, NULL) > 0) {
             /* Encode using RFC 2231. */
             replace_param (first_pm, last_pm, name, decoded, 0);
             fixed = true;

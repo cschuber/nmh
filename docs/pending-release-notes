@@ -30,6 +30,8 @@ NEW FEATURES
 - Added mhshow-suffix-video.mp4 to mhn.defaults, for use by mhshow(1) and
   send(1).
 - Removed support from mhn.defaults for application/x-ivs and text/richtext.
+- Changed interpretation of argument to mhfixmsg(1) -decodeheaderfieldbodies
+  switch to specify character set of the decoded field bodies.
 
 -----------------
 OBSOLETE FEATURES
@@ -38,7 +40,7 @@ OBSOLETE FEATURES
 - The MIME content cache functionality has been mostly non-functional since
   the development on nmh, and consequently all of the content caching code
   and related switches (-cache/-rcache/-wcache) have been removed.
-- Support for generating and reassembling message/partial messags has been
+- Support for generating and reassembling message/partial messages has been
   removed; it seems that this has been broken since 1.5 and there is very
   little support across MUAs.
 

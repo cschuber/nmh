@@ -52,7 +52,7 @@ Usage: mhfixmsg [+folder] [msgs] [switches]
   -decodetext 8bit|7bit|binary
   -nodecodetext
   -decodetypes
-  -decodeheaderfieldbodies utf-8
+  -decodeheaderfieldbodies charset
   -nodecodeheaderfieldbodies
   -[no]crlflinebreaks
   -[no]textcharset
@@ -1846,7 +1846,7 @@ run_prog mhfixmsg -file - -outfile - -decodeheaderfieldbodies utf-8 \
 check `mhpath last` "$actual" 'keep first'
 
 
-start_test "test decoding of UTF-8 header value"
+start_test "decode UTF-8 header value"
 cat >"$expected" <<EOF
 To: recipient@example.com
 From: sender@example.com
@@ -1877,7 +1877,7 @@ run_prog mhfixmsg -file - -outfile - -decodeheaderfieldbodies utf-8 \
 check "$expected" "$actual"
 
 
-start_test "test decoding of ASCII header value"
+start_test "decode ASCII header value"
 cat >"$expected" <<EOF
 Subject: Here's a /Subject/ that's split across two encoded strings
 EOF
@@ -1890,7 +1890,7 @@ run_prog mhfixmsg -file `mhpath last` -outfile "$actual" \
 check "$expected" "$actual"
 
 
-start_test "test decoding of mixed undecoded and decoded header values"
+start_test "decode mixed undecoded and decoded header values"
 cat >"$expected" <<EOF
 Subject: Here's a /Subject/ that mixes undecoded and decoded strings
 X: This one also mixes undecoded  and decoded strings
@@ -1908,7 +1908,7 @@ run_prog mhfixmsg -file `mhpath last` -outfile "$actual" \
 check "$expected" "$actual"
 
 
-start_test "test attempt to decode with embedded NUL"
+start_test "attempt to decode with embedded NUL"
 #### It would be better to expect unchanged input, but decode_rfc2047()
 #### suppresses NULs instead of decoding them.
 cat >"$expected" <<EOF
@@ -1919,6 +1919,19 @@ Subject: =?us?Q?Here=27s=20a=20null=3A=20=00?=
 EOF
 run_prog mhfixmsg -file `mhpath last` -outfile "$actual" \
          -decodeheaderfieldbodies utf-8
+check "$expected" "$actual"
+
+
+start_test "decode to specified destination charset"
+cat >"$expected" <<EOF
+Subject: Re: Fwd: r?pertoire des ensembles musicaux
+EOF
+cat >"`mhpath new`" <<EOF
+Subject: Re:
+ =?utf-8?q?Fwd=3A_r=C3=A9pertoire_des_ensembles_musicau?=
+ =?utf-8?q?x?=
+EOF
+run_prog mhfixmsg -file `mhpath last` -outfile "$actual" -decodeh ascii
 check "$expected" "$actual"
 
 

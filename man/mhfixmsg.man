@@ -1,4 +1,4 @@
-.TH MHFIXMSG %manext1% 2022-02-06 "%nmhversion%"
+.TH MHFIXMSG %manext1% 2022-02-20 "%nmhversion%"
 .
 .\" %nmhwarning%
 .
@@ -104,15 +104,23 @@ to just text/plain parts.
 .PP
 The
 .B \-decodeheaderfieldbodies
-switch enables decoding of UTF-8 header field bodies, when supplied
-with its mandatory
-.I utf-8
-argument.  The
+switch enables decoding of header field bodies to the specified character
+set.  The
 .B \-nodecodeheaderfieldbodies
 inhibits this transformation.  The transformation can produce a message
 that does not conform with RFC 2047, \(sc1, paragraph 6, because the decoded
 header field body could contain unencoded non-ASCII characters.  It is
-therefore not enabled by default.
+therefore not enabled by default.  Decoding of most header field bodies,
+or to a character set that is different from that of the user's locale,
+requires that
+.B nmh
+be built with
+.IR iconv (3);
+see
+.IR mhparam (1)
+for how to determine whether your
+.B nmh
+installation includes that.
 .PP
 By default, carriage return characters are preserved or inserted at
 the end of each line of text content.  The
@@ -135,7 +143,7 @@ be built with
 .IR iconv (3);
 see
 .IR mhparam (1)
-for how determine whether your
+for how to determine whether your
 .B nmh
 installation includes that.
 To convert text parts other than text/plain, an external program can

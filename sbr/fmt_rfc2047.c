@@ -69,7 +69,7 @@ decode_qp (unsigned char byte1, unsigned char byte2)
 #define ADDCHR(C) do { *q++ = (C); dstlen--; if (!dstlen) goto buffull; } while (0)
 
 ssize_t
-decode_rfc2047 (char *str, char *dst, size_t dstlen)
+decode_rfc2047 (char *str, char *dst, size_t dstlen, const char *dest_charset)
 {
     char *p, *q, *pp;
     char *startofmime, *endofmime, *endofcharset;
@@ -153,15 +153,23 @@ decode_rfc2047 (char *str, char *dst, size_t dstlen)
 							endofcharset++)
 		;
 
-	    /* Check if character set can be handled natively */
-	    if (!check_charset(startofmime, endofcharset - startofmime)) {
 #ifdef HAVE_ICONV
-	        /* .. it can't. We'll use iconv then. */
+	    /* If destination charset has been explicitly specified, or
+	       check if character set can be handled natively ... */
+	    if (dest_charset  ||
+		!check_charset(startofmime, endofcharset - startofmime)) {
+#else
+	    /* Check if character set can be handled natively ... */
+	    if (!check_charset(startofmime, endofcharset - startofmime)) {
+#endif
+#ifdef HAVE_ICONV
+		/* ... it can't. We'll use iconv then. */
 		*endofcharset = '\0';
-	        cd = iconv_open(get_charset(), startofmime);
+		cd = iconv_open(dest_charset ? dest_charset : get_charset(),
+				startofmime);
 		fromutf8 = !strcasecmp(startofmime, "UTF-8");
 		*pp = '?';
-                if (cd == (iconv_t)-1) continue;
+		if (cd == (iconv_t)-1) continue;
 		use_iconv = true;
 #else
 		continue;
