@@ -1,4 +1,4 @@
-.TH MHFIXMSG %manext1% 2022-02-20 "%nmhversion%"
+.TH MHFIXMSG %manext1% 2022-02-27 "%nmhversion%"
 .
 .\" %nmhwarning%
 .
