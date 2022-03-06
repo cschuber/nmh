@@ -141,7 +141,7 @@ static void sendit(char *, char **, char *, bool);
 static int buildfile (char **, char *);
 static int whomfile (char **, char *);
 static int removefile (char *);
-static int checkmimeheader (char *);
+static bool checkmimeheader (char *);
 static void writelscmd(char *, int, char *, char **);
 static void writesomecmd(char *buf, int bufsz, char *cmd, char *trailcmd, char **argp);
 static FILE* popen_in_dir(const char *dir, const char *cmd, const char *type);
@@ -1310,7 +1310,7 @@ removefile (char *drft)
  * Return 1 if we already have a MIME-Version header, 0 otherwise.
  */
 
-static int
+static bool
 checkmimeheader (char *drft)
 {
     FILE *f;
@@ -1320,7 +1320,7 @@ checkmimeheader (char *drft)
 
     if ((f = fopen(drft, "r")) == NULL) {
 	admonish(drft, "unable to read draft");
-	return 0;
+	return false;
     }
 
     gstate = m_getfld_state_init(f);
