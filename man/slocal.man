@@ -1,4 +1,4 @@
-.TH SLOCAL %manext1% 2016-05-02 "%nmhversion%"
+.TH SLOCAL %manext1% 2022-03-13 "%nmhversion%"
 .
 .\" %nmhwarning%
 .
@@ -241,12 +241,11 @@ which your shell might interpret.
 Store the message in the
 .B nmh
 folder named by
-.IR string .
-Currently this is handled by piping the message to the
+.I string
+by piping the message to the
 .B nmh
 program
-.BR rcvstore ,
-although this may change in the future.
+.BR rcvstore .
 .RE
 .PP
 .BR result :
