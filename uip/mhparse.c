@@ -589,6 +589,27 @@ add_header (CT ct, char *name, char *value)
 
 
 /*
+ * small routine to remove first occurence, if any, from list of header fields
+ */
+
+bool
+remove_header (CT ct, const char *name)
+{
+    for (HF hf = ct->c_first_hf, prev = hf; hf; prev = hf, hf = hf->next) {
+        if (strcasecmp (name, hf->name) == 0) {
+            prev->next = hf->next;
+            free (hf->name);
+            free (hf->value);
+            free (hf);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+/*
  * Parse Content-Type line and (if `magic' is non-zero) mhbuild composition
  * directives.  Fills in the information of the CTinfo structure.
  */
