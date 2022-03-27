@@ -34,4 +34,4 @@
  * -auto flag is set and a MIME-Version header is encountered, the return
  * value is NULL.
  */
-CT build_mime(char *, int, int, int, int, bool, bool, size_t, bool, int);
+CT build_mime(char *, bool, int, int, int, bool, bool, size_t, bool, int);

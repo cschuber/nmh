@@ -59,6 +59,7 @@
 #include <time.h>
 #include "sbr/globals.h"
 
+#define MHBUILD_QUOTE_TEXT_PSEUDOHEADER PSEUDOHEADER_PREFIX "check-text-encoding"
 
 static char prefix[] = "----- =_aaaaaaaaaa";
 
@@ -90,8 +91,10 @@ static char *fgetstr (char *, int, FILE *);
 static int user_content(FILE *, char *, CT *, const char *, bool);
 static void set_id (CT, int);
 static int compose_content(CT, bool, bool, int);
-static int scan_content (CT, size_t);
+static int scan_content (CT, size_t, bool, bool);
 static int build_headers(CT, int, bool);
+static int update_text_encoding (CT, size_t);
+static void update_cte (CT, int);
 static int extract_headers (CT, char *, FILE **);
 
 static void directive_init(bool onoff);
@@ -109,14 +112,22 @@ static unsigned int directive_index;   /* Full element */
  * structures).  This message then can be manipulated
  * in various ways, including being output via
  * output_message().
+ *
+ * When the convert interface is used, build_mime() divides the translation
+ * into two stages.  The first stage includes all translations except encoding
+ * of text content.  The second stage encodes text content as needed.  This
+ * allows the user to edit the text prior to encoding.  The second stage,
+ * along with the first stage if it had not yet been performed, is selected by
+ * calling with autobuild equal to true.
  */
 
 CT
-build_mime (char *infile, int autobuild, int dist, int directives,
+build_mime (char *infile, bool autobuild, int dist, int directives,
 	    int header_encoding, bool contentid, bool rfc934,
             size_t maxunencoded, bool listsw, int verbose)
 {
     int	compnum, state;
+    bool convert_args = false, stage_2 = false, check_text_enc = false;
     char buf[NMH_BUFSIZ], name[NAMESZ];
     char *cp, *np, *vp;
     struct multipart *m;
@@ -177,11 +188,17 @@ build_mime (char *infile, int autobuild, int dist, int directives,
 
 	    if (strcasecmp (name, VRSN_FIELD) == 0) {
 		if (autobuild) {
-		    fclose(in);
-		    free (ct);
-		    return NULL;
+		    /* build_mime() called via sendsbr().  Make sure that text
+		       parts that need to be encoded as quoted-printable are. */
+		    stage_2 = true;
+		    continue;
 		}
-                die("draft shouldn't contain %s: field", name);
+		die("draft shouldn't contain %s: field", name);
+	    } else if (strcasecmp (MHBUILD_QUOTE_TEXT_PSEUDOHEADER, name) == 0) {
+		if (autobuild) {
+		    check_text_enc = true;
+		    continue;
+		}
 	    }
 
 	    /* get copies of the buffers */
@@ -274,6 +291,17 @@ build_mime (char *infile, int autobuild, int dist, int directives,
 
                 free (vp);
                 free (np);
+
+                if (! autobuild) {
+                    /* There's a convert args header.  Without autobuild, will
+                       suppress Q-P or base64 encoding of text content. */
+                    if (! convert_args) {
+                        np = mh_xstrdup (MHBUILD_QUOTE_TEXT_PSEUDOHEADER);
+                        vp = concat (" stage_1\n", NULL);
+                        add_header (ct, np, vp);
+                    }
+                    convert_args = true;
+                }
             } else if (strncasecmp(MHBUILD_ARGS_PSEUDOHEADER, np,
                                    LEN(MHBUILD_ARGS_PSEUDOHEADER)) == 0) {
                 /* E.g.,
@@ -338,6 +366,23 @@ finish_field:
 	break;
     }
     m_getfld_state_destroy (&gstate);
+
+    if (stage_2) {
+        fclose (in);
+        free (ct);
+        if (check_text_enc) {
+            if ((ct = parse_mime (infile))  &&
+                update_text_encoding (ct, maxunencoded) == OK) {
+                /* Remove the pseudoheader that triggered the text encoding update. */
+                (void) remove_header (ct, MHBUILD_QUOTE_TEXT_PSEUDOHEADER);
+                return ct;
+            } else {
+                return NULL;
+            }
+        } else {
+            return NULL;
+        }
+    }
 
     /*
      * If we see any Content-* headers at this point, it is an error.
@@ -562,7 +607,7 @@ finish_field:
      * check if prefix for multipart boundary clashes with
      * any of the contents.
      */
-    while (scan_content (ct, maxunencoded) == NOTOK) {
+    while (scan_content (ct, maxunencoded, autobuild, convert_args) == NOTOK) {
 	if (*cp < 'z') {
 	    (*cp)++;
         } else {
@@ -1379,7 +1424,7 @@ raw:
  */
 
 static int
-scan_content (CT ct, size_t maxunencoded)
+scan_content (CT ct, size_t maxunencoded, bool autobuild, bool convert_args)
 {
     int prefix_len;
     bool check8bit = false, contains8bit = false;  /* check if contains 8bit data */
@@ -1388,6 +1433,7 @@ scan_content (CT ct, size_t maxunencoded)
     bool checkllinelen = false; /* check for extra-long lines */
     bool checkboundary = false, boundaryclash = false; /* check if clashes with multipart boundary   */
     bool checklinespace = false, linespace = false;  /* check if any line ends with space          */
+    bool added_cefile = false;
     char *cp = NULL;
     char *bufp = NULL;
     size_t buflen;
@@ -1410,7 +1456,8 @@ scan_content (CT ct, size_t maxunencoded)
 	for (part = m->mp_parts; part; part = part->mp_next) {
 	    CT p = part->mp_part;
 
-	    if (scan_content (p, maxunencoded) == NOTOK)	/* choose encoding for subpart */
+	    /* choose encoding for subpart */
+	    if (scan_content (p, maxunencoded, autobuild, convert_args) == NOTOK)
 		return NOTOK;
 
 	    /* if necessary, enlarge encoding for enclosing multipart */
@@ -1506,8 +1553,20 @@ scan_content (CT ct, size_t maxunencoded)
      */
     if (check8bit || checklinelen || checklinespace || checkboundary ||
 	checkllinelen || checknul) {
-	if ((in = fopen (ce->ce_file, "r")) == NULL)
-	    adios (ce->ce_file, "unable to open for reading");
+	if ((in = fopen (ce->ce_file, "r")) == NULL) {
+	    if (autobuild  &&  ! convert_args) {
+		/* Need this to support building the MIME draft without
+		   encoding text part as Q-P or base64, prior to editing. */
+		CE ce = &ct->c_cefile;
+		ce->ce_file = mh_xstrdup(ct->c_file);
+		ce->ce_unlink = 1;
+		added_cefile = true;
+		in = fopen (ce->ce_file, "r");
+	    }
+            if (in == NULL) {
+		adios (ce->ce_file, "unable to open for reading");
+	    }
+	}
 	prefix_len = strlen (prefix);
 
 	while ((gotlen = getline(&bufp, &buflen, in)) != -1) {
@@ -1574,6 +1633,11 @@ scan_content (CT ct, size_t maxunencoded)
 	fclose (in);
 	free(bufp);
     }
+    if (added_cefile) {
+	/* This is necessary to prevent duplication of the message header. */
+	free (ce->ce_file);
+	ce->ce_file = NULL;
+    }
 
     /*
      * If the content is text and didn't specify a character set,
@@ -1588,11 +1652,15 @@ scan_content (CT ct, size_t maxunencoded)
     if (ct->c_reqencoding != CE_UNKNOWN)
 	ct->c_encoding = ct->c_reqencoding;
     else {
-	int wants_q_p = (containsnul || linelen || linespace);
+	const bool wants_q_p = (containsnul || linelen || linespace);
 
 	switch (ct->c_type) {
 	case CT_TEXT:
-            if (wants_q_p)
+            /* If not autobuild, then build_mime() was not called via
+               sendsbr().  The user may want to edit the draft some more,
+               so don't encode it as QP.  Instead, do that later, when
+               build_mime() is called via sendsbr(). */
+            if ((autobuild || ! convert_args)  &&  wants_q_p)
                  ct->c_encoding = CE_QUOTED;
             else if (contains8bit)
                  ct->c_encoding = CE_8BIT;
@@ -1848,6 +1916,87 @@ skip_headers:
     }
 
     return OK;
+}
+
+
+/*
+ * Check every text part to see if it needs to be encoded as
+ * quoted-printable, and do so if necessary.  This allows the
+ * user to edit the text after it is inserted into the draft
+ * but before it gets encoded.
+ */
+static int
+update_text_encoding (CT ct, size_t maxunencoded)
+{
+    /*
+     * Handle multipart by scanning all subparts and then checking their
+     * encoding.
+     */
+    int status = OK;
+
+    switch (ct->c_type) {
+    case CT_MULTIPART: {
+        struct multipart *m = (struct multipart *) ct->c_ctparams;
+        struct part *part;
+
+        for (part = m->mp_parts; part; part = part->mp_next) {
+            CT p = part->mp_part;
+
+            if (update_text_encoding (p, maxunencoded) == NOTOK) {
+                status = NOTOK;
+                break;
+            }
+        }
+        break;
+    }
+    case CT_MESSAGE:
+        if (ct->c_subtype == MESSAGE_EXTERNAL) {
+            struct exbody *e = (struct exbody *) ct->c_ctparams;
+
+            status = update_text_encoding (e->eb_content, maxunencoded);
+        }
+        break;
+    case CT_TEXT: {
+        /* Return NOTOK to indicate that encoding wasn't updated. */
+        const int previous_encoding = ct->c_encoding;
+        if (ct->c_encoding == CE_8BIT  ||  ct->c_encoding == CE_7BIT) {
+            /* This function can only be called with autobuild. */
+            if (scan_content (ct, maxunencoded, true, false) == OK) {
+                if (previous_encoding == ct->c_encoding) {
+                    status = NOTOK;
+                } else {
+                    update_cte (ct, ct->c_encoding);
+                }
+            } else {
+                status = NOTOK;
+            }
+        } else {
+            status = NOTOK;
+        }
+    }}
+
+    return status;
+}
+
+
+/*
+ * Update or add Content-Transfer-Encoding header field.
+ */
+static void
+update_cte (CT ct, int encoding) {
+    char *cte = concat (" ", ce_str (encoding), "\n", NULL);
+    bool found_cte = false;
+
+    for (HF hf = ct->c_first_hf; hf; hf = hf->next) {
+        if (! strcasecmp (ENCODING_FIELD, hf->name)) {
+            found_cte = true;
+            free (hf->value);
+            hf->value = cte;
+        }
+    }
+    if (! found_cte) {
+        add_header (ct, mh_xstrdup (ENCODING_FIELD), cte);
+    }
 }
 
 

@@ -25,6 +25,7 @@ fi
 TMP=/tmp/nmh_temp.$$
 trap "rm -f $TMP" 0 1 2 3 13 15
 
+replfmt=" | sed 's/  *$//; s/^\(.\)/> \1/; s/^$/>/;'"
 PGM=`$SEARCHPROG "$SEARCHPATH" par`
 if [ -n "$PGM" ]; then
     if par version | grep '1\.52-i18n' >/dev/null; then
@@ -34,19 +35,15 @@ if [ -n "$PGM" ]; then
         echo 'use it.' 1>&2
         unset PGM
     else
-        #### The widths here correspond to those for the text browsers below.
         textfmt=" | $PGM 64"
-        replfmt=" | sed 's/^\(.\)/> \1/; s/^$/>/;' | $PGM 64"
     fi
 fi
 if [ -z "$PGM" ]; then
     PGM=`$SEARCHPROG "$SEARCHPATH" fmt`
     if [ -n "$PGM" ]; then
         textfmt=" | $PGM"
-        replfmt=" | $PGM | sed 's/^\(.\)/> \1/; s/^$/>/;'"
     else
         textfmt=
-        replfmt=
     fi
 fi
 iconv=`$SEARCHPROG "$SEARCHPATH" iconv`
@@ -264,7 +261,7 @@ if [ -n "$PGM" ]; then
 $PGM "'-dump ${charset:+-I} ${charset:+"$charset"} -O utf-8 -T text/html %F' \
          >> $TMP
     echo 'mhbuild-convert-text/html: charset="%{charset}"; '"\
-$PGM "'-dump ${charset:+-I} ${charset:+"$charset"} -O utf-8 -T text/html %F '"\
+$PGM "'-cols 9999 -dump ${charset:+-I} ${charset:+"$charset"} -O utf-8 -T text/html %F'"\
 ${replfmt}" >> $TMP
 else
     PGM=`$SEARCHPROG "$SEARCHPATH" lynx`
@@ -276,8 +273,8 @@ else
 $PGM "'-child -dump -force_html ${charset:+-assume_charset} ${charset:+"$charset"} '"\
 "'-display_charset utf-8 %F | '"expand | sed -e 's/^   //' -e 's/  *$//'" >> $TMP
         echo 'mhbuild-convert-text/html: charset="%{charset}"; '"\
-$PGM "'-child -dump -force_html ${charset:+-assume_charset} ${charset:+"$charset"} '"\
-%F${replfmt}" >> $TMP
+$PGM "'-child -dump -nolist -width=9999 -force_html ${charset:+-assume_charset} ${charset:+"$charset"} '"\
+%F | sed -e 's/^   //' -e 's/  *$//' -e 's/^\(.\)/> \1/' -e 's/^$/>/'" >> $TMP
     else
         PGM=`$SEARCHPROG "$SEARCHPATH" elinks`
         if [ -n "$PGM" ]; then
@@ -290,9 +287,9 @@ $PGM "'-child -dump -force_html ${charset:+-assume_charset} ${charset:+"$charset
             echo "mhshow-show-text/html: %l$PGM -dump -force-html \
 -eval 'set document.browse.margin_width=0' %F" >> $TMP
             echo "mhfixmsg-format-text/html: $PGM -dump -force-html \
--no-numbering -eval 'set document.browse.margin_width=0' %F" >> $TMP
+-no-numbering -no-references -eval 'set document.browse.margin_width=0' %F" >> $TMP
             echo "mhbuild-convert-text/html: $PGM -dump -force-html \
--no-numbering -eval 'set document.browse.margin_width=0' %F${replfmt}" >> $TMP
+-no-numbering -no-references -eval 'set document.browse.margin_width=0' %F${replfmt}" >> $TMP
         else
             echo 'mhbuild-convert-text/html: cat %F' >> $TMP
         fi

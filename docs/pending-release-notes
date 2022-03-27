@@ -32,6 +32,8 @@ NEW FEATURES
 - Removed support from mhn.defaults for application/x-ivs and text/richtext.
 - Changed interpretation of argument to mhfixmsg(1) -decodeheaderfieldbodies
   switch to specify character set of the decoded field bodies.
+- repl(1) -convertargs now allows editing of the composition draft between
+  translation and any encoding of text content.
 
 -----------------
 OBSOLETE FEATURES
