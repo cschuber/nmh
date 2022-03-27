@@ -595,17 +595,26 @@ add_header (CT ct, char *name, char *value)
 bool
 remove_header (CT ct, const char *name)
 {
-    for (HF hf = ct->c_first_hf, prev = hf; hf; prev = hf, hf = hf->next) {
-        if (strcasecmp (name, hf->name) == 0) {
-            prev->next = hf->next;
-            free (hf->name);
-            free (hf->value);
-            free (hf);
-            return true;
+    HF *hf;
+    bool found_name = false;
+
+    for (hf = &ct->c_first_hf; *hf; hf = &(*hf)->next) {
+        if (strcasecmp (name, (*hf)->name) == 0) {
+            found_name = true;
+            break;
         }
     }
 
-    return false;
+    if (found_name) {
+        HF remove = *hf;
+        free (remove->name);
+        free (remove->value);
+        *hf = remove->next;
+        free (remove);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 
