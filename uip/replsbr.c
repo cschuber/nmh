@@ -22,6 +22,7 @@
 #include "sbr/error.h"
 #include "sbr/addrsbr.h"
 #include "sbr/fmt_compile.h"
+#include "sbr/fmt_rfc2047.h"
 #include "sbr/fmt_scan.h"
 #include "sbr/done.h"
 #include <sys/file.h>
@@ -80,6 +81,7 @@ replout (FILE *inb, char *msg, char *drft, struct msgs *mp, int outputlinelen,
     char name[NAMESZ], *cp;
     charstring_t scanl;
     static int dat[5];			/* aux. data for format routine */
+    char decoded_buf[NMH_BUFSIZ + 1];
     m_getfld_state_t gstate;
     struct fmt_callbacks cb;
 
@@ -197,8 +199,10 @@ finished:
      * if there's a "Subject" component, strip any "Re:"s off it
      */
     cptr = fmt_findcomp ("subject");
-    if (cptr && (cp = cptr->c_text)) {
-	char *sp = cp;
+    if (cptr && (cp = decode_rfc2047(cptr->c_text, decoded_buf,
+                                     sizeof decoded_buf, NULL) > 0
+                 ? decoded_buf : cptr->c_text)) {
+        char *sp = cp;
 
 	for (;;) {
 	    while (isspace((unsigned char) *cp))

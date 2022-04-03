@@ -234,6 +234,29 @@ EOF
 run_prog repl -fcc +myoutbox -form "${form}" -nowhatnowproc last
 check "${expected}" "${actual}"
 
+
+# check repl to RFC 2047-encoded header with Re:
+cat >`mhpath new` <<EOF
+From: Mr Foo Bar <foobar@example.com>
+To: Somebody <somebody@example.com>
+Subject: =?ascii?Q?Re:_This_is_a_test?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+
+This is a test
+EOF
+
+cat >$expected <<EOF
+From: sender@example.com
+To: Mr Foo Bar <foobar@example.com>
+Fcc:
+Subject: Re: This is a test
+--------
+EOF
+
+run_prog repl -form "${form}" -nowhatnowproc last
+check $expected $actual
+
 test "${failed:-0}" -eq 0 && rm "${form}"
 
 
