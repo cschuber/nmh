@@ -96,24 +96,27 @@ folder_read (char *name, int lockflag)
 	    mi[mp->nummsg++] = msgnum;
 
 	} else {
-	    switch (dp->d_name[0]) {
-		case '.': 
-		case ',': 
-		    continue;
+            /* See if there are other files or directories in the folder. */
 
-		default: 
-		    /* skip any files beginning with backup prefix */
-		    if (has_prefix(dp->d_name, BACKUP_PREFIX))
-			continue;
+            /* skip . and .. */
+            if (strcmp (dp->d_name, ".") == 0  ||
+                strcmp (dp->d_name, "..") == 0)
+                continue;
 
-		    /* skip the LINK file */
-		    if (!strcmp (dp->d_name, LINK))
-			continue;
+            /* skip any files beginning with backup prefix */
+            if (has_prefix(dp->d_name, BACKUP_PREFIX))
+                continue;
 
-		    /* indicate that there are other files in folder */
-		    set_other_files (mp);
-		    continue;
-	    }
+            /* skip the mh_seq file */
+            if (strcmp (dp->d_name, mh_seq) == 0)
+                continue;
+
+            /* skip the LINK file */
+            if (strcmp (dp->d_name, LINK) == 0)
+                continue;
+
+            /* indicate that there are other files in folder */
+            set_other_files (mp);
 	}
     }
 

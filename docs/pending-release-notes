@@ -75,3 +75,4 @@ BUG FIXES
 - Removed extra space added before header field bodies by dist(1) to $mhdraft.
 - Fixed display of iCalendar object with multiple VEVENTS using a VTIMEZONE.
 - Fixed allowable encodings with MIME message types to get closer to RFC 2046.
+- Detect other files regardless of backup prefix [Bug #49476].
