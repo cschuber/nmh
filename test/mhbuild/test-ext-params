@@ -52,7 +52,7 @@ Content-Type: image/jpeg
 Content-Disposition: attachment; filename*=UTF-8''t%C3%AFny.jpg
 Content-Transfer-Encoding: base64
 
-/9g=
+/9j////////Z
 
 ------- =_aaaaaaaaaa0--
 EOF
@@ -94,7 +94,7 @@ Content-Disposition: attachment;
 	filename*1="nger than would fit on a normal line.jpg"
 Content-Transfer-Encoding: base64
 
-/9g=
+/9j////////Z
 
 ------- =_aaaaaaaaaa0--
 EOF
@@ -136,7 +136,7 @@ Content-Description: =?UTF-8?B?dMOvbnkuanBn?=
 Content-Disposition: attachment; filename*=UTF-8''t%C3%AFny.jpg
 Content-Transfer-Encoding: base64
 
-/9g=
+/9j////////Z
 
 ------- =_aaaaaaaaaa0--
 EOF
@@ -175,7 +175,7 @@ Content-Type: image/jpeg
 Content-Disposition: attachment; filename*=UTF-8''t%C3%AFny.jpg
 Content-Transfer-Encoding: base64
 
-/9g=
+/9j////////Z
 
 ------- =_aaaaaaaaaa0--
 EOF
