@@ -409,8 +409,11 @@ go_to_it:
 	distfile = mh_xstrdup(cp);
 	(void) m_unlink(distfile);
 	if (link (altmsg, distfile) == NOTOK) {
-	    /* Cygwin with FAT32 filesystem produces EPERM. */
-	    if (errno != EXDEV  &&  errno != EPERM
+	    /*
+	     * Cygwin with FAT32 filesystem produces EPERM.
+	     * Android produces EACCES.
+	     */
+	    if (errno != EXDEV  &&  errno != EPERM  &&  errno != EACCES
 #ifdef EISREMOTE
 		    && errno != EISREMOTE
 #endif /* EISREMOTE */

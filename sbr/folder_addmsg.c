@@ -166,8 +166,9 @@ folder_addmsg (struct msgs **mpp, char *msgfile, int selected,
          * already in the desired location.  If so, then return
          * error, else just copy the message.
          * Cygwin with FAT32 filesystem produces EPERM.
+         * Android produces EACCES.
          */
-        if (linkerr == EXDEV  ||  linkerr == EPERM) {
+        if (linkerr == EXDEV  ||  linkerr == EPERM  ||  linkerr == EACCES) {
             if (stat (newmsg, &st1) == 0) {
                 inform("message %s:%s already exists", mp->foldpath, newmsg);
                 return -1;
