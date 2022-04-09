@@ -2241,7 +2241,7 @@ Content-Transfer-Encoding: 8bit
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/html; charset=iso-8859-1
 
-&#233;
+&nu;&mu;&chi;
 
 --mime-boundary--
 EOF
@@ -2255,13 +2255,13 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 
-é
+νμχ
 
 --mime-boundary
 Content-Transfer-Encoding: 7bit
 Content-Type: text/html; charset=iso-8859-1
 
-&#233;
+&nu;&mu;&chi;
 
 --mime-boundary--
 EOF
