@@ -269,16 +269,10 @@ ding-left: 4pt; border-left: #800000 2px solid; } --></style>
 EOF
 
 if [ $can_reformat_texthtml -eq 1 ]; then
-  printf '%s\n' "mhfixmsg: 12, insert text/plain part
-mhfixmsg: 12 part 1, decode text/html; charset=\"Windows-1252\"
-mhfixmsg: 12 part 2, convert us-ascii to Windows-1252" \
-       >"$expected.err"
-
   #### lynx inserts multiple blank lines, so squeeze them.
-  run_prog mhfixmsg last -textcharset Windows-1252 -outfile - -verbose \
+  run_prog mhfixmsg last -textcharset Windows-1252 -outfile - \
            2>"$actual.err" | squeeze_lines >"$actual"
   check "$expected" "$actual" 'ignore space'
-  check "$expected.err" "$actual.err"
 else
   rm -f "$expected"
 fi
@@ -353,16 +347,10 @@ ding-left: 4pt; border-left: #800000 2px solid; } --></style>
 EOF
 
 if [ $can_reformat_texthtml -eq 1 ]; then
-  printf '%s\n' "mhfixmsg: 12, insert text/plain part
-mhfixmsg: 12 part 1, decode text/html; charset=\"Windows-1252\"
-mhfixmsg: 12 part 2, convert us-ascii to Windows-1252" \
-       >"$expected.err"
-
   #### lynx inserts multiple blank lines, so squeeze them.
-  run_prog mhfixmsg last -textcharset Windows-1252 -outfile - -verbose \
+  run_prog mhfixmsg last -textcharset Windows-1252 -outfile - \
            2>"$actual.err" | squeeze_lines >"$actual"
   check "$expected" "$actual" 'ignore space'
-  check "$expected.err" "$actual.err"
 else
   rm -f "$expected"
 fi
@@ -430,14 +418,10 @@ ding-left: 4pt; border-left: #800000 2px solid; } --></style>
 EOF
 
 if [ $can_reformat_texthtml -eq 1 ]; then
-  printf '%s\n' "mhfixmsg: 12, insert text/plain part
-mhfixmsg: 12 part 2, convert us-ascii to Windows-1252" >"$expected.err"
-
   #### lynx inserts multiple blank lines, so squeeze them.
   run_prog mhfixmsg last  -textcharset Windows-1252 -nodecodetext \
-           -outfile - -verbose 2>"$actual.err" | squeeze_lines >"$actual"
+           -outfile - 2>"$actual.err" | squeeze_lines >"$actual"
   check "$expected" "$actual" 'ignore space'
-  check "$expected.err" "$actual.err"
 else
   rm -f "$expected"
 fi
@@ -1919,7 +1903,11 @@ Subject: =?us?Q?Here=27s=20a=20null=3A=20=00?=
 EOF
 run_prog mhfixmsg -file `mhpath last` -outfile "$actual" \
          -decodeheaderfieldbodies utf-8
-check "$expected" "$actual"
+#### First check against input to see if there was no change.  Only
+#### check against $expected if the input was decoded.
+if cmp `mhpath last` "$expected" >/dev/null; then
+  check "$expected" "$actual"
+fi
 
 
 start_test "decode to specified destination charset"
