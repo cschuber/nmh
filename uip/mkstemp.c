@@ -103,7 +103,7 @@ build_template(const char *directory, const char *prefix, const char *suffix)
     prefix_len = strlen(prefix);
     suffix_len = strlen(suffix);
     len = directory_len + pathsep_len +
-        prefix_len + LEN(pattern) + suffix_len + 1;
+        prefix_len + sizeof pattern + suffix_len;
 
     if (!(template = malloc(len))) {
 #if NMH
