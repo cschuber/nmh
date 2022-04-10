@@ -1484,7 +1484,7 @@ suppress_duplicates (int fd, char *file)
 		if (value.dptr) {
 		    if (verbose)
 		        verbose_printf ("Message-ID: %s\n            already received on %s",
-				 cp, value.dptr);
+				 cp, (const char *) value.dptr);
 		    result = DONE;
 		} else {
 		    value.dptr  = ddate + sizeof("Delivery-Date:");
