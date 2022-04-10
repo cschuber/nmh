@@ -1049,7 +1049,7 @@ Subject: multipart/related, not /alternative
 Content-Type: multipart/alternative; boundary="----=_Part_90310_101292502.1"
 
 ------=_Part_90310_101292502.1
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
 This is the real content.
@@ -2252,8 +2252,8 @@ Content-Type: multipart/alternative; boundary="mime-boundary"
 Content-Transfer-Encoding: 8bit
 
 --mime-boundary
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
 νμχ
 

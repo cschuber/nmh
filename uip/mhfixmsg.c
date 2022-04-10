@@ -1930,7 +1930,6 @@ reformat_part (CT ct, char *file, char *type, char *subtype, int c_type,
                const text_properties *text_props)
 {
     int output_subtype, output_encoding;
-    const char *reason = NULL;
     char *charset = NULL;
     char *cp, *cf;
     int status;
@@ -1961,49 +1960,61 @@ reformat_part (CT ct, char *file, char *type, char *subtype, int c_type,
     status = show_content_aux (ct, 0, cp, NULL, NULL);
     free (cp);
 
-    /* Update charset based on file contents or -textcharset value. */
-    charset = encoding(file);
-    if (charset == NULL) {
-        charset = text_props && text_props->textcharset
-        ? mh_xstrdup (text_props->textcharset) : NULL;
-    }
-    if (charset == NULL) {
-        charset = mh_xstrdup(get_charset());
-        advise(NULL, "Assuming %s for new text/plain part, "
-               "use -textcharset to override", charset);
-    }
-    /* This is necessary to update the charset in the part headers. */
-    replace_param(&ct->c_ctinfo.ci_first_pm,
-                  &ct->c_ctinfo.ci_last_pm, "charset",
-                  charset, 0);
-    /* This is necessary to output the correct charset. */
-    add_header (ct, mh_xstrdup (TYPE_FIELD), concat (ct->c_ctline, "\n", NULL));
+    if (status == OK) {
+        const char *reason = NULL;
 
-    /* Unlink decoded content tmp file and free its filename to avoid
-       leaks.  The file stream should already have been closed. */
-    if (ct->c_cefile.ce_unlink) {
-        (void) m_unlink (ct->c_cefile.ce_file);
-        free (ct->c_cefile.ce_file);
-        ct->c_cefile.ce_file = NULL;
-        ct->c_cefile.ce_unlink = 0;
-    }
+        /* Update charset based on file contents or -textcharset value. */
+        charset = encoding(file);
+        if (charset == NULL) {
+            charset = text_props && text_props->textcharset
+                ? mh_xstrdup (text_props->textcharset) : NULL;
+        }
+        if (charset == NULL) {
+            charset = mh_xstrdup(get_charset());
+            advise(NULL, "Assuming %s for new text/plain part, "
+                   "use -textcharset to override", charset);
+        }
+        /* This is necessary to update the charset in the part headers. */
+        replace_param(&ct->c_ctinfo.ci_first_pm,
+                      &ct->c_ctinfo.ci_last_pm, "charset",
+                      charset, 0);
+        /* This is necessary to output the correct charset. */
+        add_header (ct, mh_xstrdup (TYPE_FIELD),
+                    concat (ct->c_ctline, "\n", NULL));
 
-    if (c_type == CT_TEXT) {
-        output_subtype = TEXT_PLAIN;
-    } else {
-        /* Set subtype to 0, which is always an UNKNOWN subtype. */
-        output_subtype = 0;
-    }
+        /* Unlink decoded content tmp file and free its filename to avoid
+           leaks.  The file stream should already have been closed. */
+        if (ct->c_cefile.ce_unlink) {
+            (void) m_unlink (ct->c_cefile.ce_file);
+            free (ct->c_cefile.ce_file);
+            ct->c_cefile.ce_file = NULL;
+            ct->c_cefile.ce_unlink = 0;
+        }
 
-    output_encoding = content_encoding (ct, &reason);
-    if (status == OK  &&
-        set_ct_type (ct, c_type, output_subtype, output_encoding,
-                     charset) == OK) {
+        if (c_type == CT_TEXT) {
+            output_subtype = TEXT_PLAIN;
+        } else {
+            /* Set subtype to 0, which is always an UNKNOWN subtype. */
+            output_subtype = 0;
+        }
+
+        /* Wrap charset in double quotes if it's not already. */
+        if (charset  &&  charset[0] != '"') {
+            char *temp = charset;
+            charset = concat ("\"", charset, "\"", NULL);
+            free (temp);
+        }
+
         ct->c_cefile.ce_file = file;
         ct->c_cefile.ce_unlink = 1;
+        output_encoding = content_encoding (ct, &reason);
+
+        if ((status = set_ct_type (ct, c_type, output_subtype, output_encoding,
+                                   charset)) != OK) {
+            ct->c_cefile.ce_unlink = 0;
+        }
     } else {
         ct->c_cefile.ce_unlink = 0;
-        status = NOTOK;
     }
     free (charset);
 
