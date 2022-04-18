@@ -68,6 +68,23 @@ test_dist ()
   check "$expected" "$actual"
 }
 
+# arguments: message_number
+wait_for_annotation ()
+{
+  # The annotation is done by a separate process, so we need to wait for
+  # it to complete.
+  i=1
+  until grep '^Resent:' "${MH_TEST_DIR}"/Mail/inbox/$1 >/dev/null; do
+    sleep 1
+    arith_eval $i + 1
+    i=$arith_val
+    if [ $i -gt 60 ]; then
+      printf '%s: -annotate failed, will not wait any longer\n' "$0"
+      break
+    fi
+  done
+}
+
 
 # check -help
 start_test "-help"
@@ -192,6 +209,7 @@ This is message number 2
 EOF
 
 test_dist 2 -noedit -to somebody@example.com -annotate
+wait_for_annotation 2
 
 cat >"$expected" <<EOF
 Resent:
@@ -204,19 +222,6 @@ Subject: Testing message 2
 
 This is message number 2
 EOF
-
-# The annotation is done by a separate process, so we need to wait for
-# it to complete.
-i=1
-until grep '^Resent:' "${MH_TEST_DIR}"/Mail/inbox/2 >/dev/null; do
-  sleep 2
-  arith_eval $i + 1
-  i=$arith_val
-  if [ $i -gt 60 ]; then
-    printf '%s: -annotate failed, will not wait any longer\n' "$0"
-    break
-  fi
-done
 
 # Strip date from line of this form:
 # Resent: Sat, 06 Oct 2012 08:24:08 -0500
@@ -273,6 +278,7 @@ Resent-Date:
 This is message number 8
 EOF
   test_dist 8 -noedit -to somebody@example.com -annotate -noinplace
+  wait_for_annotation 8
   mv -f "${MH_TEST_DIR}/Mail/inbox/8.copy" "${MH_TEST_DIR}/Mail/inbox/8"
   check "${MH_TEST_DIR}/Mail/inbox/8" "${MH_TEST_DIR}/Mail/inbox/8.link" \
     'keep first'
@@ -294,6 +300,7 @@ Resent-Date:
 This is message number 9
 EOF
   test_dist 9 -noedit -to somebody@example.com -annotate -noinplace -inplace
+  wait_for_annotation 9
   check "${MH_TEST_DIR}/Mail/inbox/9" "${MH_TEST_DIR}/Mail/inbox/9.link"
 fi
 
