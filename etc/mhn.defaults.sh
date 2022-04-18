@@ -269,9 +269,11 @@ else
 	echo 'mhshow-show-text/html: charset="%{charset}"; '"\
 %l$PGM"' -child -dump -force-html ${charset:+-assume_charset} ${charset:+"$charset"} %F' >> $TMP
         #### lynx indents with 3 spaces, remove them and any trailing spaces.
+        #### Remove last line if it is blank.
         echo 'mhfixmsg-format-text/html: charset="%{charset}"; '"\
 $PGM "'-child -dump -force_html ${charset:+-assume_charset} ${charset:+"$charset"} '"\
-"'-display_charset utf-8 %F | '"expand | sed -e 's/^   //' -e 's/  *$//'" >> $TMP
+"'-display_charset utf-8 %F | '"expand | sed -e 's/^   //' -e 's/  *$//' | \
+sed '$ {/^$/d;}'" >> $TMP
         echo 'mhbuild-convert-text/html: charset="%{charset}"; '"\
 $PGM "'-child -dump -nolist -width=9999 -force_html ${charset:+-assume_charset} ${charset:+"$charset"} '"\
 %F | sed -e 's/^   //' -e 's/  *$//' -e 's/^\(.\)/> \1/' -e 's/^$/>/'" >> $TMP
