@@ -17,13 +17,14 @@ prog_switches() {
     #### .RB [ \-list " | " \-nolist ]
     #### .RB " | " \-autoheaderencoding ]
     #### .RB [ \-\|\-component
+    #### paste(1) needs the explicit - file on some platforms (Solaris)
     awk '/^.B.*(\/| )'"$program"'/,/^$/ {
         if (/^\.RB /) print
     }' "$mhchart" | \
-    tr -d '\n' | \
     sed -e 's/\.RB //g' -e 's/\[//g' -e 's/\]//g' \
         -e 's/\(\\\)*//g' -e 's/-|-/-/g' -e 's/" *| "//g' \
-        -e 's/^ *//' -e 's/ *$//' -e 's/  */ /g'
+        -e 's/^ *//' -e 's/ *$//' -e 's/  */ /g' | \
+    paste -s -d ' ' -
 }
 
 cat <<'EOF'
