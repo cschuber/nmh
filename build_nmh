@@ -371,21 +371,28 @@ fi
 [ $verbose -ge 1 ]  &&  echo configuring . . . >&3
 if [ -z "$CFLAGS" ]; then
   #### Only use these flags with gcc.
-  if cc -dM -E - </dev/null 2>&1 | grep __GNUC__ >/dev/null; then
+  [ -f /bin/gcc -o -L /bin/gcc ] && cc=gcc || cc=cc
+  if $cc -dM -E - </dev/null 2>&1 | grep __GNUC__ >/dev/null; then
+    #### configure will supply -g -O2 with gcc, but only if CFLAGS
+    #### isn't defined.  Always add -g here.
+    #### Try all this, borrowed from Fedora 32 build.
+    CFLAGS="-g -std=c99 -pedantic -Wformat -Werror=format-security \
+-Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong \
+-grecord-gcc-switches -fasynchronous-unwind-tables"
+
     #### -fstack-clash-protection triggers internal compiler error
     #### in 64-bit Cygwin gcc 11.2.0 on sbr/fmt_scan.c.
     case `uname -s` in
       CYGWIN*) fstackclashprotection= ;;
       *      ) fstackclashprotection='-fstack-clash-protection ' ;;
     esac
-    #### configure will supply -g -O2 with gcc, but only if CFLAGS
-    #### isn't defined.  Always add -g here.
-    #### Try all this, borrowed from Fedora 32 build.
-    CFLAGS="-g -std=c99 -pedantic -Wall -Werror=format-security \
--Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong \
--grecord-gcc-switches -fasynchronous-unwind-tables \
-${fstackclashprotection}-fcf-protection"
-    if ! cc -x c -c $CFLAGS /dev/null -o /dev/null 2>/dev/null; then
+    for opt in ${fstackclashprotection} -fcf-protection; do
+        if $cc -x c -c $opt /dev/null -o /dev/null 2>/dev/null; then
+            CFLAGS="$CFLAGS $opt"
+        fi
+    done
+
+    if ! $cc -x c -c $CFLAGS /dev/null -o /dev/null 2>/dev/null; then
         #### All that wasn't supported.  The following should be.
         CFLAGS='-g -std=c99 -pedantic'
     fi
@@ -393,6 +400,13 @@ ${fstackclashprotection}-fcf-protection"
       CFLAGS="$CFLAGS -O2 -Wp,-D_FORTIFY_SOURCE=2"
     else
       CFLAGS="$CFLAGS -O0"
+    fi
+
+    if [ `uname -s` = SunOS ]; then
+      #### Add all this to work around multiple bool definitions,
+      #### both #define and typedef, on Solaris 11.4.
+      CFLAGS="$CFLAGS -D_POSIX_C_SOURCE=200809L -D__EXTENSIONS__ \
+-I/usr/xpg4/include -I."
     fi
   fi
 fi
