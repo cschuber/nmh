@@ -30,17 +30,18 @@ echo 'post: -snoop' >>"$MH"
 run_test 'mhparam post' '-snoop'
 
 start_test 'with no postproc component in profile'
-grep -v '^postproc: ' "$MH" >"$MH.new"
+cp "$MH" "$MH.save"
+grep -v '^postproc: ' "$MH.save" >"$MH"
 cat >"$expected" <<EOF
 mhparam: post profile component will be ignored.  To suppress this warning,
-either remove it, comment it with #:, or add the following to $MH.new:
+either remove it, comment it with #:, or add the following to $MH:
 postproc: ${nmhlibexecdir}/post
 
 -snoop
 EOF
-MH="$MH.new" run_without_input "${actual}" mhparam post
+run_without_input "${actual}" mhparam post
 check "$expected" "$actual"
-rm -f "$MH.new"
+mv -f "$MH.save" "$MH"
 
 start_test 'multiple profile components'
 printf 'repeated-component: 1\nrepeated-component: 2\n' >>"$MH"
