@@ -55,6 +55,7 @@ printf 'y\n' >Mail/yes
 
 # check with no switches
 start_test "with no switches"
+rm -f msgbox
 run_prog packf <Mail/yes
 inc +inbox2 -file msgbox <Mail/yes >/dev/null
 rm -f msgbox
@@ -88,6 +89,7 @@ rmm +inbox2 -unlink `pick +inbox2`
 
 # check -file
 start_test "-file"
+rm -f msgbox2
 run_prog packf +inbox -file msgbox2 <Mail/yes
 inc +inbox2 -file msgbox2 >/dev/null
 for i in `pick +inbox2`; do
