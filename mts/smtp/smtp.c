@@ -5,6 +5,8 @@
  * complete copyright information.
  */
 
+#include <signal.h>
+
 #include "h/mh.h"
 #include "sbr/pidwait.h"
 #include "sbr/r1bindex.h"
