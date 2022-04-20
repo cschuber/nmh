@@ -665,18 +665,18 @@ cat >"$expected" <<'EOF'
 Method: REQUEST
 Organizer: Requester
 Summary: test request
-At: Mon, 05 Jan 2015 14:00 +0000
-To: Mon, 05 Jan 2015 14:30
+At: Mon, 05 Jan 2015 09:00 -0500
+To: Mon, 05 Jan 2015 09:30
 Attendees: Requestee1, Requestee2, Requestee3
 
 Organizer: Requester
 Summary: test request
-At: Mon, 05 Jan 2015 18:00 +0000
-To: Mon, 05 Jan 2015 18:45
+At: Mon, 05 Jan 2015 13:00 -0500
+To: Mon, 05 Jan 2015 13:45
 Attendees: Requestee2, Requestee3
 EOF
 
-mhical <"$MH_TEST_DIR/test1.ics" | egrep -v '^DTSTAMP:' \
+TZ=EST5EDT mhical <"$MH_TEST_DIR/test1.ics" | egrep -v '^DTSTAMP:' \
        >"$MH_TEST_DIR/test1.txt"
 check "$expected" "$MH_TEST_DIR/test1.txt"
 
