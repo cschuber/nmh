@@ -174,6 +174,7 @@ Nmh-Attach: $MH_TEST_DIR/attachment.txt
 ¡Ay, caramba!
 EOF
 
+found_locale=$LC_ALL   # Set by require_locale().
 LC_ALL="C"; export LC_ALL
 
 set +e
@@ -191,7 +192,7 @@ check "$expected" "$actual"
 # previous test, but with locale profile entry
 start_test '8-bit body with C locale with locale profile entry'
 
-printf 'locale: en_US.UTF-8\n' >> "${MH}"
+printf 'locale: %s\n' "$found_locale" >>"${MH}"
 
 cat > "${testname}.expected" <<EOF
 From: Mr Nobody <nobody@example.com>
