@@ -459,7 +459,7 @@ check "$expected" "$actual"
 # Check that dist encodes headers using RFC-2047 properly
 #
 start_test "dist encodes headers using RFC-2047 properly"
-require_locale en_US.UTF-8 en_US.UTF8 en_US.utf-8 en_US.utf8
+require_locale $en_locales
 
 cat >"$expected" <<EOF
 From: Test1 <test1@example.com>

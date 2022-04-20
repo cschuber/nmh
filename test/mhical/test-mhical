@@ -19,7 +19,7 @@ setup_test
 check_exit '-eq 1' mhical -
 
 #### Make sure that html-to-text conversion is what we expect.
-require_locale en_US.UTF-8 en_US.UTF8 en_US.utf-8 en_US.utf8
+require_locale $en_locales
 
 #### Disable colorized output.
 TERM=dumb; export TERM

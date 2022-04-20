@@ -18,7 +18,7 @@ setup_test
 
 check_exit '-eq 1' mhshow -
 
-require_locale en_US.UTF-8 en_US.UTF8 en_US.utf-8 en_US.utf8
+require_locale $en_locales
 
 iconv_elides_question_marks=0
 if test "$ICONV_ENABLED" -eq 0; then
