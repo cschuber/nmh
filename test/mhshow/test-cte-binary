@@ -28,7 +28,7 @@ From: foo@example.edu
 MIME-Version: 1.0
 Content-Disposition: inline
 Message-Id: <20698507875204@example.com>
-Date: Tue, 05 Mar 2002 18:20:35 +0000
+Date: Tue, 05 Mar 2002 19:20:35 +0100
 
 This is a test; this is the body.
 EOF
@@ -36,7 +36,7 @@ EOF
 # check it
 cat > $expected <<EOF
 [ Message inbox:11 ]
-Date:    Tue, 05 Mar 2002 18:20:35 +0000
+Date:    Tue, 05 Mar 2002 19:20:35 +0100
 To:      bar@example.edu
 From:    foo@example.edu
 Subject: test
