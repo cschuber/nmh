@@ -75,11 +75,14 @@ decode_rfc2047 (char *str, char *dst, size_t dstlen, const char *dest_charset)
     char *startofmime, *endofmime, *endofcharset;
     int c, quoted_printable;
     int whitespace = 0;		/* how much whitespace between encodings? */
+    size_t initialdstlen = dstlen;
 #ifdef HAVE_ICONV
     iconv_t cd = NULL;
     int fromutf8 = 0;
     char *saveq, *convbuf = NULL;
-    size_t savedstlen, initialdstlen = dstlen;
+    size_t savedstlen;
+#else
+    NMH_UNUSED (dest_charset);
 #endif
 
     if (!str)
@@ -368,7 +371,7 @@ decode_rfc2047 (char *str, char *dst, size_t dstlen, const char *dest_charset)
 		free(convbuf);
 	    }
 #endif
-	    
+
 	    /*
 	     * Now that we are done decoding this particular
 	     * encoded word, advance string to trailing '='.

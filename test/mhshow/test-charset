@@ -21,10 +21,7 @@ check_exit '-eq 1' mhshow -
 require_locale $en_locales
 
 iconv_elides_question_marks=0
-if test "$ICONV_ENABLED" -eq 0; then
-    text_size=10
-else
-    text_size=11
+if test "$ICONV_ENABLED" -eq 1; then
     #### The GNU iconv library normalises charset names by eliding '?', along
     #### with some other characters.  The iconv libraries used on FreeBSD/NetBSD
     #### and Mac OS X don't.
@@ -64,7 +61,7 @@ Subject: test
 MIME-Version: 1.0
 Content-Description: bogus quoted-printable data
 
-[ part  - text/plain - bogus quoted-printable data  ${text_size}B  ]
+[ part  - text/plain - bogus quoted-printable data  11B  ]
 This is a test
 EOF
 
