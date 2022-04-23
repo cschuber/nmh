@@ -5,6 +5,28 @@ This file is intended to provide a few tips for anyone doing development on nmh.
 Developers who learn things "the hard way" about the nmh codebase (as opposed to
 local info best encoded in a comment) are encouraged to share their wisdom here.
 
+--------------------
+quick build and test
+--------------------
+Andy of the following shell command sequences will download the latest nmh
+sources to the nmh subdirectory, build, and test.  See MACHINES for build
+prerequisites.
+
+git clone git://git.savannah.nongnu.org/nmh.git &&
+cd nmh &&
+./autogen.sh &&
+./configure &&
+make check
+
+wget https://git.savannah.gnu.org/cgit/nmh.git/plain/build_nmh &&
+sh build_nmh -vy
+
+curl -O https://git.savannah.gnu.org/cgit/nmh.git/plain/build_nmh &&
+sh build_nmh -vy
+
+lynx -dump https://git.savannah.gnu.org/cgit/nmh.git/plain/build_nmh &&
+sh build_nmh -vy
+
 
 ----------------
 commit checklist
