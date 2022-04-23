@@ -157,6 +157,18 @@ download_sources() {
   fi
 }
 
+#### Output summary of test results from make check.
+report_test_results() {
+    echo '===================='
+    printf %s ${test_not_run:+"$test_not_run"'
+'}
+    printf %s ${fails:+"$fails"'
+'}
+    printf %s ${tests_summary:+"$tests_summary"'
+'}
+    echo '===================='
+}
+
 directory=
 download=0
 gitrepo=git.savannah.nongnu.org
@@ -210,11 +222,7 @@ echo "$invocation"
 [ $# -gt 0 ]  &&  die "$usage"
 
 #### Check to see that we're in a nmh source directory.
-if grep 'the authors of nmh' COPYRIGHT >/dev/null 2>&1; then
-  :
-else
-  download=1
-fi
+grep 'the authors of nmh' COPYRIGHT >/dev/null 2>&1  ||  download=1
 
 ####
 #### Set up configure options.
@@ -452,16 +460,14 @@ if [ $status -eq 0 ]; then
     tests_summary=`echo "$checkoutput" | grep tests`
     #### If multiple tests not run, that line will be caught by the
     #### "grep tests" above.
-    test_not_run=`echo "$checkoutput" | grep 'test was not run'`
-    fails=`echo "$checkoutput" | grep FAIL`
     if [ "$tests_summary" ]; then
-      echo '==================='
-      [ "$test_not_run" ]  &&  echo "$test_not_run"
-      [ "$fails" ]  &&  echo "$fails"
-      echo "$tests_summary"
-      echo '==================='
-      [ "$check" = distcheck ]  &&  echo "$checkoutput" | ${tail}4
+      test_not_run=`echo "$checkoutput" | grep 'test was not run'`
+      fails=`echo "$checkoutput" | grep FAIL`
+      test_results=`report_test_results`
+      echo "$test_results"
+      [ $verbose -ge 1 ]  &&  echo "$test_results" >&3
     fi
+    [ "$check" = distcheck ]  &&  echo "$checkoutput" | ${tail}4
 
     if [ $status -eq 0 ]; then
       if [ $install -ge 1 ]; then
