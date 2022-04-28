@@ -159,14 +159,17 @@ download_sources() {
 
 #### Output summary of test results from make check.
 report_test_results() {
-    echo '===================='
-    printf %s ${test_not_run:+"$test_not_run"'
+  divider=`echo "$checkoutput" | grep ==== | head -1`
+  tests_not_run=`echo "$checkoutput" | grep 'test was not run'`
+  tests_failed=`echo "$checkoutput" | grep FAIL`
+  echo $divider
+  printf %s ${tests_not_run:+"$tests_not_run"'
 '}
-    printf %s ${fails:+"$fails"'
+  printf %s ${tests_failed:+"$tests_failed"'
 '}
-    printf %s ${tests_summary:+"$tests_summary"'
+  printf %s ${tests_summary:+"$tests_summary"'
 '}
-    echo '===================='
+  echo $divider
 }
 
 directory=
@@ -461,8 +464,6 @@ if [ $status -eq 0 ]; then
     #### If multiple tests not run, that line will be caught by the
     #### "grep tests" above.
     if [ "$tests_summary" ]; then
-      test_not_run=`echo "$checkoutput" | grep 'test was not run'`
-      fails=`echo "$checkoutput" | grep FAIL`
       test_results=`report_test_results`
       echo "$test_results"
       [ $verbose -ge 1 ]  &&  echo "$test_results" >&3
