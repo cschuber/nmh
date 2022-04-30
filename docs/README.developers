@@ -18,9 +18,9 @@ cd nmh &&
 ./configure &&
 make check
 
-wget https://git.savannah.gnu.org/cgit/nmh.git/plain/build_nmh | sh
-
 curl https://git.savannah.gnu.org/cgit/nmh.git/plain/build_nmh | sh
+
+wget -O - https://git.savannah.gnu.org/cgit/nmh.git/plain/build_nmh | sh
 
 lynx -dump https://git.savannah.gnu.org/cgit/nmh.git/plain/build_nmh | sh
 
