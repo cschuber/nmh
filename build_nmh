@@ -7,6 +7,8 @@
 #   installation on your $PATH, if any.
 # * Unless the -y option is provided, this script then interactively
 #   walks you through confirmation of common configuration settings.
+# * If this script is run without a terminal, e.g, fed to the standard
+#   input of /bin/sh, then the -v and -y options are enabled.
 #
 # This file can be downloaded and immediately run using, e.g.,
 #   wget http://git.savannah.gnu.org/cgit/nmh.git/plain/build_nmh
@@ -56,7 +58,8 @@ usage="usage: build_nmh [OPTION]... [CONFIGURE OPTIONS]...
   [-s to use 'make superclean': requires recent autoconf and automake]
   [-v to display progress]
   [-y to accept all configuration options without confirmation]
-  configure options start with --"
+  configure options start with --
+  -v and -y are enabled if standard input is not a terminal"
 
 #### Find location of a program.  Bourne shell just puts the name in
 #### $0 if it's found from the PATH, so search that if necessary.
@@ -197,8 +200,14 @@ debug=0
 install=0
 build_rpm=0
 superclean=0
-verbose=0
-yes=0
+if [ -t 0 ]; then
+  verbose=0
+  yes=0
+else
+  #### To support download of this script and piping it directly to /bin/sh.
+  verbose=1
+  yes=1
+fi
 
 #### With dash, heirloom shell, and posh, need to catch INT and QUIT
 #### in order for cleanup to be call:  just EXIT isn't sufficient.
