@@ -45,7 +45,7 @@
 # is required to be available if the -r option is used.
 
 logfile=build_nmh.log
-usage="usage:
+usage="usage: build_nmh [OPTION]... [CONFIGURE OPTIONS]...
   [-a to analyze with scan-build (Clang Static Analyzer)]
   [-b <branch>, only if downloading]
   [-c to run 'make distcheck' instead of 'make check']
@@ -55,7 +55,8 @@ usage="usage:
   [-r to build rpm]
   [-s to use 'make superclean': requires recent autoconf and automake]
   [-v to display progress]
-  [-y to accept all configuration options without confirmation]"
+  [-y to accept all configuration options without confirmation]
+  configure options start with --"
 
 #### Find location of a program.  Bourne shell just puts the name in
 #### $0 if it's found from the PATH, so search that if necessary.
@@ -191,6 +192,7 @@ exec 3>&1 4>&2 >"$tmpfile" 2>&1
 analyze=
 branch=master
 check=check
+config_opts=
 debug=0
 install=0
 build_rpm=0
@@ -202,7 +204,8 @@ yes=0
 #### in order for cleanup to be call:  just EXIT isn't sufficient.
 trap cleanup EXIT INT QUIT
 
-while getopts 'acb:dil:rsvy?' arg; do
+have_configure_opts=0
+while getopts 'acb:dil:rsvy-?' arg; do
   case $arg in
     a  ) analyze='scan-build ' ;;
     b  ) branch="$OPTARG" ;;
@@ -214,6 +217,7 @@ while getopts 'acb:dil:rsvy?' arg; do
     s  ) superclean=1 ;;
     v  ) verbose=1 ;;
     y  ) yes=1 ;;
+    -  ) have_configure_opts=1; break ;;
     '?') echo "$0: $usage"; logfile=-; status=0; exit ;;
   esac
 done
@@ -221,8 +225,14 @@ shift `expr $OPTIND - 1`
 
 echo "$invocation"
 
-#### No non-option command line arguments are supported.
-[ $# -gt 0 ]  &&  die "$usage"
+if [ $have_configure_opts ]; then
+  #### Pass first -- option and all remaining options to configure.
+  config_opts="$*"
+  DISTCHECK_CONFIGURE_FLAGS="$*"
+else
+  #### No non-option command line arguments are supported.
+  [ $# -gt 0 ]  &&  die "$usage"
+fi
 
 #### Check to see that we're in a nmh source directory.
 grep 'the authors of nmh' COPYRIGHT >/dev/null 2>&1  ||  download=1
@@ -237,8 +247,6 @@ config_prefix=/usr/local/nmh
 config_locking=
 config_mts=smtp
 config_smtpserver=localhost
-config_sasl='determined by configure'
-config_tls='determined by configure'
 config_debug=n
 
 
@@ -270,23 +278,6 @@ if install-mh -check >/dev/null 2>&1; then
       [ "$servers" ]  &&  config_smtpserver="$servers"
     fi
   fi
-
-  if test $yes -eq 1  -a  -x "$mhbin/mhparam"; then
-    if mhparam sasl >/dev/null; then
-      case `$mhbin/mhparam sasl` in
-        *sasl*) config_sasl=y ;;
-      esac
-
-      case `$mhbin/mhparam tls` in
-        *tls*) config_tls=y ;;
-      esac
-    else
-      tput smso
-      echo "$0: SASL and TLS detection not supported with current nmh"
-      [ $yes -eq 1 ]  &&  echo "configure will determine whether to enable"
-      tput rmso
-    fi
-  fi
 fi
 
 #### Don't confirm debug interactively below; obey the -d option.
@@ -311,17 +302,9 @@ if [ $yes -eq 0 ]; then
     read server
     [ "$server" ]  &&  config_smtpserver="$servers"
   fi
-
-  printf 'Cyrus SASL support (y|n) [%s]: ' "$config_sasl" >&3
-  read response
-  [ "$response" = y  -o  "$response" = Y ]  &&  config_sasl=y
-
-  printf 'TLS support (y|n) [%s]: ' "$config_tls" >&3
-  read response
-  [ "$response" = y  -o  "$response" = Y ]  &&  config_tls=y
 fi
 
-config_opts="--prefix=$config_prefix"
+config_opts="${config_opts:+${config_opts} }--prefix=$config_prefix"
 
 [ "$config_locking" ]  &&
   config_opts="$config_opts --with-locking=$config_locking"
@@ -329,16 +312,6 @@ config_opts="--prefix=$config_prefix"
   config_opts="$config_opts --with-mts=$config_mts"
 [ "$config_smtpserver"  -a  "$config_smtpserver" != localhost ]  &&
   config_opts="$config_opts --with-smtpserver=$config_smtpserver"
-if [ "$config_sasl" = y ]; then
-    config_opts="$config_opts --with-cyrus-sasl"
-elif [ "$config_sasl" != 'determined by configure' ]; then
-    config_opts="$config_opts --with-cyrus-sasl=no"
-fi
-if [ "$config_tls" = y ]; then
-    config_opts="$config_opts --with-tls"
-elif [ "$config_tls" != 'determined by configure' ]; then
-    config_opts="$config_opts --with-tls=no"
-fi
 
 #### dotlocking, the usual default, requires chgrp and chmod of inc.
 installpriv=
@@ -451,7 +424,7 @@ if [ $status -eq 0 ]; then
     if [ "$CFLAGS" ]; then
         #### Pass DISTCHECK_CONFIGURE_FLAGS through an environment
         #### variable to avoid automake's quoting.
-        DISTCHECK_CONFIGURE_FLAGS="CFLAGS='${CFLAGS}'"
+        DISTCHECK_CONFIGURE_FLAGS="$DISTCHECK_CONFIGURE_FLAGS CFLAGS='${CFLAGS}'"
         export DISTCHECK_CONFIGURE_FLAGS
     fi
 
