@@ -43,7 +43,7 @@ Run-time package requirements:
 
 Additional build-time package requirements:
     ncurses-devel / libncurses5-devel
-    gdbm-devel, db4-devel or libdb-devel/libdb-dev (only needed for slocal(1))
+    gdbm-devel or libdb-devel/libdb-dev (only needed for slocal(1))
     readline-devel (if you want readline support)
     cyrus-sasl-devel / libsasl2-dev (if configuring with --with-cyrus-sasl)
     openssl-devel / libssl-dev (if configuring with --with-tls)
