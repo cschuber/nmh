@@ -26,6 +26,7 @@ AC_DEFUN([NMH_ADDL_CPPFLAGS],
     nmh_saved_cflags="$CFLAGS"
     CFLAGS="$AM_CFLAGS $CFLAGS"
     dnl On successful compilation, break out of loop with the AM_CPPFLAGS.
+    dnl Try without any additional defines on the first iteration.
     for nmh_cv_addl_cppflags in "" "-D_GNU_SOURCE"; do
         dnl Reload initial CPPFLAGS so candidates aren't accumulated.
         CPPFLAGS="$nmh_saved_cppflags"
@@ -36,7 +37,8 @@ AC_DEFUN([NMH_ADDL_CPPFLAGS],
               [AC_COMPILE_IFELSE(
                   [AC_LANG_PROGRAM([#include <string.h>
                                     #include <wchar.h>],
-                                   [return wcwidth(0) + strdup("x") == 0])],
+                                   [return strdup("x") == 0
+                                             ? -wcwidth(0) : wcwidth(0)])],
                   [AM_CPPFLAGS="${nmh_cv_addl_cppflags}"; break;])],
               [AC_COMPILE_IFELSE(
                   [AC_LANG_PROGRAM([#include <string.h>],
