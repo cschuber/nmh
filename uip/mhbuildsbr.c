@@ -297,7 +297,7 @@ build_mime (char *infile, bool autobuild, int dist, int directives,
                        suppress Q-P or base64 encoding of text content. */
                     if (! convert_args) {
                         np = mh_xstrdup (MHBUILD_QUOTE_TEXT_PSEUDOHEADER);
-                        vp = concat (" stage_1\n", NULL);
+                        vp = concat (" unencoded\n", NULL);
                         add_header (ct, np, vp);
                     }
                     convert_args = true;
