@@ -372,7 +372,8 @@ if [ -z "$CFLAGS" ]; then
     #### Try all this, borrowed from Fedora 32 build.
     CFLAGS="-g -std=c99 -pedantic -Wformat -Werror=format-security \
 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong \
--grecord-gcc-switches -fasynchronous-unwind-tables"
+-grecord-gcc-switches -fasynchronous-unwind-tables \
+-fno-omit-frame-pointer"
 
     #### -fstack-clash-protection triggers internal compiler error
     #### in 64-bit Cygwin gcc 11.2.0 on sbr/fmt_scan.c.
