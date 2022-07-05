@@ -351,6 +351,7 @@ fi
 
 if [ ! -f configure  -o  ! -f Makefile.in ]; then
   [ $verbose -ge 1 ]  &&  echo autoconfiguring . . . >&3
+  rm -fr autom4te.cache
   ./autogen.sh
   [ $? -ne 0 ]  &&
     die "autogen failed, see MACHINES file for autoconf,
