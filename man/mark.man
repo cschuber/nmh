@@ -104,6 +104,16 @@ As expected, the command
 .B \-delete
 all\*(rq empties the sequence \*(lqfoo\*(rq, and therefore removes
 that sequence from the current folder's list of sequences.
+Sequence
+.I foo
+must exist or a \*(lqno such sequence\*(rq error results.
+This can be avoided by adding
+.BR \-zero :
+\*(lqmark \-sequence
+.I foo
+\-delete \-zero all\*(rq ensures sequence
+.I foo
+no longer exists.
 The
 .B \-empty
 switch does not affect the operation of
