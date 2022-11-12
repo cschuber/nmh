@@ -45,6 +45,7 @@
 #include "sbr/utils.h"
 #include "sbr/lock_file.h"
 #include "sbr/m_mktemp.h"
+#include "sbr/globals.h"
 
 #include <pwd.h>
 #include <sys/ioctl.h>
@@ -68,7 +69,6 @@
 
 #ifdef HAVE_GETUTXENT
 #include <utmpx.h>
-#include "sbr/globals.h"
 #endif /* HAVE_GETUTXENT */
 
 #define SLOCAL_SWITCHES \
