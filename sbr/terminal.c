@@ -75,7 +75,7 @@ sc_width (void)
     struct winsize win;
     int width;
 
-    if (ioctl (fileno (stderr), TIOCGWINSZ, &win) != NOTOK
+    if (ioctl (fileno (stderr), TIOCGWINSZ, &win) != -1
 	    && (width = win.ws_col) > 0) {
 	CO = width;
 	initCO++;
@@ -93,7 +93,7 @@ sc_length (void)
 #ifdef TIOCGWINSZ
     struct winsize win;
 
-    if (ioctl (fileno (stderr), TIOCGWINSZ, &win) != NOTOK
+    if (ioctl (fileno (stderr), TIOCGWINSZ, &win) != -1
 	    && (LI = win.ws_row) > 0)
 	initLI++;
     else

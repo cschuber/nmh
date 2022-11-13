@@ -157,7 +157,7 @@ rmf (char *folder)
 
     switch (i = chdir (maildir = m_maildir (folder))) {
 	case OK: 
-	    if (access (".", W_OK) != NOTOK && access ("..", W_OK) != NOTOK)
+	    if (access (".", W_OK) != -1 && access ("..", W_OK) != -1)
 		break;
 	    /* FALLTHRU */
 

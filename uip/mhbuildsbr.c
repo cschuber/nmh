@@ -973,7 +973,7 @@ use_forw:
 		ce->ce_file = ci->ci_magic;
 		if (access (ce->ce_file, R_OK) == NOTOK)
 		    adios ("reading", "unable to access %s for", ce->ce_file);
-		if (listsw && stat (ce->ce_file, &st) != NOTOK)
+		if (listsw && stat (ce->ce_file, &st) != -1)
 		    ct->c_end = (long) st.st_size;
 		ci->ci_magic = NULL;
 	    }
@@ -1072,7 +1072,7 @@ use_forw:
 
 		    snprintf (buffer, sizeof(buffer), "%s/%d", mp->foldpath, msgnum);
 		    pe->ce_file = mh_xstrdup(buffer);
-		    if (listsw && stat (pe->ce_file, &st) != NOTOK)
+		    if (listsw && stat (pe->ce_file, &st) != -1)
 			p->c_end = (long) st.st_size;
 
 		    NEW0(part);
@@ -1091,7 +1091,7 @@ use_forw:
 	    msgnum = mp->lowsel;
 	    snprintf (buffer, sizeof(buffer), "%s/%d", mp->foldpath, msgnum);
 	    ce->ce_file = mh_xstrdup(buffer);
-	    if (listsw && stat (ce->ce_file, &st) != NOTOK)
+	    if (listsw && stat (ce->ce_file, &st) != -1)
 		ct->c_end = (long) st.st_size;
 	}
 
@@ -1400,7 +1400,7 @@ raw:
 	if (listsw && ct->c_end == 0L) {
 	    struct stat st;
 
-	    if (stat (ce->ce_file, &st) != NOTOK)
+	    if (stat (ce->ce_file, &st) != -1)
 		ct->c_end = (long) st.st_size;
 	}
 	break;

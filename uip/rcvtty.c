@@ -209,7 +209,7 @@ message_fd (char **vec)
 	/* parent process */
 	if (!setjmp (myctx)) {
 	    SIGNAL (SIGALRM, alrmser);
-	    bytes = fstat(fileno (stdin), &st) != NOTOK ? (int) st.st_size : 100;
+	    bytes = fstat(fileno (stdin), &st) != -1 ? (int) st.st_size : 100;
 
 	    /* amount of time to wait depends on message size */
 	    if (bytes <= 100) {
@@ -225,7 +225,7 @@ message_fd (char **vec)
 	    pidwait(child_id, OK);
 	    alarm (0);
 
-	    if (fstat (fd, &st) != NOTOK && st.st_size > 0)
+	    if (fstat (fd, &st) != -1 && st.st_size > 0)
 		return fd;
 	} else {
 	    /*

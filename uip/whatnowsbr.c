@@ -305,7 +305,7 @@ WhatNow (int argc, char **argv)
 		((*argp)[0] == '-' && (*argp)[1] == 'd'))) {
 		removefile (drft);
 	    } else {
-		if (stat (drft, &st) != NOTOK)
+		if (stat (drft, &st) != -1)
 		    inform("draft left on %s", drft);
 	    }
 	    done (1);
@@ -761,7 +761,7 @@ editfile (char **ed, char **arg, char *file, int use, struct msgs *mp,
 		if (((status & 0xff00) != 0xff00)
 		    && (!reedit || (status & 0x00ff))) {
 		    if (!use && (status & 0xff00) &&
-			    (rename (file, cp = m_backup (file)) != NOTOK)) {
+			    (rename (file, cp = m_backup (file)) != -1)) {
 			inform("problems with edit--draft left in %s", cp);
 		    } else {
 			inform("problems with edit--%s preserved", file);
@@ -776,10 +776,10 @@ editfile (char **ed, char **arg, char *file, int use, struct msgs *mp,
 		    && mp
 		    && !is_readonly(mp)
 		    && (slinked
-		           ? lstat (linkpath, &st) != NOTOK
+		           ? lstat (linkpath, &st) != -1
 				&& S_ISREG(st.st_mode)
 				&& copyf (linkpath, altpath) == NOTOK
-		           : stat (linkpath, &st) != NOTOK
+		           : stat (linkpath, &st) != -1
 				&& st.st_nlink == 1
 				&& (m_unlink (altpath) == NOTOK
 					|| link (linkpath, altpath) == NOTOK)))

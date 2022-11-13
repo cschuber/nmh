@@ -189,7 +189,7 @@ annosbr (int fd, char *file, char *comp, char *text, bool inplace, bool datesw, 
     int		length;		/* length of field name */
     int		n;		/* number of bytes written */
 
-    mode = fstat (fd, &st) != NOTOK ? (int) (st.st_mode & 0777) : m_gmprot ();
+    mode = fstat (fd, &st) != -1 ? (int) (st.st_mode & 0777) : m_gmprot ();
 
     if ((cp = m_mktemp2(file, "annotate", NULL, &tmp)) == NULL) {
 	die("unable to create temporary file");

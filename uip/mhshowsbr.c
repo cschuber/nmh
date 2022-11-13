@@ -192,7 +192,7 @@ show_single_message (CT ct, char *form, int concatsw, int textonly,
     sigaddset (&set, SIGTERM);
     sigprocmask (SIG_BLOCK, &set, &oset);
 
-    while (!concatsw && wait (&status) != NOTOK) {
+    while (!concatsw && wait (&status) != -1) {
 	pidcheck (status);
 	continue;
     }

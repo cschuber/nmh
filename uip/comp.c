@@ -348,7 +348,7 @@ try_it_again:
     /*
      * Check if we have an existing draft
      */
-    if (!build && (out = open (drft, O_RDONLY)) != NOTOK) {
+    if (!build && (out = open (drft, O_RDONLY)) != -1) {
 	i = fdcompare (in, out);
 	close (out);
 

@@ -257,7 +257,7 @@ try_it_again:
     strncpy (drft, m_draft (dfolder, dmsg, NOUSE, &isdf), sizeof(drft) - 1);
 
     /* Check if draft already exists */
-    if (stat (drft, &st) != NOTOK) {
+    if (stat (drft, &st) != -1) {
 	printf ("Draft \"%s\" exists (%ld bytes).", drft, (long) st.st_size);
 	for (i = LISTDSW; i != YESW;) {
 	    if (!(argp = read_switch_multiword ("\nDisposition? ",

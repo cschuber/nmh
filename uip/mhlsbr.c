@@ -571,7 +571,7 @@ mhl_format (char *file, int length, int width)
     static time_t mtime = 0;
 
     if (fmthd != NULL) {
-	if (stat (etcpath (file), &st) != NOTOK
+	if (stat (etcpath (file), &st) != -1
 		&& mtime == st.st_mtime
 		&& dev == st.st_dev
 		&& ino == st.st_ino)
@@ -582,7 +582,7 @@ mhl_format (char *file, int length, int width)
     if ((fp = fopen (etcpath (file), "r")) == NULL)
 	mhladios (file, "unable to open format file");
 
-    if (fstat (fileno (fp), &st) != NOTOK) {
+    if (fstat (fileno (fp), &st) != -1) {
 	mtime = st.st_mtime;
 	dev = st.st_dev;
 	ino = st.st_ino;

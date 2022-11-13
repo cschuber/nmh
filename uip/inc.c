@@ -500,7 +500,7 @@ main (int argc, char **argv)
     if (inc_type == INC_FILE && Maildir == NULL) {
         /* Mail from a spool file. */
 
-	if (access (newmail, W_OK) != NOTOK) {
+	if (access (newmail, W_OK) != -1) {
 	    locked = true;
 	    if (trnflag) {
 		SIGNAL (SIGHUP, SIG_IGN);
@@ -798,11 +798,11 @@ main (int argc, char **argv)
         /* Mail from a spool file;  truncate it. */
 
 	if (trnflag) {
-	    if (stat (newmail, &st) != NOTOK && s1.st_mtime != st.st_mtime)
+	    if (stat (newmail, &st) != -1 && s1.st_mtime != st.st_mtime)
 		inform("new messages have arrived!\007");
 	    else {
 		int newfd;
-		if ((newfd = creat (newmail, 0600)) != NOTOK)
+		if ((newfd = creat (newmail, 0600)) != -1)
 		    close (newfd);
 		else
 		    admonish (newmail, "error zero'ing");

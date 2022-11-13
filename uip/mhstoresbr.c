@@ -579,7 +579,7 @@ losing:
 
 	for (;;) {
 	    switch (cc = read (fd, buffer, sizeof(buffer))) {
-		case NOTOK:
+		case -1:
 		    advise (file, "error reading content from");
 		    break;
 
@@ -597,7 +597,7 @@ losing:
 
 	(*ct->c_ceclosefnx) (ct);
 
-	if (cc != NOTOK && fflush (fp))
+	if (cc != -1 && fflush (fp))
 	    advise (ct->c_storage, "error writing to");
 
 	fclose (fp);

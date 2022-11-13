@@ -477,16 +477,16 @@ annoaux (int fd)
     }
     if (!debugsw			/* MOBY HACK... */
 	    && pushsw
-	    && (fd3 = open ("/dev/null", O_RDWR)) != NOTOK
-	    && (fd2 = dup (fileno (stderr))) != NOTOK) {
+	    && (fd3 = open ("/dev/null", O_RDWR)) != -1
+	    && (fd2 = dup (fileno (stderr))) != -1) {
 	dup2 (fd3, fileno (stderr));
 	close (fd3);
     } else
-	fd2 = NOTOK;
+	fd2 = -1;
     for (ap = brkstring (cp = mh_xstrdup(cp), " ", NULL); *ap; ap++)
 	m_convert (mp, *ap);
     free (cp);
-    if (fd2 != NOTOK)
+    if (fd2 != -1)
 	dup2 (fd2, fileno (stderr));
     if (mp->numsel == 0) {
 	if (debugsw)

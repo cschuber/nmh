@@ -655,7 +655,7 @@ mhfixmsgsbr (CT *ctp, char *maildir, const fix_transformations *fx,
            isn't used but just in case it is in the future. */
         struct stat st;
 
-        if (stat ((*ctp)->c_file, &st) != NOTOK) {
+        if (stat ((*ctp)->c_file, &st) != -1) {
             (*ctp)->c_umask = ~(st.st_mode & 0777);
         } else {
             (*ctp)->c_umask = ~m_gmprot();

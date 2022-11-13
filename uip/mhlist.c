@@ -293,7 +293,7 @@ main (int argc, char **argv)
 
 	ct = *ctp;
 	if (type_ok (ct, 1) && !ct->c_umask) {
-	    if (stat (ct->c_file, &st) != NOTOK)
+	    if (stat (ct->c_file, &st) != -1)
 		ct->c_umask = ~(st.st_mode & 0777);
 	    else
 		ct->c_umask = ~m_gmprot();

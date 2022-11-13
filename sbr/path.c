@@ -267,7 +267,7 @@ etcpath (char *file)
                     inform("etcpath(%s) overflow, continuing", file);
                     goto failed;
                 }
-                if (access (epath, R_OK) != NOTOK) {
+                if (access (epath, R_OK) != -1) {
                     goto succeeded;
                 }
             }
@@ -284,7 +284,7 @@ etcpath (char *file)
             }
             memcpy(epath, cp, need);
             free (cp);
-            if (access (epath, R_OK) != NOTOK) {
+            if (access (epath, R_OK) != -1) {
                 goto succeeded;
             }
     }

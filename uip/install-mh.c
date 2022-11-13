@@ -109,7 +109,7 @@ main (int argc, char **argv)
      *	exist, succeeds if it does.
      */
 
-    if (stat (defpath, &st) != NOTOK) {
+    if (stat (defpath, &st) != -1) {
 	if (check)
 	    done(0);
 	if (autof)
@@ -131,7 +131,7 @@ main (int argc, char **argv)
     }
 
     cp = concat (mypath, "/", "Mail", NULL);
-    if (stat (cp, &st) != NOTOK) {
+    if (stat (cp, &st) != -1) {
 	if (!S_ISDIR(st.st_mode))
 	    goto query;
         cp = concat ("You already have the standard nmh directory \"",
