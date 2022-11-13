@@ -22,7 +22,6 @@ typedef union {
 #define	NOTOK        (-1)	/* syscall()s return this on error */
 #define	OK             0	/*  ditto on success               */
 #define	DONE           1	/* ternary logic                   */
-#define ALL           ""
 
 #define MAXARGS	    1000	/* max arguments to exec                */
 #define NFOLDERS    1000	/* max folder arguments on command line */
