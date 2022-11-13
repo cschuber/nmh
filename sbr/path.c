@@ -8,7 +8,6 @@
 #include "h/mh.h"
 #include <pwd.h>
 #include "error.h"
-#include "ssequal.h"
 #include "getfolder.h"
 #include "path.h"
 #include "utils.h"
@@ -96,7 +95,7 @@ expath (char *name, int flag)
 	name = m_mailpath (buffer);
 	compath (name);
 	snprintf (buffer, sizeof(buffer), "%s/", m_maildir (""));
-	if (ssequal (buffer, name)) {
+	if (has_prefix(name, buffer)) {
 	    cp = name;
 	    name = mh_xstrdup(name + strlen(buffer));
 	    free (cp);

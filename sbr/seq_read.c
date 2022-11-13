@@ -9,7 +9,6 @@
 #include "h/mh.h"
 #include "m_getfld.h"
 #include "seq_read.h"
-#include "ssequal.h"
 #include "trimcpy.h"
 #include "getcpy.h"
 #include "m_atoi.h"
@@ -155,7 +154,7 @@ seq_private (struct msgs *mp)
     plen = strlen (mp->foldpath) + 1;
 
     for (np = m_defs; np; np = np->n_next) {
-	if (ssequal ("atr-", np->n_name)
+	if (has_prefix(np->n_name, "atr-")
 		&& (j = strlen (np->n_name) - plen) > alen
 		&& *(np->n_name + j) == '-'
 		&& strcmp (mp->foldpath, np->n_name + j + 1) == 0) {

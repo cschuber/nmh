@@ -11,7 +11,6 @@
 #include "sbr/concat.h"
 #include "sbr/smatch.h"
 #include "sbr/remdir.h"
-#include "sbr/ssequal.h"
 #include "sbr/m_atoi.h"
 #include "sbr/getfolder.h"
 #include "sbr/ext_hook.h"
@@ -252,7 +251,7 @@ rma (char *folder)
      * "atr-something-folderpath", and remove them.
      */
     for (np = m_defs, pp = NULL; np; np = np->n_next) {
-	if (ssequal ("atr-", np->n_name)
+	if (has_prefix(np->n_name, "atr-")
 		&& (j = strlen (np->n_name) - plen) > alen
 		&& *(np->n_name + j) == '-'
 		&& strcmp (cp, np->n_name + j + 1) == 0) {

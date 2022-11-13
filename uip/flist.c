@@ -16,7 +16,6 @@
 #include "h/mh.h"
 #include "sbr/getarguments.h"
 #include "sbr/smatch.h"
-#include "sbr/ssequal.h"
 #include "sbr/getfolder.h"
 #include "sbr/folder_read.h"
 #include "sbr/folder_free.h"
@@ -695,7 +694,7 @@ do_readonly_folders (void)
     atrlen = strlen (atrcur);
 
     for (np = m_defs; np; np = np->n_next)
-        if (ssequal (atrcur, np->n_name)
-                && !ssequal (nmhdir, np->n_name + atrlen))
+        if (has_prefix(np->n_name, atrcur)
+                && !has_prefix(np->n_name + atrlen, nmhdir))
             BuildFolderList (np->n_name + atrlen, 0);
 }

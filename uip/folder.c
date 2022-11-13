@@ -14,7 +14,6 @@
 #include "sbr/seq_setcur.h"
 #include "sbr/seq_save.h"
 #include "sbr/smatch.h"
-#include "sbr/ssequal.h"
 #include "sbr/getcpy.h"
 #include "sbr/m_convert.h"
 #include "sbr/getfolder.h"
@@ -669,7 +668,7 @@ readonly_folders (void)
     atrlen = strlen (atrcur);
 
     for (np = m_defs; np; np = np->n_next)
-	if (ssequal (atrcur, np->n_name)
-		&& !ssequal (nmhdir, np->n_name + atrlen))
+	if (has_prefix(np->n_name, atrcur)
+		&& !has_prefix(np->n_name + atrlen, nmhdir))
 	    get_folder_info (np->n_name + atrlen, NULL);
 }
