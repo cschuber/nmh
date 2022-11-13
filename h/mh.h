@@ -431,5 +431,3 @@ typedef struct nmh_creds *nmh_creds_t;
 #ifndef abs
 # define abs(a) ((a) > 0 ? (a) : -(a))
 #endif
-
-#define CTXMOD	0x01		/* context information modified */

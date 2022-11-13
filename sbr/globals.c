@@ -97,7 +97,9 @@ char *mh_seq = ".mh_sequences";
  * nmh globals
  */
 
-char ctxflags;		/* status of user's context   */
+/* The in-memory copy of the context has been modified. */
+bool context_dirty;
+
 char *invo_name;	/* command invocation name    */
 char *mypath;		/* user's $HOME               */
 char *defpath;		/* pathname of user's profile */

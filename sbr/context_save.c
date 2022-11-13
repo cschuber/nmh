@@ -31,9 +31,9 @@ context_save (void)
     if (!ctxpath)
        return;
 
-    if (!(ctxflags & CTXMOD))
+    if (!context_dirty)
 	return;
-    ctxflags &= ~CTXMOD;
+    context_dirty = false;
 
     /* block a few signals */
     sigemptyset (&set);

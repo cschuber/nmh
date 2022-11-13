@@ -265,7 +265,7 @@ rma (char *folder)
 	    } else {
 		m_defs = np->n_next;
 	    }
-	    ctxflags |= CTXMOD;
+            context_dirty = true;
 	} else {
 	    pp = np;
 	}

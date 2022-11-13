@@ -58,9 +58,6 @@ DEFINE_SWITCH_ENUM(MARK);
 DEFINE_SWITCH_ARRAY(MARK, switches);
 #undef X
 
-/* Formatting ctxflags. */
-#define	DBITS "\020\01CTXMOD"
-
 /*
  * static prototypes
  */
@@ -283,8 +280,7 @@ print_debug (struct msgs *mp)
     printf ("mypath        = %s\n", mypath);
     printf ("defpath       = %s\n", defpath);
     printf ("ctxpath       = %s\n", ctxpath);
-    printf ("context flags = %s\n", snprintb (buf, sizeof(buf),
-		(unsigned) ctxflags, DBITS));
+    printf("context_dirty = %d\n", context_dirty);
     printf ("foldpath      = %s\n", mp->foldpath);
     printf ("folder flags  = %s\n\n", snprintb(buf, sizeof(buf),
 		(unsigned) mp->msgflags, FBITS));

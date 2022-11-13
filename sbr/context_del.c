@@ -33,7 +33,7 @@ context_del (char *key)
 	    free (np->n_name);
             free(np->n_field);
 	    free(np);
-	    ctxflags |= CTXMOD;
+            context_dirty = true;
 	    return 0;
 	}
     }

@@ -41,7 +41,7 @@ extern char *mhetcdir;
 extern char *mhdocdir;
 extern char *context;
 extern char *mh_seq;
-extern char ctxflags;
+extern bool context_dirty;
 extern char *invo_name;
 extern char *mypath;
 extern char *defpath;
