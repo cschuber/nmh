@@ -444,7 +444,7 @@ replfilter (FILE *in, FILE *out, char *filter, int fmtproc)
     if (filter == NULL)
 	return;
 
-    if (access (filter, R_OK) == NOTOK)
+    if (access (filter, R_OK) == -1)
 	adios (filter, "unable to read");
 
     rewind (in);

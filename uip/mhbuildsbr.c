@@ -971,7 +971,7 @@ use_forw:
 	    } else {
 		/* record filename of decoded contents */
 		ce->ce_file = ci->ci_magic;
-		if (access (ce->ce_file, R_OK) == NOTOK)
+		if (access (ce->ce_file, R_OK) == -1)
 		    adios ("reading", "unable to access %s for", ce->ce_file);
 		if (listsw && stat (ce->ce_file, &st) != -1)
 		    ct->c_end = (long) st.st_size;
@@ -2398,7 +2398,7 @@ extract_headers (CT ct, char *reply_file, FILE **reply_fp)
     struct stat statbuf;
 
     /* Read the convert reply from the file to memory. */
-    if (stat (reply_file, &statbuf) == NOTOK) {
+    if (stat (reply_file, &statbuf) == -1) {
         admonish (reply_file, "failed to stat");
         goto failed_to_extract_ct;
     }

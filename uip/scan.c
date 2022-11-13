@@ -187,7 +187,7 @@ main (int argc, char **argv)
 	} else {
 	    /* check if "file" is really a Maildir folder */
 	    struct stat st;
-	    if (stat (file, &st) == NOTOK)
+	    if (stat (file, &st) == -1)
 		adios (file, "unable to stat");
 	    if (!(st.st_mode & S_IFDIR)) {
 		if ((in = fopen (file, "r")) == NULL)
@@ -271,7 +271,7 @@ main (int argc, char **argv)
 	folder = getfolder (1);
     maildir = m_maildir (folder);
 
-    if (chdir (maildir) == NOTOK)
+    if (chdir (maildir) == -1)
 	adios (maildir, "unable to change directory to");
 
     /* read folder and create message structure */

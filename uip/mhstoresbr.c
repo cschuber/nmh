@@ -554,7 +554,7 @@ output_content_file (CT ct, int appending)
 	if (!strcmp (ct->c_storage, "-")) {
 	    int	gd;
 
-	    if ((gd = dup (fileno (stdout))) == NOTOK) {
+	    if ((gd = dup (fileno (stdout))) == -1) {
 		advise ("stdout", "unable to dup");
 losing:
 		(*ct->c_ceclosefnx) (ct);
@@ -602,7 +602,7 @@ losing:
 
 	fclose (fp);
 
-        return cc == NOTOK ? NOTOK : OK;
+        return cc == -1 ? -1 : OK;
     }
 
     if (!ct->c_fp && (ct->c_fp = fopen (ct->c_file, "r")) == NULL) {
@@ -617,7 +617,7 @@ losing:
     if (!strcmp (ct->c_storage, "-")) {
 	int gd;
 
-	if ((gd = dup (fileno (stdout))) == NOTOK) {
+	if ((gd = dup (fileno (stdout))) == -1) {
 	    advise ("stdout", "unable to dup");
 	    return NOTOK;
 	}

@@ -690,7 +690,7 @@ scan_input (int fd, int *eightbit)
         }
     }
 
-    return state == NOTOK  ?  NOTOK  :  OK;
+    return state == -1  ?  -1  :  OK;
 }
 
 

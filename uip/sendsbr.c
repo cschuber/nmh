@@ -182,7 +182,7 @@ sendsbr (char **vec, int vecp, char *program, char *draft, struct stat *st,
 	/* rename the original draft */
 	if (rename_drft && status == OK &&
 		rename (drft, strncpy (buffer, m_backup (drft),
-				 sizeof(buffer) - 1)) == NOTOK)
+				 sizeof(buffer) - 1)) == -1)
 	    advise (buffer, "unable to rename %s to", drft);
 	break;
 
@@ -276,7 +276,7 @@ sendaux (char **vec, int vecp, char *program, char *drft, struct stat *st)
 		close (fd2);
 	    if (distfile) {
 		(void) m_unlink (drft);
-		if (rename (backup, drft) == NOTOK)
+		if (rename (backup, drft) == -1)
 		    advise (drft, "unable to rename %s to", backup);
 	    }
 	}
@@ -315,7 +315,7 @@ alert (char *file, int out)
 	    SIGNAL (SIGQUIT, SIG_IGN);
 	    SIGNAL (SIGTERM, SIG_IGN);
 	    if (forwsw) {
-		if ((in = open (file, O_RDONLY)) == NOTOK) {
+		if ((in = open (file, O_RDONLY)) == -1) {
 		    admonish (file, "unable to re-open");
 		} else {
 		    lseek(out, 0, SEEK_END);
@@ -334,7 +334,7 @@ alert (char *file, int out)
 			advise (file, "write");
 		    }
 		    if (rename (file, strncpy (buf, m_backup (file),
-					       sizeof(buf) - 1)) == NOTOK)
+					       sizeof(buf) - 1)) == -1)
 			admonish (buf, "unable to rename %s to", file);
 		}
 	    }
@@ -389,7 +389,7 @@ anno (int fd, struct stat *st)
     struct stat st2;
 
     if (altmsg &&
-	    (stat (altmsg, &st2) == NOTOK
+	    (stat (altmsg, &st2) == -1
 		|| st->st_mtime != st2.st_mtime
 		|| st->st_dev != st2.st_dev
 		|| st->st_ino != st2.st_ino)) {
@@ -452,7 +452,7 @@ annoaux (int fd)
 	return;
     }
     maildir = m_maildir (folder);
-    if (chdir (maildir) == NOTOK) {
+    if (chdir (maildir) == -1) {
 	if (debugsw)
 	    admonish (maildir, "unable to change directory to");
 	return;
@@ -702,7 +702,7 @@ get_from_header_info(const char *filename, const char **addr, const char **host,
     struct stat st;
     FILE *in;
 
-    if (stat (filename, &st) == NOTOK) {
+    if (stat (filename, &st) == -1) {
         *message = "unable to stat draft file";
         return NOTOK;
     }

@@ -465,7 +465,7 @@ main (int argc, char **argv)
 
         /* chdir so that error messages, esp. from MIME parser, just
            refer to the message and not its path. */
-        if (chdir (maildir) == NOTOK) {
+        if (chdir (maildir) == -1) {
             adios (maildir, "unable to change directory to");
         }
 

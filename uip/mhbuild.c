@@ -375,12 +375,12 @@ main (int argc, char **argv)
 
     /* Rename composition draft */
     snprintf (buffer, sizeof(buffer), "%s.orig", m_backup (compfile));
-    if (rename (compfile, buffer) == NOTOK) {
+    if (rename (compfile, buffer) == -1) {
 	adios (compfile, "unable to rename comp draft %s to", buffer);
     }
 
     /* Rename output file to take its place */
-    if (rename (outfile, compfile) == NOTOK) {
+    if (rename (outfile, compfile) == -1) {
 	advise (outfile, "unable to rename output %s to", compfile);
 	rename (buffer, compfile);
 	done (1);

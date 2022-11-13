@@ -455,7 +455,7 @@ show_content_aux2 (CT ct, int alternate, char *cracked, char *buffer,
 
 	if (cc < 0) {
 	    advise("read", "while reading text content");
-	    return NOTOK;
+	    return -1;
 	}
 
 	/*

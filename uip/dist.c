@@ -300,7 +300,7 @@ try_it_again:
 	    folder = getfolder (1);
 	maildir = m_maildir (folder);
 
-	if (chdir (maildir) == NOTOK)
+	if (chdir (maildir) == -1)
 	    adios (maildir, "unable to change directory to");
 
 	/* read folder and create message structure */
@@ -333,7 +333,7 @@ try_it_again:
 
     in = build_form(form, NULL, dat, from, to, cc, fcc, NULL, msgnam);
 
-    if ((out = creat (drft, m_gmprot ())) == NOTOK)
+    if ((out = creat (drft, m_gmprot ())) == -1)
 	adios (drft, "unable to create");
 
     cpydata (in, out, form, drft);

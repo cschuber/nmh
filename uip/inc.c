@@ -463,7 +463,7 @@ main (int argc, char **argv)
 	else {
 	    newmail = concat (MAILDIR, "/", MAILFIL, NULL);
 	}
-	if (stat (newmail, &s1) == NOTOK || s1.st_size == 0)
+	if (stat (newmail, &s1) == -1 || s1.st_size == 0)
 	    die("no mail to incorporate");
 	if (s1.st_mode & S_IFDIR) {
 	    maildir_read_and_sort(newmail, &Maildir, &num_maildir_entries);
@@ -490,7 +490,7 @@ main (int argc, char **argv)
             done (1);
     }
 
-    if (chdir (maildir) == NOTOK)
+    if (chdir (maildir) == -1)
 	adios (maildir, "unable to change directory to");
 
     /* read folder and create message structure */
@@ -527,11 +527,11 @@ main (int argc, char **argv)
 
     if (audfile) {
 	int i;
-	if ((i = stat (audfile, &st)) == NOTOK)
+	if ((i = stat (audfile, &st)) == -1)
 	    inform("Creating Receive-Audit: %s", audfile);
 	if ((aud = fopen (audfile, "a")) == NULL)
 	    adios (audfile, "unable to append to");
-	if (i == NOTOK)
+	if (i == -1)
 	    chmod (audfile, m_gmprot ());
 
 	if (from)

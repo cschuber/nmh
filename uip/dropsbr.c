@@ -65,7 +65,7 @@ mbx_open (char *file, int mbx_style, uid_t uid, gid_t gid, mode_t mode)
     /*
      * Do sanity checks on maildrop.
      */
-    if (fstat (fd, &st) == NOTOK) {
+    if (fstat (fd, &st) == -1) {
 	/*
 	 * The stat failed.  So we make sure file
 	 * has right ownership/modes
@@ -110,7 +110,7 @@ static int
 mbx_chk_mbox (int fd)
 {
     /* just seek to the end */
-    if (lseek(fd, 0, SEEK_END) == (off_t) NOTOK)
+    if (lseek(fd, 0, SEEK_END) == (off_t) -1)
 	return NOTOK;
 
     return OK;
@@ -129,7 +129,7 @@ mbx_chk_mmdf (int fd)
 
     count = LEN(MMDF_DELIM);
 
-    if (lseek (fd, -count, SEEK_END) == (off_t) NOTOK)
+    if (lseek (fd, -count, SEEK_END) == (off_t) -1)
 	return NOTOK;
     if (read (fd, ldelim, count) != count)
 	return NOTOK;
@@ -190,10 +190,10 @@ mbx_copy (char *mailbox, int mbx_style, int md, int fd,
 	    if (write (md, MMDF_DELIM, j) != j)
 		return NOTOK;
 
-            return i == NOTOK ? NOTOK : OK;
+            return i == -1 ? -1 : OK;
 
 	case MBOX_FORMAT:
-	    if ((j = dup (fd)) == NOTOK)
+	    if ((j = dup (fd)) == -1)
 		return NOTOK;
 	    if ((fp = fdopen (j, "r")) == NULL) {
 		close (j);

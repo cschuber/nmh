@@ -242,7 +242,7 @@ parse_mime (char *file)
 	    return NULL;
 	}
 	fseek (fp, 0L, SEEK_SET);
-    } else if (stat (file, &statbuf) == NOTOK) {
+    } else if (stat (file, &statbuf) == -1) {
 	advise (file, "unable to stat");
 	return NULL;
     } else if (S_ISDIR(statbuf.st_mode)) {

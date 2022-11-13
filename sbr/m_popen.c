@@ -29,14 +29,14 @@ m_popen (char *name, int savestdout)
     char *file;
     char **arglist;
 
-    if (savestdout && (sd = dup (fileno (stdout))) == NOTOK)
+    if (savestdout && (sd = dup (fileno (stdout))) == -1)
 	adios ("standard output", "unable to dup()");
 
-    if (pipe (pd) == NOTOK)
+    if (pipe (pd) == -1)
 	adios ("pipe", "unable to");
 
     switch (m_pid = fork()) {
-	case NOTOK: 
+	case -1: 
 	    adios ("fork", "unable to");
 
 	case OK: 
@@ -72,7 +72,7 @@ m_pclose (void)
 
     if (sd != NOTOK) {
 	fflush (stdout);
-	if (dup2 (sd, fileno (stdout)) == NOTOK)
+	if (dup2 (sd, fileno (stdout)) == -1)
 	    adios ("standard output", "unable to dup2()");
 
 	clearerr (stdout);

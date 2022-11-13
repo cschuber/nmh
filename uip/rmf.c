@@ -161,7 +161,7 @@ rmf (char *folder)
 		break;
 	    /* FALLTHRU */
 
-	case NOTOK: 
+	case -1: 
             fp = m_mailpath(folder);
 	    snprintf (cur, sizeof(cur), "atr-%s-%s", current, fp);
             free(fp);
@@ -170,7 +170,7 @@ rmf (char *folder)
 		return OK;
 	    }
 	    inform("you have no profile entry for the %s folder +%s",
-		    i == NOTOK ? "unreadable" : "read-only", folder);
+		    i == -1 ? "unreadable" : "read-only", folder);
 	    return NOTOK;
     }
 

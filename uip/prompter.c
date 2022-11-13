@@ -314,9 +314,9 @@ abort:
 	 tcsetattr(0, TCSADRAIN, &tio);
     }
 
-    if ((fdi = open (tmpfil, O_RDONLY)) == NOTOK)
+    if ((fdi = open (tmpfil, O_RDONLY)) == -1)
 	adios (tmpfil, "unable to re-open");
-    if ((fdo = creat (drft, m_gmprot ())) == NOTOK)
+    if ((fdo = creat (drft, m_gmprot ())) == -1)
 	adios (drft, "unable to write");
     cpydata (fdi, fdo, tmpfil, drft);
     close (fdi);

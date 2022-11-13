@@ -313,7 +313,7 @@ ScanFolders(void)
     /*
      * change directory to base of nmh directory
      */
-    if (chdir (nmhdir) == NOTOK)
+    if (chdir (nmhdir) == -1)
 	adios (nmhdir, "unable to change directory to");
 
     if (numfolders > 0) {

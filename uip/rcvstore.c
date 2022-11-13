@@ -161,7 +161,7 @@ main (int argc, char **argv)
     maildir = m_maildir (folder);
 
     /* check if folder exists */
-    if (stat (maildir, &st) == NOTOK) {
+    if (stat (maildir, &st) == -1) {
 	if (errno != ENOENT)
 	    adios (maildir, "error on folder");
 	if (!create)
@@ -170,7 +170,7 @@ main (int argc, char **argv)
 	    die("unable to create folder %s", maildir);
     }
 
-    if (chdir (maildir) == NOTOK)
+    if (chdir (maildir) == -1)
 	adios (maildir, "unable to change directory to");
 
     /* ignore a few signals */
@@ -189,11 +189,11 @@ main (int argc, char **argv)
     /* copy the message from stdin into temp file */
     cpydata (fileno (stdin), fd, "standard input", tmpfilenam);
 
-    if (fstat (fd, &st) == NOTOK) {
+    if (fstat (fd, &st) == -1) {
 	(void) m_unlink (tmpfilenam);
 	adios (tmpfilenam, "unable to fstat");
     }
-    if (close (fd) == NOTOK)
+    if (close (fd) == -1)
 	adios (tmpfilenam, "error closing");
 
     /* don't add file if it is empty */

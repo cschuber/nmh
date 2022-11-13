@@ -166,7 +166,7 @@ query:
     if (chdir (mypath) < 0) {
 	advise (mypath, "chdir");
     }
-    if (chdir (pathname) == NOTOK) {
+    if (chdir (pathname) == -1) {
 	cp = concat ("\"", pathname, "\" doesn't exist; Create it? ", NULL);
 	if (autof || read_switch (cp, anoyes))
 	    if (makedir (pathname) == 0)

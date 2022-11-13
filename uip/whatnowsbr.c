@@ -711,7 +711,7 @@ editfile (char **ed, char **arg, char *file, int use, struct msgs *mp,
 
 	if (atfile) {
 	    (void) m_unlink (linkpath);
-	    if (link (altpath, linkpath) == NOTOK) {
+	    if (link (altpath, linkpath) == -1) {
 		if (symlink (altpath, linkpath) < 0) {
 		    adios (linkpath, "symlink");
 		}
@@ -782,7 +782,7 @@ editfile (char **ed, char **arg, char *file, int use, struct msgs *mp,
 		           : stat (linkpath, &st) != -1
 				&& st.st_nlink == 1
 				&& (m_unlink (altpath) == NOTOK
-					|| link (linkpath, altpath) == NOTOK)))
+					|| link (linkpath, altpath) == -1)))
 		advise (linkpath, "unable to update %s from", altmsg);
     }
 
@@ -804,9 +804,9 @@ copyf (char *ifile, char *ofile)
     int i, in, out;
     char buffer[BUFSIZ];
 
-    if ((in = open (ifile, O_RDONLY)) == NOTOK)
+    if ((in = open (ifile, O_RDONLY)) == -1)
 	return NOTOK;
-    if ((out = open (ofile, O_WRONLY | O_TRUNC)) == NOTOK) {
+    if ((out = open (ofile, O_WRONLY | O_TRUNC)) == -1) {
 	admonish (ofile, "unable to open and truncate");
 	close (in);
 	return NOTOK;
@@ -1222,7 +1222,7 @@ sendit(char *sp, char **arg, char *file, bool pushed)
 	}
 	distfile = mh_xstrdup(cp);
 	(void) m_unlink(distfile);
-	if (link (altmsg, distfile) == NOTOK)
+	if (link (altmsg, distfile) == -1)
 	    adios (distfile, "unable to link %s to", altmsg);
     } else {
 	distfile = NULL;
@@ -1242,7 +1242,7 @@ sendit(char *sp, char **arg, char *file, bool pushed)
     NMH_UNUSED(saslmech);
 #endif /* OAUTH_SUPPORT */
 
-    if (altmsg == NULL || stat (altmsg, &st) == NOTOK) {
+    if (altmsg == NULL || stat (altmsg, &st) == -1) {
 	st.st_mtime = 0;
 	st.st_dev = 0;
 	st.st_ino = 0;
@@ -1269,7 +1269,7 @@ whomfile (char **arg, char *file)
     fflush (stdout);
 
     switch (pid = fork()) {
-	case NOTOK:
+	case -1:
 	    advise ("fork", "unable to");
 	    return 1;
 

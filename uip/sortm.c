@@ -211,7 +211,7 @@ main (int argc, char **argv)
 	folder = getfolder (1);
     maildir = m_maildir (folder);
 
-    if (chdir (maildir) == NOTOK)
+    if (chdir (maildir) == -1)
 	adios (maildir, "unable to change directory to");
 
     /* read folder and create message structure */
@@ -543,7 +543,7 @@ rename_chain (struct msgs *mp, struct smsg **mlist, int msg, int endmsg)
 	(void)snprintf(newbuf, sizeof (newbuf), "%s/%d", mp->foldpath, new);
 	ext_hook("ref-hook", oldname, newbuf);
 
-	if (rename (oldname, newname) == NOTOK)
+	if (rename (oldname, newname) == -1)
 	    adios (newname, "unable to rename %s to", oldname);
 
 	copy_msg_flags (mp, new, old);
@@ -600,7 +600,7 @@ rename_msgs (struct msgs *mp, struct smsg **mlist)
 	(void)snprintf(newbuf, sizeof (newbuf), "%s/%d", mp->foldpath, mp->hghmsg + 1);
 	ext_hook("ref-hook", f1, newbuf);
 
-	if (rename (f1, tmpfil) == NOTOK)
+	if (rename (f1, tmpfil) == -1)
 	    adios (tmpfil, "unable to rename %s to ", f1);
 
 	get_msg_flags (mp, tmpset, old);
@@ -615,7 +615,7 @@ rename_msgs (struct msgs *mp, struct smsg **mlist)
 	(void)snprintf(f1, sizeof (f1), "%s/%d", mp->foldpath, new);
 	ext_hook("ref-hook", newbuf, f1);
 
-	if (rename (tmpfil, m_name(new)) == NOTOK)
+	if (rename (tmpfil, m_name(new)) == -1)
 	    adios (m_name(new), "unable to rename %s to", tmpfil);
 
 	set_msg_flags (mp, tmpset, new);

@@ -1597,7 +1597,7 @@ make_bcc_file (int dashstuff)
 		break;
 	}
     } else {
-	if ((fd = open (tmpfil, O_RDONLY)) == NOTOK)
+	if ((fd = open (tmpfil, O_RDONLY)) == -1)
 	    adios (tmpfil, "unable to re-open");
 
 	/*
@@ -1769,7 +1769,7 @@ post (char *file, int bccque, int talk, int eai, char *envelope,
         const int fd = open (file, O_RDONLY);
         int eightbit = 0;
 
-        if (fd == NOTOK) {
+        if (fd == -1) {
           fatal (file, "unable to re-open");
         }
 
@@ -1942,7 +1942,7 @@ do_text (char *file, int fd)
 	    fatal (NULL, "problem writing text; %s\n", rp_string (retval));
     }
 
-    if (state == NOTOK)
+    if (state == -1)
 	fatal (file, "problem reading from");
 
     switch (retval = sm_wtend ()) {

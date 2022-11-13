@@ -295,7 +295,7 @@ etcpath (char *file)
         inform ("etcpath(%s/%s) overflow when checking etc directory, continuing",
                 NMHETCDIR, file);
         goto failed;
-    } else if (access (epath, R_OK) == NOTOK) {
+    } else if (access (epath, R_OK) == -1) {
         goto failed;
     }
 succeeded:

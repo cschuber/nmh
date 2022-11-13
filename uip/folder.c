@@ -323,7 +323,7 @@ main (int argc, char **argv)
     }
     if (pushsw || popsw) {
 	cp = m_maildir(argfolder);
-	if (access (cp, F_OK) == NOTOK)
+	if (access (cp, F_OK) == -1)
 	    adios (cp, "unable to find folder");
 	context_replace (pfolder, argfolder);	/* update current folder   */
 	context_save ();		/* save the context file   */
@@ -353,7 +353,7 @@ main (int argc, char **argv)
      * Scan the folders
      */
     /* change directory to base of nmh directory for crawl_folders */
-    if (chdir (nmhdir) == NOTOK)
+    if (chdir (nmhdir) == -1)
 	adios (nmhdir, "unable to change directory to");
     if (all || ftotal > 0) {
 	/*
