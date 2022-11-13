@@ -441,7 +441,7 @@ noinst_HEADERS = \
     sbr/signals.h \
     sbr/smatch.h \
     sbr/snprintb.h \
-    sbr/strindex.h \
+    sbr/stringdex.h \
     sbr/terminal.h \
     sbr/trimcpy.h \
     sbr/unquote.h \
@@ -1172,7 +1172,7 @@ sbr_libmh_a_SOURCES = \
     sbr/signals.c \
     sbr/smatch.c \
     sbr/snprintb.c \
-    sbr/strindex.c \
+    sbr/stringdex.c \
     sbr/terminal.c \
     sbr/trimcpy.c \
     sbr/unquote.c \

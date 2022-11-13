@@ -27,7 +27,7 @@
 #include "sbr/m_getfld.h"
 #include "sbr/getarguments.h"
 #include "sbr/smatch.h"
-#include "sbr/strindex.h"
+#include "sbr/stringdex.h"
 #include "sbr/trimcpy.h"
 #include "sbr/getcpy.h"
 #include "sbr/ambigsw.h"

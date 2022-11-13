@@ -8,7 +8,7 @@
 #include "h/nmh.h"
 #include "h/mh.h"
 #include "sbr/dtime.h"
-#include "sbr/strindex.h"
+#include "sbr/stringdex.h"
 #include "sbr/error.h"
 #include "sbr/utils.h"
 #include "dropsbr.h"

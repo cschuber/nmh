@@ -7,7 +7,7 @@
 
 #include "h/mh.h"
 #include "snprintb.h"
-#include "strindex.h"
+#include "stringdex.h"
 #include "uprf.h"
 #include "getcpy.h"
 #include "context_find.h"

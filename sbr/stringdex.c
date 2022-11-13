@@ -1,4 +1,4 @@
-/* strindex.c -- "unsigned" lexical index
+/* stringdex.c -- "unsigned" lexical index
  *
  * This code is Copyright (c) 2002, by the authors of nmh.  See the
  * COPYRIGHT file in the root directory of the nmh distribution for
@@ -6,7 +6,7 @@
  */
 
 #include "h/mh.h"
-#include "strindex.h"
+#include "stringdex.h"
 #include "uprf.h"
 
 int

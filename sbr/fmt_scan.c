@@ -12,7 +12,7 @@
 #include "charstring.h"
 #include "fmt_addr.h"
 #include "dtime.h"
-#include "strindex.h"
+#include "stringdex.h"
 #include "fmt_rfc2047.h"
 #include "uprf.h"
 #include "context_find.h"
