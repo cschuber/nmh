@@ -689,7 +689,7 @@ vcommand (const char *fmt, va_list ap)
 static int
 multiline (void)
 {
-    char buffer[BUFSIZ + LEN(TRM)];
+    char buffer[BUFSIZ];
 
     if (pop_getline (buffer, sizeof buffer, nsc) != OK)
 	return NOTOK;
@@ -698,8 +698,7 @@ multiline (void)
 	    return DONE;
         ABORTCPY(response, buffer + LEN(TRM));
     } else
-	strncpy (response, buffer,
-		 min (strlen(buffer) + 1, sizeof(response) - 1));
+	snprintf (response, sizeof(response), "%s", buffer);
 
     return OK;
 }
