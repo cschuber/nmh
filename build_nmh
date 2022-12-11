@@ -392,7 +392,7 @@ if [ -z "$CFLAGS" ]; then
         CFLAGS='-g -std=c99 -pedantic'
     fi
     if [ "$config_debug" = n ]; then
-      CFLAGS="$CFLAGS -O2 -Wp,-D_FORTIFY_SOURCE=2"
+      CFLAGS="$CFLAGS -O2 -Wp,-D_FORTIFY_SOURCE=3"
     else
       CFLAGS="$CFLAGS -O0"
     fi
