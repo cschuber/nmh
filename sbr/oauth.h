@@ -1,3 +1,9 @@
+/******************************************************************************
+   This implementation is no longer supported but is left here for information.
+   That's because Google now only supports POP except with a private client ID.
+   Also, it no longer supports OOB requests to Google’s OAuth 2.0 authorization
+   endpoint.
+ ******************************************************************************/
 /* oauth.h -- OAuth 2.0 implementation for XOAUTH2 in SMTP and POP3.
  *
  * Google defined XOAUTH2 for SMTP, and that's what we use here.  If other

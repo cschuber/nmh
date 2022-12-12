@@ -536,15 +536,12 @@ This allows different switches to
 such as -user, to be associated with different email addresses.
 If a domain name is used, it matches all users in that domain.
 .PP
-Here is an example profile entry using OAuth for an account hosted by gmail:
+Here is an example profile entry to use the SMTP on the localhost when the
+sender address is clearly local:
 .PP
 .nf
 .RS 5
-sendfrom-gmail_address@example.com: -sasl -saslmech xoauth2
-.RS 5
--authservice gmail -tls -server smtp.gmail.com
--user gmail_login@example.com
-.RE
+sendfrom-localuser@localhost: -server localhost -port smtp
 .RE
 .fi
 .PP

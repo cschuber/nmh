@@ -26,6 +26,12 @@
 #include "utils.h"
 #include "m_maildir.h"
 
+/******************************************************************************
+   This implementation is no longer supported but is left here for information.
+   That's because Google now only supports POP except with a private client ID.
+   Also, it no longer supports OOB requests to Google’s OAuth 2.0 authorization
+   endpoint.
+ ******************************************************************************/
 static const struct mh_oauth_service_info SERVICES[] = {
     /* https://developers.google.com/accounts/docs/OAuth2InstalledApp */
     {
