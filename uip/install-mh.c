@@ -216,6 +216,8 @@ query:
 	if (!np->n_context)
 	    fprintf (out, "%s: %s\n", np->n_name, np->n_field);
     }
+    fprintf (out, "Draft-Folder: drafts\n");
+    fprintf (out, "send: -draftfolder drafts\n");
     fclose (out);
 
     puts ("\nPlease see nmh(7) for an introduction to nmh.\n");

@@ -34,6 +34,7 @@ NEW FEATURES
   switch to specify character set of the decoded field bodies.
 - repl(1) -convertargs now allows editing of the composition draft between
   translation and any encoding of text content.
+- install-mh(1) now enables the mh-draft(5) draft folder facility.
 
 -----------------
 OBSOLETE FEATURES
