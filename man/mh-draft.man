@@ -142,7 +142,7 @@ repl
 .fi
 .RE
 .PP
-will construct the message draft in the `draft' folder using the `new'
+will construct the message draft in the `drafts' folder using the `new'
 message number.  Furthermore, they each define `cur' in this folder to
 be that message draft.  If the user were to use the
 .B quit
