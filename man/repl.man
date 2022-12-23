@@ -512,7 +512,7 @@ is checked.
 ^Path:~^To determine the user's nmh directory
 ^Alternate\-Mailboxes:~^To determine the user's mailboxes
 ^Current\-Folder:~^To find the default current folder
-^Draft\-Folder:~^To find the default draft-folder
+^Draft\-Folder:~^To specify the default draftfolder
 ^Editor:~^To override the default editor
 ^Msg\-Protect:~^To set mode when creating a new message (draft)
 ^fileproc:~^Program to refile the message
@@ -522,6 +522,7 @@ is checked.
 .SH "SEE ALSO"
 .IR comp (1),
 .IR forw (1),
+.IR mh\-draft (5),
 .IR mh\-format (5),
 .IR mhbuild (1),
 .IR send (1),

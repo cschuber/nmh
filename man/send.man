@@ -610,7 +610,6 @@ for login credentials.
 .ta 2.4i
 .ta \w'ExtraBigProfileName  'u
 ^Path:~^To determine the user's nmh directory
-^Draft\-Folder:~^To find the default draft-folder
 ^Aliasfile:~^For a default alias file
 ^Signature:~^To determine the user's mail signature
 ^mailproc:~^Program to post failure notices

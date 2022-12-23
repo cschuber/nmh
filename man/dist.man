@@ -232,7 +232,7 @@ Current\-Folder:
 To find the default current folder.
 .TP 20
 Draft\-Folder:
-To find the default draft-folder.
+To specify the default draftfolder.
 .TP 20
 Editor:
 To override the default editor.
@@ -246,6 +246,7 @@ Program to ask the \*(lqWhat now?\*(rq questions.
 .SH "SEE ALSO"
 .IR comp (1),
 .IR forw (1),
+.IR mh\-draft (5),
 .IR prompter (1),
 .IR repl (1),
 .IR send (1),
