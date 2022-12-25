@@ -1,4 +1,4 @@
-.TH REPL %manext1% 2014-12-15 "%nmhversion%"
+.TH REPL %manext1% 2022-12-22 "%nmhversion%"
 .
 .\" %nmhwarning%
 .

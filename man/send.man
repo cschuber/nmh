@@ -1,4 +1,4 @@
-.TH SEND %manext1% 2017-05-11 "%nmhversion%"
+.TH SEND %manext1% 2022-12-22 "%nmhversion%"
 .
 .\" %nmhwarning%
 .

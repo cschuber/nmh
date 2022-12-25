@@ -1,4 +1,4 @@
-.TH WHATNOW %manext1% 2014-01-23 "%nmhversion%"
+.TH WHATNOW %manext1% 2022-12-22 "%nmhversion%"
 .
 .\" %nmhwarning%
 .

@@ -1,4 +1,4 @@
-.TH DIST %manext1% 2012-12-04 "%nmhversion%"
+.TH DIST %manext1% 2022-12-22 "%nmhversion%"
 .
 .\" %nmhwarning%
 .
