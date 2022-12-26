@@ -442,6 +442,8 @@ def store_fccs(msg_contents, fccs, sent_header_fields):
                     subprocess.check_output(['refile', '-link', '-file', temp.name, '+' + fcc])
                 except subprocess.CalledProcessError:
                     print('{}: refile of Fcc to {} failed'.format(sys.argv[0], fcc), file=sys.stderr)
+                except KeyboardInterrupt:
+                    print('{}: refile of Fcc to {} interrupted'.format(sys.argv[0], fcc), file=sys.stderr)
 
 
 def get_message_info(service, id):
