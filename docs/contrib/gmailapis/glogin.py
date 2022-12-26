@@ -40,7 +40,7 @@ def glogin(argv):
 
 
 def parse_args(argv):
-    """Parse command line arguments, returning OAuthConfig.
+    """Parse command line arguments, returning an OAuthConfig and an GloginConfig.
 
     argv -- command line argument list
     raises InvalidInvocation
