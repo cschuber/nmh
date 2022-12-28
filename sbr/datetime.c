@@ -62,9 +62,9 @@ struct tzdesc {
 /*
  * Parse a datetime of the form YYYYMMDDThhmmss and a string
  * representation of the timezone in units of [+-]hhmm and load the
- * struct tws.
+ * struct tws.  Return whether succesful.
  */
-static int
+static bool
 parse_datetime (const char *datetime, const char *zone, bool dst,
                 struct tws *tws)
 {
@@ -86,7 +86,7 @@ parse_datetime (const char *datetime, const char *zone, bool dst,
         if (utc_indicator != 'Z') {
             inform("%s has invalid timezone-indicator byte: %#" PRIx8,
                     datetime, (uint8_t)utc_indicator);
-            return NOTOK;
+            return false;
         }
     } else if (zone == NULL) {
         form_1 = true;
@@ -154,10 +154,10 @@ parse_datetime (const char *datetime, const char *zone, bool dst,
             }
         }
 
-        return OK;
+        return true;
     }
 
-    return NOTOK;
+    return false;
 }
 
 tzdesc_t
@@ -183,8 +183,8 @@ load_timezones (const contentline *clines)
                 if (in_standard) { in_standard = false; }
                 else if (in_daylight) { in_daylight = false; }
 
-                if (parse_datetime(params->dtstart, params->offsetfrom,
-                    in_daylight, &tws) != OK) {
+                if (!parse_datetime(params->dtstart, params->offsetfrom,
+                    in_daylight, &tws)) {
                     inform("failed to parse start time %s for %s",
                         params->dtstart,
                         in_daylight ? "daylight" : "standard");
@@ -373,7 +373,7 @@ format_datetime (tzdesc_t timezones, const contentline *node)
     if (! dt_timezone) {
         /* Form #1: DATE WITH LOCAL TIME, i.e., no time zone, or
            Form #2: DATE WITH UTC TIME */
-        if (parse_datetime(node->value, NULL, false, &tws[0]) != OK) {
+        if (!parse_datetime(node->value, NULL, false, &tws[0])) {
             inform("unable to parse datetime %s", node->value);
             return NULL;
         }
@@ -445,8 +445,8 @@ format_datetime (tzdesc_t timezones, const contentline *node)
             return NULL;
         }
 
-        if (parse_datetime(node->value, tz->standard_params.offsetto,
-            false, &tws[0]) != OK) {
+        if (!parse_datetime(node->value, tz->standard_params.offsetto,
+            false, &tws[0])) {
             inform("unable to parse datetime %s", node->value);
             return NULL;
         }
@@ -456,8 +456,8 @@ format_datetime (tzdesc_t timezones, const contentline *node)
             if (dt[0] < transition[1]) {
                 dst = 0;
             } else {
-                if (parse_datetime(node->value,
-                    tz->daylight_params.offsetto, true, &tws[1]) != OK) {
+                if (!parse_datetime(node->value,
+                    tz->daylight_params.offsetto, true, &tws[1])) {
                     inform("unable to parse datetime %s", node->value);
                     return NULL;
                 }
