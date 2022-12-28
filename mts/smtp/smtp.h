@@ -13,7 +13,6 @@ struct smtp {
 /*
  * prototypes
  */
-/* int client (); */
 /* TLS flags */
 #define S_STARTTLS 0x01
 #define S_INITTLS 0x02
