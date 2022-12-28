@@ -18,7 +18,9 @@
 static int akvis;
 static char *akerrst;
 
+/* The first also-known-as struct in the linked list if the list is not empty. */
 struct aka *akahead = NULL;
+/* The last also-known-as struct in the linked list if the list is not empty. */
 struct aka *akatail = NULL;
 
 /*
@@ -150,6 +152,9 @@ akval (struct aka *ak, char *s)
 }
 
 
+/* Does string match aliasent where the latter may contain a ‘*’ which
+ * matches zero or more characters and stops matching,
+ * e.g. "foobar" matches "foo*xyzzy". */
 static bool
 aleq (char *string, char *aliasent)
 {
@@ -256,6 +261,8 @@ alias (char *file)
 }
 
 
+/* Return a pointer to a static string holding a formatted error message
+ * for the AK_* value in ‘i’ using akerrst. */
 char *
 akerror (int i)
 {
@@ -283,6 +290,8 @@ akerror (int i)
 }
 
 
+/* Skip zero or more isspace(3) bytes and return a pointer to the next
+ * byte. */
 static char *
 scanp (char *p)
 {
@@ -292,6 +301,9 @@ scanp (char *p)
 }
 
 
+/* Skip zero or more isspace(3) bytes and return a pointer to the next,
+ * possibly NUL, byte having terminated that run of zero or more
+ * non-isspace(3) bytes with a NUL.  "\t\tfoo bar" returns "foo\0bar". */
 static char *
 getp (char *p)
 {
@@ -306,6 +318,11 @@ getp (char *p)
 }
 
 
+/* Skip zero or more isspace(3) bytes and return a pointer to the next,
+ * possibly NUL, byte having terminated that run of zero or more
+ * non-isspace(3), non-colon, non-semicolon bytes with a NUL.
+ * "\t\tfoo bar; xyzzy" returns "foo bar\0 xyzzy" and sets ‘c’ to ';'
+ * and ‘*a’ to " xyzzy". */
 static char *
 seekp (char *p, char *c, char **a)
 {
@@ -398,6 +415,8 @@ add_aka (struct aka *ak, char *pp)
 }
 
 
+/* Appends a new also-known-as struct onto the end of the akahead linked
+ * list and returns the new struct. */
 static struct aka *
 akalloc (char *id)
 {
