@@ -1767,12 +1767,11 @@ post (char *file, int bccque, int talk, int eai, char *envelope,
 	}
     } else {
         const int fd = open (file, O_RDONLY);
-        int eightbit = 0;
-
         if (fd == -1) {
           fatal (file, "unable to re-open");
         }
 
+        bool eightbit;
         if (msgflags & MMIM  &&  cte != UNKNOWN) {
             /* MIME message with C-T-E header.  (BINARYMIME isn't
                supported, use 8BITMIME instead for binary.) */
