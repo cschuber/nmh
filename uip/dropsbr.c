@@ -244,16 +244,12 @@ mbx_copy (char *mailbox, int mbx_style, int md, int fd,
 			ep = tmpbuffer + 17;
 			snprintf (buffer, sizeof(buffer), "From %s", ep);
 		    } else if (!has_prefix(buffer, "From ")) {
-			/*
-			 * If there is already a "From " line,
-			 * then leave it alone.  Else we add one.
-			 */
-			char *tmpbuffer = concat ("From nobody@nowhere	",
-						  dctime(dlocaltimenow()),
-						  buffer,
-						  NULL);
-			snprintf (buffer, sizeof(buffer), "%s", tmpbuffer);
-			free (tmpbuffer);
+                        /* There is no "From " line; add one. */
+                        char from[] = "From nobody@nowhere\t";
+                        char prefixed[LEN(from) + DCTIME_SIZEOF - 1 + sizeof buffer];
+                        snprintf(prefixed, sizeof prefixed, "%s%s%s",
+                            from, dctime(dlocaltimenow()), buffer);
+                        ABORTCPY(buffer, prefixed);
 		    }
 		}
 
