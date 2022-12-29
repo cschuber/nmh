@@ -40,6 +40,8 @@ NEW FEATURES
 OBSOLETE FEATURES
 -----------------
 
+- The generation and verification of a Content-MD5 field has been removed
+  without deprecation.  The related -check and -nocheck options now error.
 - The MIME content cache functionality has been mostly non-functional since
   the development on nmh, and consequently all of the content caching code
   and related switches (-cache/-rcache/-wcache) have been removed.
@@ -47,15 +49,6 @@ OBSOLETE FEATURES
   removed; it seems that this has been broken since 1.5 and there is very
   little support across MUAs.
 - Marked Gmail OAuth2/XOAUTH support as being unsupported.
-
--------------------
-DEPRECATED FEATURES
--------------------
-
-- The generation and verification of Content-MD5 headers is no longer
-  performed.  The -check and -nocheck switches to various nmh programs
-  that would control this functionality still exist, but are non-functional
-  and will be removed in the next release.
 
 ---------
 BUG FIXES

@@ -43,8 +43,6 @@
 #define MHSTORE_SWITCHES \
     X("auto", 0, AUTOSW) \
     X("noauto", 0, NAUTOSW) \
-    X("check", -5, CHECKSW) \
-    X("nocheck", -7, NCHECKSW) \
     X("verbose", 0, VERBSW) \
     X("noverbose", 0, NVERBSW) \
     X("file file", 0, FILESW)		/* interface from show */ \
@@ -130,11 +128,6 @@ main (int argc, char **argv)
 		continue;
 	    case NAUTOSW:
 		autosw = false;
-		continue;
-
-	    case CHECKSW:
-	    case NCHECKSW:
-		/* Currently a NOP */
 		continue;
 
 	    case PARTSW:

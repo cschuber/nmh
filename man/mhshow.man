@@ -692,7 +692,6 @@ is checked.
 .nf
 .RB ` +folder "' defaults to the current folder"
 .RB ` msgs "' defaults to cur"
-.RB ` \-nocheck '
 .RB ` \-concat '
 .RB ` \-textonly '
 .RB ` \-inlineonly '

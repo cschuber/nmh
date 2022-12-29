@@ -34,8 +34,6 @@
 #define MHBUILD_SWITCHES \
     X("auto", 0, AUTOSW) \
     X("noauto", 0, NAUTOSW) \
-    X("check", -5, CHECKSW) \
-    X("nocheck", -7, NCHECKSW) \
     X("directives", 0, DIRECTIVES) \
     X("nodirectives", 0, NDIRECTIVES) \
     X("headers", 0, HEADSW) \
@@ -156,11 +154,6 @@ main (int argc, char **argv)
 		 */
 		autobuild = false;
 		directives = true;
-		continue;
-
-	    case CHECKSW:
-	    case NCHECKSW:
-		/* Currently a NOP */
 		continue;
 
 	    case HEADSW:

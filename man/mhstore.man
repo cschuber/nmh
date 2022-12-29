@@ -510,7 +510,6 @@ is checked.
 .RB ` msgs "' defaults to cur"
 .RB ` \-noauto '
 .RB ` \-clobber\ always '
-.RB ` \-nocheck '
 .RB ` \-verbose '
 .SH CONTEXT
 If a folder is given, it will become the current folder.  The last

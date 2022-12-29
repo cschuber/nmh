@@ -40,8 +40,6 @@
 #include "sbr/globals.h"
 
 #define MHLIST_SWITCHES \
-    X("check", -5, CHECKSW) \
-    X("nocheck", -7, NCHECKSW) \
     X("headers", 0, HEADSW) \
     X("noheaders", 0, NHEADSW) \
     X("realsize", 0, SIZESW) \
@@ -126,11 +124,6 @@ main (int argc, char **argv)
 	    case VERSIONSW:
 		print_version(invo_name);
 		done (0);
-
-	    case CHECKSW:
-	    case NCHECKSW:
-		/* Currently a NOP */
-		continue;
 
 	    case HEADSW:
 		headsw = true;

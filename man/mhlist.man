@@ -217,7 +217,6 @@ to make common part numbering possible across all three programs.
 .nf
 .RB ` +folder "' defaults to the current folder"
 .RB ` msgs "' defaults to cur"
-.RB ` \-nocheck '
 .RB ` \-headers '
 .RB ` \-realsize '
 .RB ` \-changecur '

@@ -48,8 +48,6 @@
 #define MHN_SWITCHES \
     X("auto", 0, AUTOSW) \
     X("noauto", 0, NAUTOSW) \
-    X("check", -5, CHECKSW) \
-    X("nocheck", -7, NCHECKSW) \
     X("headers", 0, HEADSW) \
     X("noheaders", 0, NHEADSW) \
     X("list", 0, LISTSW) \
@@ -170,11 +168,6 @@ main (int argc, char **argv)
 		continue;
 	    case NAUTOSW:
 		autosw = false;
-		continue;
-
-	    case CHECKSW:
-	    case NCHECKSW:
-		/* Currently a NOP */
 		continue;
 
 	    case HEADSW:

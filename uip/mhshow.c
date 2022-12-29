@@ -46,8 +46,6 @@
 #include "sbr/globals.h"
 
 #define MHSHOW_SWITCHES \
-    X("check", 0, CHECKSW) \
-    X("nocheck", 0, NCHECKSW) \
     X("verbose", 0, VERBSW) \
     X("noverbose", 0, NVERBSW) \
     X("concat", 0, CONCATSW) \
@@ -139,11 +137,6 @@ main (int argc, char **argv)
 	    case VERSIONSW:
 		print_version(invo_name);
 		done (0);
-
-	    case CHECKSW:
-	    case NCHECKSW:
-		/* Currently a NOP */
-		continue;
 
 	    case CONCATSW:
 		concatsw = 1;
