@@ -614,7 +614,7 @@ mhl_format (char *file, int length, int width)
 	}
 
 	parptr = bp;
-	strncpy (name, parse(), sizeof(name) - 1);
+        strcpy(name, parse());
 	switch (*parptr) {
 	    case '\0': 
 	    case ',': 
@@ -729,7 +729,7 @@ evalvar (struct mcomp *c1)
 
     if (!*parptr)
 	return 0;
-    strncpy (name, parse(), sizeof(name) - 1);
+    strcpy(name, parse());
 
     if (!strcasecmp (name, "component")) {
 	if (ptos (name, &c1->c_text))
