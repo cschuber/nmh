@@ -60,6 +60,16 @@
 }
 
 {
+   iconv_open on Manjaro with glibc 2.36-6
+   Memcheck:Addr8
+   fun:strncmp
+   fun:is_dst
+   ...
+   fun:iconv_open
+   fun:get_param_value
+}
+
+{
    dyld libraryLocator on MacOS 10.11.6 (El Capitan)
    Memcheck:Cond
    fun:vbcmp
