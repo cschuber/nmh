@@ -418,7 +418,7 @@ END:VEVENT
 END:VCALENDAR
 EOF
 
-mhical -reply accept <"$MH_TEST_DIR/test1.ics" | egrep -v '^DTSTAMP:' \
+mhical -reply accept <"$MH_TEST_DIR/test1.ics" | grep -v '^DTSTAMP:' \
        >"$MH_TEST_DIR/test1.txt"
 check "$expected" "$MH_TEST_DIR/test1.txt"
 
@@ -465,7 +465,7 @@ EOF
 cp "$MH" "${MH}.save"
 printf 'Alternate-Mailboxes: RequesteeToo <requestee1@example.com>\n' >> "$MH"
 mhical -reply accept -attendee requestee1@example.com <"$MH_TEST_DIR/test1.ics" \
-    | egrep -v '^DTSTAMP:' >"$MH_TEST_DIR/test1.txt"
+    | grep -v '^DTSTAMP:' >"$MH_TEST_DIR/test1.txt"
 check "$expected" "$MH_TEST_DIR/test1.txt"
 
 
@@ -509,7 +509,7 @@ END:VCALENDAR
 EOF
 
 mhical -reply accept -attendee requestee2@example.com <"$MH_TEST_DIR/test1.ics" \
-    | egrep -v '^DTSTAMP:' >"$MH_TEST_DIR/test1.txt"
+    | grep -v '^DTSTAMP:' >"$MH_TEST_DIR/test1.txt"
 check "$expected" "$MH_TEST_DIR/test1.txt"
 
 
@@ -654,7 +654,7 @@ END:VEVENT
 END:VCALENDAR
 EOF
 
-mhical -reply accept <"$MH_TEST_DIR/test1.ics" | egrep -v '^DTSTAMP:' \
+mhical -reply accept <"$MH_TEST_DIR/test1.ics" | grep -v '^DTSTAMP:' \
        >"$MH_TEST_DIR/test1.txt"
 check "$expected" "$MH_TEST_DIR/test1.txt"
 
@@ -676,7 +676,7 @@ To: Mon, 05 Jan 2015 13:45
 Attendees: Requestee2, Requestee3
 EOF
 
-TZ=EST5EDT mhical <"$MH_TEST_DIR/test1.ics" | egrep -v '^DTSTAMP:' \
+TZ=EST5EDT mhical <"$MH_TEST_DIR/test1.ics" | grep -v '^DTSTAMP:' \
        >"$MH_TEST_DIR/test1.txt"
 check "$expected" "$MH_TEST_DIR/test1.txt"
 
@@ -738,7 +738,7 @@ END:VEVENT
 END:VCALENDAR
 EOF
 
-mhical -reply decline <"$MH_TEST_DIR/test1.ics" | egrep -v '^DTSTAMP:' \
+mhical -reply decline <"$MH_TEST_DIR/test1.ics" | grep -v '^DTSTAMP:' \
        >"$MH_TEST_DIR/test1.txt"
 check "$expected" "$MH_TEST_DIR/test1.txt"
 
@@ -801,7 +801,7 @@ END:VCALENDAR
 EOF
 
 mhical -reply tentative -contenttype -nocontenttype \
-       -infile "$MH_TEST_DIR/test1.ics" | egrep -v '^DTSTAMP:' \
+       -infile "$MH_TEST_DIR/test1.ics" | grep -v '^DTSTAMP:' \
        >"$MH_TEST_DIR/test1.txt"
 check "$expected" "$MH_TEST_DIR/test1.txt"
 
@@ -866,7 +866,7 @@ END:VEVENT
 END:VCALENDAR
 EOF
 
-mhical -cancel -contenttype <"$MH_TEST_DIR/test1.ics" | egrep -v '^DTSTAMP:' \
+mhical -cancel -contenttype <"$MH_TEST_DIR/test1.ics" | grep -v '^DTSTAMP:' \
        >"$MH_TEST_DIR/test1.txt"
 check "$expected" "$MH_TEST_DIR/test1.txt"
 

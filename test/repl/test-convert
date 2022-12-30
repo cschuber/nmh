@@ -395,7 +395,7 @@ EOF
 actual="$MH_TEST_DIR/test-convert$$.actual"
 repl -noformat \
      -convertargs text/calendar '-reply accept -contenttype' -nowhatnowproc last
-SIGNATURE=Recip mhbuild -auto - <`mhpath +`/draft | egrep -v '^DTSTAMP:' >"$actual"
+SIGNATURE=Recip mhbuild -auto - <`mhpath +`/draft | grep -v '^DTSTAMP:' >"$actual"
 check "$actual" "$expected"
 
 
