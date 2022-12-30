@@ -118,3 +118,11 @@
    fun:fgets
    fun:mts_read_conf_file
 }
+
+{
+   memmove on Manjaro with glibc 2.36-6
+   Memcheck:Overlap
+   fun:__memcpy_chk
+   fun:memmove
+   fun:fmt_scan
+}
