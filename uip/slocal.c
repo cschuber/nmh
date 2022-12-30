@@ -907,9 +907,18 @@ glob (int fd)
 	p->p_value = getcpy (info);
 
     if (debug) {
-	for (p = vars; p->p_name; p++)
-	    debug_printf ("vars[%td]: name=\"%s\" value=\"%s\"\n",
-		    p - vars, p->p_name, trim(p->p_value));
+        for (p = vars; p->p_name; p++) {
+            char *value, *quote;
+            if (p->p_value) {
+                value = trim(p->p_value);
+                quote = "\"";
+            } else {
+                value = "null";
+                quote = "";
+            }
+            debug_printf("vars[%td]: name=\"%s\" value=%s%s%s\n",
+                p - vars, p->p_name, quote, value, quote);
+        }
     }
 }
 
