@@ -91,7 +91,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 gz_manpages='-e '
 
 if find $RPM_BUILD_ROOT -name 'inc.1*' | \
-   egrep -q '/usr(/lib|/share)?/man/([^/]+/)?man'; then
+   grep -Eq '/usr(/lib|/share)?/man/([^/]+/)?man'; then
   #### brp-compress will gzip the man pages, so account for that.
   gz_manpages='-e s#\(/man/man./.*\)#\1.gz#'
 fi
