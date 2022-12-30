@@ -861,7 +861,8 @@ parse (void)
     char *cp;
     static char result[NAMESZ];
 
-    for (cp = result; *parptr && (cp - result < NAMESZ); parptr++) {
+    /* FIXME: silently truncates. */
+    for (cp = result; *parptr && (cp - result < (NAMESZ - 1)); parptr++) {
 	c = *parptr;
 	if (!isalnum (c)
 		&& c != '.'
