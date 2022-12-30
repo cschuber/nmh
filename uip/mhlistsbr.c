@@ -39,7 +39,7 @@ list_all_messages (CT *cts, int headers, int realsize, int verbose, bool debug,
     CT ct, *ctp;
 
     if (headers)
-        printf("%4s %-5s %-24s %5s %s\n", "msg", "part", "type/subtype", "size", "description");
+        puts(" msg part  type/subtype              size description");
 
     for (ctp = cts; *ctp; ctp++) {
 	ct = *ctp;
@@ -123,7 +123,7 @@ list_content (CT ct, int toplevel, int realsize, int verbose, bool debug,
     if (toplevel > 0)
         printf("%4d ", atoi(r1bindex(FENDNULL(ct->c_file), '/')));
     else
-	printf(toplevel < 0 ? "part " : "     ");
+        fputs(toplevel < 0 ? "part " : "     ", stdout);
 
     snprintf (buffer, sizeof(buffer), "%s/%s", FENDNULL(ci->ci_type),
 		FENDNULL(ci->ci_subtype));
@@ -148,7 +148,7 @@ list_content (CT ct, int toplevel, int realsize, int verbose, bool debug,
 	    if (size > 0 || ct->c_encoding != CE_EXTERNAL)
                 printf("%5lu", size);
 	    else
-                printf("     ");
+                fputs("     ", stdout);
 	    break;
 
 	default:
@@ -156,7 +156,7 @@ list_content (CT ct, int toplevel, int realsize, int verbose, bool debug,
 	    break;
 
 	case '\0':
-            printf("huge ");
+            fputs("huge ", stdout);
     }
 
     /* print Content-Description */
@@ -241,7 +241,7 @@ list_debug (CT ct)
     fprintf (stderr, "    magic   \"%s\"\n", FENDNULL(ci->ci_magic));
 
     /* print parsed parameters attached to content type */
-    fprintf (stderr, "    parameters\n");
+    fputs("    parameters\n", stderr);
     for (pm = ci->ci_first_pm; pm; pm = pm->pm_next)
 	fprintf (stderr, "      %s=\"%s\"\n", pm->pm_name,
 		 get_param_value(pm, '?'));
