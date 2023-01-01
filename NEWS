@@ -22,7 +22,7 @@ For news of future releases, subscribe to the low-volume
 NOTABLE CHANGES
 ---------------
 
-- Support for Content-MD5 header fields, MIMI content cache functionality,
+- Support for Content-MD5 header fields, MIME content cache functionality,
   and the message/partial MIME type have been removed.
 - Gmail OAuth2/XOAUTH support for desktop applications has been effectively
   dropped, so nmh no longer supports it.  nmh support for Gmail API access
