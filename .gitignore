@@ -1,6 +1,7 @@
 # Not removed by any Makefile target:
 .DS_Store
 /atags
+/configure~
 /docs/doxygen/
 /etags
 /tags
@@ -17,7 +18,6 @@
 /config.h.in~
 /config.sub
 /configure
-/configure~
 /depcomp
 /install-sh
 /missing
