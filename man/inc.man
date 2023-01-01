@@ -170,7 +170,7 @@ is set, then
 .B inc
 uses it as the location of the user's mail drop instead of the default
 (the
-.B -file
+.B \-file
 .I name
 switch still overrides this, however).
 If this environment variable is not set, then

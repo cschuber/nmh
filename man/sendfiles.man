@@ -10,7 +10,7 @@ sendfiles \- send multiple files by MIME message with nmh
 .B sendfiles
 .RB [ \-help ]
 .RB [ \-version ]
-.RB [ -compress
+.RB [ \-compress
 .IR bzip2 " | " compress " | " gzip " | " lzma " | " none ]
 .br
 .RB [ \-from
