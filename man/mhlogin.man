@@ -37,7 +37,7 @@ and load the printed URL in your browser.  Login to a Gmail account, grant
 authorization, and copy and paste the code into the
 .B mhlogin
 prompt.  Be sure to use the same account with the
-.B -user
+.B \-user
 switch to
 .BR send .
 See the EXAMPLES section below for an example.

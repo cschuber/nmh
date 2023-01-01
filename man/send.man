@@ -268,7 +268,7 @@ is specified, then this copy is filtered
 .B mhl
 prior to being sent to the blind recipients.
 Alternately, if you specify the
-.B -mime
+.B \-mime
 switch, then
 .B send
 will

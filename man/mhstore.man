@@ -98,7 +98,7 @@ subpart that matches (one of) the given content type(s).
 Using either
 .B \-part
 or
-.B -type
+.B \-type
 switches alone will cause either to select the part(s) they match.
 Using them together will select only the part(s) matched by both
 (sets of) switches.  In other words, the result is the intersection,

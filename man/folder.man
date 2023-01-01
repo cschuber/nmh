@@ -300,7 +300,7 @@ msg
 .TP
 \-print
 is the default if none of
-.BR -list ,
+.BR \-list ,
 .BR \-push ,
 or
 .B \-pop
