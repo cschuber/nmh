@@ -196,7 +196,7 @@ folder	string	the name of the current folder
 .PP
 .RB { body }
 returns a string without MIME decoding,
-i.e.\& the MIME boundary seperator may be the first text shown.
+i.e.\& the MIME boundary separator may be the first text shown.
 .PP
 If no date header is present in the message, the
 .I function
