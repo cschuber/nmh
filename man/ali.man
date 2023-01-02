@@ -82,7 +82,7 @@ For a default alias file
 .IR mh\-alias (5)
 .SH DEFAULTS
 .PD 0
-.TP 20
+.TP "\w'aliasfile  'u
 aliasfile
 %nmhetcdir%/MailAliases
 .TP
