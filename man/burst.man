@@ -142,19 +142,18 @@ messages which may reside in the folder after the
 Although
 .B burst
 uses a sophisticated algorithm to determine where
-one encapsulated message ends and another begins, not all digestifying
-programs use an encapsulation algorithm.  In degenerate cases, this
+one encapsulated message ends and another begins, not all digest
+creators use an encapsulation algorithm.  In degenerate cases, this
 usually results in
 .B burst
 finding an encapsulation boundary
 prematurely and splitting a single encapsulated message into two or
-more messages.  These erroneous digestifying programs should be fixed.
+more messages.  These erroneous digest creators should be fixed.
 .PP
 Furthermore, any text which appears after the last encapsulated message
 is not placed in a separate message by
 .BR burst .
-In the case of
-digestified messages, this text is usually an \*(lqEnd of digest\*(rq
+This text is usually an \*(lqEnd of digest\*(rq
 string.  As a result of this possibly unfriendly behavior on the
 part of
 .BR burst ,
