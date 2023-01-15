@@ -49,6 +49,7 @@ escape_component (char *name, size_t namesize, char *chars_to_escape)
            E.g., 2 characters, "", would require 7, "\"\""0, where that 0
            is '\0'. */
         char *tmp = mh_xmalloc (2*strlen(name) + 3);
+        *tmp = '\0';
 
         for (destp = tmp, srcp = name; *srcp; ++srcp) {
             if (srcp == name) {

@@ -158,7 +158,7 @@ main (int argc, char **argv)
     argp = arguments;
 
     bool outputsize_given = false;
-    int outputsize;
+    int outputsize = INT_MAX;
     while ((cp = *argp++)) {
 	if (*cp == '-') {
 	    /*
