@@ -596,7 +596,7 @@ display (FILE *file, tzdesc_t *timezones, contentline *clines, char *nfs)
     bool in_vtimezone;
     bool in_valarm;
     contentline *node;
-    struct format *fmt;
+    struct format *fmt = NULL;
     int dat[5] = { 0, 0, 0, INT_MAX, 0 };
     struct comp *c;
     charstring_t buffer = charstring_create (BUFSIZ);
