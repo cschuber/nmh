@@ -5,7 +5,7 @@
 Welcome to nmh, the new version of the classic MH mail handling system.
 It's been nearly five years since the last release of nmh, and there have
 been a number of significant changes since that last release.  Long-time
-MH and nmh uses should read carefully the NOTABLE CHANGES section, as
+MH and nmh users should read carefully the NOTABLE CHANGES section, as
 there are some significant changes to nmh behavior.  Otherwise, please
 see the README and INSTALL files for help on getting started with nmh.
 
@@ -80,6 +80,10 @@ OBSOLETE FEATURES
   removed; it seems that this has been broken since 1.5 and there is very
   little support across MUAs.
 - Marked Gmail OAuth2/XOAUTH support as being unsupported.
+- Support for the MHPDEBUG environment variable was removed.  It was
+  deprecated in nmh 1.7.  The pick(1) -debug switch replaced it.
+- The 'libdir' mhparam(1) component was removed.  It was deprecated in
+  nmh 1.7, when it wasreplaced by a new 'libexecdir' component.
 
 ---------
 BUG FIXES
