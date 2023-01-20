@@ -5,10 +5,10 @@
 .SH NAME
 mhlogin \- nmh login to external (OAuth) services
 .SH SYNOPSIS
-.B This implementation is no longer supported but is left here for information.
-.B That's because Google now only supports POP except with a private client ID.
-.B Also, it no longer supports OOB requests to Google's OAuth 2.0 authorization
-.B endpoint.
+.BR "This implementation is no longer supported but is left here for information."
+.BR "That's because Google now only supports POP except with a private client ID."
+.BR "Also, it no longer supports OOB requests to Google's OAuth 2.0 authorization"
+.BR "endpoint."
 .HP 5
 .na
 .B mhlogin
