@@ -1004,7 +1004,7 @@ test_runpty_LDADD = $(POSTLINK)
 config/version.c: Makefile $(srcdir)/config/version.sh
 	env srcdir="$(srcdir)" sh $(srcdir)/config/version.sh $(VERSION) > ./config/version.c
 
-etc/bash_completion_nmh: $(srcdir)/etc/bash_completion_nmh-gen
+etc/bash_completion_nmh: $(srcdir)/etc/bash_completion_nmh-gen man/mh-chart.man
 	$(srcdir)/etc/bash_completion_nmh-gen > $@
 
 etc/mts.conf: $(srcdir)/etc/mts.conf.in Makefile
