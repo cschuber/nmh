@@ -29,9 +29,7 @@ init_credentials_file(void)
         char *cred_style = context_find ("credentials");
 
         if (cred_style == NULL  ||  ! strcmp (cred_style, "legacy")) {
-            char *hdir = getenv ("HOME");
-
-            credentials_file = concat (hdir ? hdir : ".", "/.netrc", NULL);
+            credentials_file = concat (mypath ? mypath : ".", "/.netrc", NULL);
         } else if (! strncasecmp (cred_style, "file:", 5) ||
 		   ! strncasecmp (cred_style, "file-nopermcheck:", 17)) {
             struct stat st;
