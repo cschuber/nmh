@@ -105,6 +105,7 @@ TESTS = \
     test/mhparam/test-etcpath \
     test/mhparam/test-home \
     test/mhparam/test-mhparam \
+    test/mhparam/test-profile \
     test/mhpath/test-mhpath \
     test/mhshow/test-binary \
     test/mhshow/test-charset \
