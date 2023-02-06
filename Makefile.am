@@ -103,6 +103,7 @@ TESTS = \
     test/mhlist/test-mhlist \
     test/mhmail/test-mhmail \
     test/mhparam/test-etcpath \
+    test/mhparam/test-home \
     test/mhparam/test-mhparam \
     test/mhpath/test-mhpath \
     test/mhshow/test-binary \
