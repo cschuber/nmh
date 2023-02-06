@@ -57,8 +57,9 @@ Mail
 .RS 5
 Locates
 .B nmh
-transactions in directory \*(lqMail\*(rq.  This is the
-only mandatory profile entry.  (profile, no default)
+transactions in directory \*(lqMail\*(rq.  A relative Path starts from
+the user's home directory.  This is the only mandatory profile entry.
+(profile, no default)
 .RE
 .PP
 .BR locale :
@@ -801,6 +802,10 @@ to pass information via an argument list.  The convention is that
 environment variables whose names are all upper-case are user-settable;
 those whose names are lower-case only are used internally by nmh and
 should not generally be set by the user.
+.TP
+HOME
+If set and non-null, it is used as the user's home directory.
+If not set or null, then getpwuid(3)'s pw_dir is used.
 .TP
 LC_ALL, LC_CTYPE, and LANG
 These variables are used to set the locale, see locale(1).

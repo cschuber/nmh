@@ -38,10 +38,8 @@ void
 set_mypath(void)
 {
     char *var = getenv("HOME");
-    if (var) {
-        if (!*var)
-            die("environment variable HOME is empty");
 
+    if (var && *var) {
         mypath = mh_xstrdup(var);
         return;
     }
