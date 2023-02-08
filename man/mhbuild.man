@@ -1,4 +1,4 @@
-.TH MHBUILD %manext1% 2022-03-27 "%nmhversion%"
+.TH MHBUILD %manext1% 2023-02-07 "%nmhversion%"
 .
 .\" %nmhwarning%
 .
