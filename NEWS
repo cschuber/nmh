@@ -29,7 +29,9 @@ NOTABLE CHANGES
   is experimental, please post to nmh-workers@nongnu.org if you'd like to
   help with test and development.
 - repl(1) -convertargs now allows editing of the composition draft between
-  translation and any encoding of text content.
+  translation and any encoding of text content.  Because encoding can wrap
+  long lines, the use of a paragraph formatter has been removed from
+  mhn.defaults.
 
 ------------
 NEW FEATURES
