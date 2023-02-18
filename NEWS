@@ -39,7 +39,7 @@ NEW FEATURES
 
 - The default editor has been changed from 'vi' to 'prompter', to align with
   historical practice and reduce packaging dependencies on external programs.
-- A new -checkbase64 switch to mhfixmsg(1).
+- A new -checkbase64 switch has been added to mhfixmsg(1).
 - inc(1)/msgchk(1) now support STARTTLS for the POP protocol.
 - All TLS-supported protocols now will send the SNI (server name indicator)
   TLS extension.
@@ -85,7 +85,7 @@ OBSOLETE FEATURES
 - Support for the MHPDEBUG environment variable was removed.  It was
   deprecated in nmh 1.7.  The pick(1) -debug switch replaced it.
 - The 'libdir' mhparam(1) component was removed.  It was deprecated in
-  nmh 1.7, when it wasreplaced by a new 'libexecdir' component.
+  nmh 1.7, when it was replaced by a new 'libexecdir' component.
 
 ---------
 BUG FIXES
