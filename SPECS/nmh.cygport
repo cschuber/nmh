@@ -1,6 +1,6 @@
 NAME="nmh"
-VERSION=1.7
-RELEASE=2
+VERSION=
+RELEASE=
 
 CATEGORY="Mail"
 SUMMARY="A capable MIME-email-handling system with a command-line interface"
