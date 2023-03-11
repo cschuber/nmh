@@ -13,6 +13,7 @@
 #include "context_foil.h"
 #include "context_replace.h"
 #include "context_read.h"
+#include "context_save.h"
 #include "context_find.h"
 #include "print_help.h"
 #include "error.h"
@@ -623,6 +624,7 @@ nmh_version_changed (bool older)
 
         if (context_version == NULL  ||  old_version < current_version) {
             context_replace ("Version", "nmh-" VERSION);
+            context_save ();
         }
 
         return old_version < current_version ? NOTOK : OK;
@@ -630,6 +632,7 @@ nmh_version_changed (bool older)
 
     if (context_version == NULL  ||  strcmp(context_version, "nmh-" VERSION) != 0) {
         context_replace ("Version", "nmh-" VERSION);
+        context_save ();
         return NOTOK;
     }
 

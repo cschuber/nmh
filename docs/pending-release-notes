@@ -16,3 +16,4 @@ DEPRECATED FEATURES
 BUG FIXES
 ---------
 
+- Prevent repetition of nmh welcome message if a command fails.
