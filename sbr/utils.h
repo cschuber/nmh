@@ -81,7 +81,7 @@ void to_lower(char *);
 void to_upper(char *);
 
 int nmh_init(const char *, bool, bool);
-int nmh_version_changed(int);
+int nmh_version_changed(bool);
 
 bool contains8bit(const char *, const char *);
 int scan_input(int, bool *);

@@ -561,7 +561,7 @@ nmh_init(const char *argv0, bool read_context, bool check_version)
            if so. */
         if (allow_version_check  &&  isatty (fileno (stdin))  &&
             isatty (fileno (stdout))  &&  isatty (fileno (stderr))) {
-            if (nmh_version_changed (check_older_version)) {
+            if (nmh_version_changed (check_older_version) == NOTOK) {
                 printf ("==================================================="
                         "=====================\n");
                 printf ("Welcome to nmh version %s\n\n", VERSION);
@@ -600,14 +600,15 @@ nmh_init(const char *argv0, bool read_context, bool check_version)
 
 
 /*
- * Check stored version, and return 1 if out-of-date or non-existent.
+ * Check stored version, and return NOTOK if out-of-date or non-existent.
  * Because the output of "mhparam version" is prefixed with "nmh-",
  * use that prefix here.
  *
- * older        - 0 for difference comparison, 1 for only if older
+ * older - false for difference comparison, true for only if version
+ *         stored in context, if any, is older than version of this build.
  */
 int
-nmh_version_changed (int older)
+nmh_version_changed (bool older)
 {
     const char *const context_version = context_find("Version");
 
@@ -624,15 +625,15 @@ nmh_version_changed (int older)
             context_replace ("Version", "nmh-" VERSION);
         }
 
-        return old_version < current_version;
+        return old_version < current_version ? NOTOK : OK;
     }
 
     if (context_version == NULL  ||  strcmp(context_version, "nmh-" VERSION) != 0) {
         context_replace ("Version", "nmh-" VERSION);
-        return 1;
+        return NOTOK;
     }
 
-    return 0;
+    return OK;
 }
 
 
