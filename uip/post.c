@@ -657,17 +657,36 @@ main (int argc, char **argv)
 		free (cp);
 		continue;
 
-	    case BODY: 
+	    case BODY: {
+		size_t n, n_written;
+
 		finish_headers (out);
 		if (whomsw)
 		    break;
-		fprintf (out, "\n%s", buf);
+		if (fwrite ("\n", 1, 1, out) != 1) {
+		    adios ("write of newline between header and body",
+			   "failed");
+		}
+		/* Don't emit trailing NUL, unless at the very end of buf,
+		   to not interfere with SMTP conversation. */
+		n = bufsz > 0 && bufsz != sizeof buf &&
+		    buf[bufsz-1] == '\0' ? bufsz - 1 : bufsz;
+		if (n > 0  &&  (n_written = fwrite (buf, 1, n, out)) != n) {
+		    adios ("octets of body", "wrote %ld instead of %ld",
+			   n_written, n);
+		}
 		while (state == BODY) {
 		    bufsz = sizeof buf;
 		    state = m_getfld2(&gstate, name, buf, &bufsz);
-		    fputs (buf, out);
+		    n = bufsz > 0 && bufsz != sizeof buf &&
+			buf[bufsz-1] == '\0' ? bufsz - 1 : bufsz;
+		    if (n > 0  &&  (n_written = fwrite (buf, 1, n, out)) != n) {
+			adios ("octets of body continuation",
+			       "wrote %ld instead of %ld", n_written, n);
+		    }
 		}
 		break;
+	    }
 
 	    case FILEEOF: 
 		finish_headers (out);
