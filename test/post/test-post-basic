@@ -218,7 +218,7 @@ MIME-Version: 1.0
 Content-Type: application/octet-stream
 Content-Transfer-Encoding: binary
 
-This is a test, with a non-ascii character:  " "
+This is a test, with a NUL character:  " "
 "
 
 printf '%s\x00%s' > "${testname}.expected" \
@@ -234,7 +234,7 @@ Content-Type: application/octet-stream
 Content-Transfer-Encoding: binary
 Date:
 
-This is a test, with a non-ascii character:  " "
+This is a test, with a NUL character:  " "
 .
 QUIT
 "

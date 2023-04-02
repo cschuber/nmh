@@ -667,10 +667,9 @@ main (int argc, char **argv)
 		    adios ("write of newline between header and body",
 			   "failed");
 		}
-		/* Don't emit trailing NUL, unless at the very end of buf,
-		   to not interfere with SMTP conversation. */
-		n = bufsz > 0 && bufsz != sizeof buf &&
-		    buf[bufsz-1] == '\0' ? bufsz - 1 : bufsz;
+		/* Don't emit trailing NUL, to not interfere with SMTP
+		   conversation. */
+		n = bufsz > 0 && buf[bufsz-1] == '\0' ? bufsz - 1 : bufsz;
 		if (n > 0  &&  (n_written = fwrite (buf, 1, n, out)) != n) {
 		    adios ("octets of body", "wrote %ld instead of %ld",
 			   n_written, n);
@@ -678,8 +677,7 @@ main (int argc, char **argv)
 		while (state == BODY) {
 		    bufsz = sizeof buf;
 		    state = m_getfld2(&gstate, name, buf, &bufsz);
-		    n = bufsz > 0 && bufsz != sizeof buf &&
-			buf[bufsz-1] == '\0' ? bufsz - 1 : bufsz;
+		    n = bufsz > 0 && buf[bufsz-1] == '\0' ? bufsz - 1 : bufsz;
 		    if (n > 0  &&  (n_written = fwrite (buf, 1, n, out)) != n) {
 			adios ("octets of body continuation",
 			       "wrote %ld instead of %ld", n_written, n);
