@@ -147,9 +147,9 @@ main(int argc, char *argv[])
 static ssize_t
 getsmtp(int socket, char *data)
 {
-	ssize_t cc;
 	static size_t bytesinbuf = 0;
 	static char buffer[LINESIZE * 2];
+	ssize_t cc = min(bytesinbuf, LINESIZE);
 
 	for (;;) {
 		ssize_t cr_pos = -1;
