@@ -46,6 +46,12 @@ def gpost(argv):
     """
     try:
         oauth_config, gpost_config = parse_args(argv)
+    except NotXOAuth2:
+        #### Delegate to nmh post(8).
+        default_postproc = subprocess.check_output(['mhparam', 'libexecdir']).decode().rstrip() + '/post'
+        os.execv(default_postproc, ['post'] + argv[1:]);
+        print('{}: unable to exec post'.format(argv[0]), file=sys.stderr)
+        return -1
     except InvalidInvocation as err:
         print('{}: {}'.format(argv[0], err), file=sys.stderr)
         return 2
@@ -489,6 +495,7 @@ def parse_args(argv):
   -oauthclientid client-id
   -oauthclientsecret client-secret
   -oauthtokenendpoint token-endpoint
+  -saslmech mechanism
 
   The following nmh post(8) switches are ignored:
     -[no]check
@@ -505,7 +512,6 @@ def parse_args(argv):
     -client host
     -server host
     -[no]sasl
-    -saslmech mechanism
     -port server submission port name/number
     -tls
     -initialtls
@@ -578,6 +584,8 @@ def parse_args(argv):
     parser.add_argument('-oauthscope', help=argparse.SUPPRESS)
     parser.add_argument('file', nargs='?', default=None, help=argparse.SUPPRESS)
     args = parser.parse_args(argv[1:])
+    if (args.saslmech != 'xoauth2'):
+        raise NotXOAuth2
     handle_args(progname, vars(args))
 
     if args.file == None:
@@ -690,6 +698,8 @@ class SenderNotAnAddress(Exception):
 class SenderNotUnique(Exception):
     pass
 
+class NotXOAuth2(Exception):
+    pass
 
 if __name__ == '__main__':
     sys.exit(gpost(sys.argv))
