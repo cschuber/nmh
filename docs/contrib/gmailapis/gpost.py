@@ -444,7 +444,13 @@ def store_fccs(msg_contents, fccs, sent_header_fields):
             temp.write(msg_contents)
             temp.flush()
             for fcc in fccs:
+                fcc_path = '{}/{}'.format(subprocess.check_output(['mhpath', '+']).decode().strip(), fcc)
                 try:
+                    #### Create the folder if it doesn't exist.
+                    if not os.path.isdir(fcc_path):
+                        print('Create folder "{}"? '.format(fcc_path), end='')
+                        sys.stdout.flush()
+                        subprocess.check_output(['folder', '+' + fcc])
                     subprocess.check_output(['refile', '-link', '-file', temp.name, '+' + fcc])
                 except subprocess.CalledProcessError:
                     print('{}: refile of Fcc to {} failed'.format(sys.argv[0], fcc), file=sys.stderr)
