@@ -143,6 +143,12 @@ def prepare_message(gpost_config):
     header_fields = split_addresses(gpost_config.dist(), parse_key_value_list(header))
     if header_fields.get('dcc'):
         raise InvalidDraft('Dcc is not supported')
+    #### Remove any Nmh- header fields.
+    nmh_header_fields = [h for h in header_fields if re.match('nmh-', h, re.IGNORECASE)]
+    for h in nmh_header_fields:
+        print('removed header field "{}: {}"'.format(h, header_fields[h]), file=sys.stderr)
+        del header_fields[h]
+    #### Look for existing Date header field.
     if not gpost_config.dist() and header_fields.get('date'):
         raise InvalidDraft('illegal header line -- Date:, re-format message and retry')
     #### Don't bother adding a Date: field because Gmail will replace it.
