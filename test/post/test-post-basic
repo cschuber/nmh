@@ -210,7 +210,7 @@ SMTPUTF8=1 test_post "${testname}.actual" "${testname}.expected"
 start_test "content containing NUL"
 #### Use the printf to output the NUL byte so that this
 #### file (test-binary) doesn't need to be a binary file.
-printf '%s\x00%s' > "${MH_TEST_DIR}/Mail/draft" \
+printf '%s\000%s' > "${MH_TEST_DIR}/Mail/draft" \
 "From: Mr Nobody <nobody@example.com>
 To: Somebody Else <somebody@example.com>
 Subject: Test
@@ -221,7 +221,7 @@ Content-Transfer-Encoding: binary
 This is a test, with a NUL character:  " "
 "
 
-printf '%s\x00%s' > "${testname}.expected" \
+printf '%s\000%s' > "${testname}.expected" \
 "EHLO nosuchhost.example.com
 MAIL FROM:<nobody@example.com> BODY=8BITMIME
 RCPT TO:<somebody@example.com>
