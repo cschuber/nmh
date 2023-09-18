@@ -221,5 +221,58 @@ run_test "mhbuild $f" \
 
 check "$f" "$expected"
 
+start_test "Checking for correct header folding"
+
+cat >"`mhpath new`" <<\E
+From: Somebody <somebody@example.com>
+To: Nobody <nobody@example.com>
+Subject: Test message
+References: <aaaaaaaaaaaaaaaaaaaaaaaaaaa@example.com> <aaaaaaaaaaaaaaaaaaaaaaaaaab@example.com> <c@example.com>
+--------
+This is a test
+E
+
+cat > "$expected" <<\E
+From: Somebody <somebody@example.com>
+To: Nobody <nobody@example.com>
+Subject: Test message
+References: <aaaaaaaaaaaaaaaaaaaaaaaaaaa@example.com>
+ <aaaaaaaaaaaaaaaaaaaaaaaaaab@example.com> <c@example.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+
+This is a test
+E
+
+run_test "mhbuild -auto `mhpath last`"
+check "`mhpath last`" "$expected"
+
+start_test "Checking header folding with a to long line"
+
+cat >"`mhpath new`" <<\E
+From: Somebody <somebody@example.com>
+To: Nobody <nobody@example.com>
+Subject: Test message
+References: <aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@example.com>  <aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@example.com>
+--------
+This is a test
+E
+
+cat > "$expected" <<\E
+From: Somebody <somebody@example.com>
+To: Nobody <nobody@example.com>
+Subject: Test message
+References:
+ <aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@example.com>
+  <aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@example.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+
+This is a test
+E
+
+run_test "mhbuild -auto `mhpath last`"
+check "`mhpath last`" "$expected"
+
 finish_test
 exit $failed

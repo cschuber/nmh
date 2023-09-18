@@ -17,3 +17,6 @@ BUG FIXES
 ---------
 
 - Prevent repetition of nmh welcome message if a command fails.
+- mhbuild now folds header field bodies to avoid lines with more than 78 bytes.
+
+

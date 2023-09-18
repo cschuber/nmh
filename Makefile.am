@@ -378,6 +378,7 @@ noinst_HEADERS = \
     sbr/fmt_new.h \
     sbr/fmt_rfc2047.h \
     sbr/fmt_scan.h \
+    sbr/fold.h \
     sbr/folder_addmsg.h \
     sbr/folder_delmsgs.h \
     sbr/folder_free.h \
@@ -1106,6 +1107,7 @@ sbr_libmh_a_SOURCES = \
     sbr/fmt_new.c \
     sbr/fmt_rfc2047.c \
     sbr/fmt_scan.c \
+    sbr/fold.c \
     sbr/folder_addmsg.c \
     sbr/folder_delmsgs.c \
     sbr/folder_free.c \
