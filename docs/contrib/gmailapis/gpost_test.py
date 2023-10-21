@@ -40,6 +40,7 @@ def test_invalid_switch():
   -oauthclientid client-id
   -oauthclientsecret client-secret
   -oauthtokenendpoint token-endpoint
+  -saslmech mechanism
 
   The following nmh post(8) switches are ignored:
     -[no]check
@@ -56,7 +57,6 @@ def test_invalid_switch():
     -client host
     -server host
     -[no]sasl
-    -saslmech mechanism
     -port server submission port name/number
     -tls
     -initialtls
@@ -79,7 +79,7 @@ def test_nonexistent_message_file():
     from io import StringIO
     sys.stderr = stderr = StringIO()
     with tempfile.TemporaryDirectory() as temp:
-        status = gpost(['gpost.py', os.path.join(temp, 'nonexistent')])
+        status = gpost(['gpost.py', '-saslmech', 'xoauth2', os.path.join(temp, 'nonexistent')])
     assert re.search(r': message file \'.+\' not found', stderr.getvalue()) and status == 1
 
 def test_dcc_not_supported():
@@ -89,7 +89,7 @@ def test_dcc_not_supported():
         Path(temp.name).write_text("""\
 Dcc: dcc@example.com
 From: from@example.com""")
-        status = gpost(['gpost.py', temp.name])
+        status = gpost(['gpost.py', '-saslmech', 'xoauth2', temp.name])
     assert re.search(r': Dcc is not supported', stderr.getvalue()) and status == 1
 
 def test_sender_not_address():
@@ -100,7 +100,7 @@ def test_sender_not_address():
 From: from@example.com
 Sender: sender
 To: recipient@example.com""")
-        status = gpost(['gpost.py', temp.name])
+        status = gpost(['gpost.py', '-saslmech', 'xoauth2', temp.name])
     assert re.search(r': Sender does not have valid address', stderr.getvalue()) and status == 1
 
 def test_sender_not_unique():
@@ -111,7 +111,7 @@ def test_sender_not_unique():
 From: from@example.com
 Sender: sender1@example.com, sender2@example.com
 To: recipient@example.com""")
-        status = gpost(['gpost.py', temp.name])
+        status = gpost(['gpost.py', '-saslmech', 'xoauth2', temp.name])
     assert re.search(r': there should only be one Sender', stderr.getvalue()) and status == 1
 
 def test_whom_without_sender():
@@ -121,7 +121,7 @@ def test_whom_without_sender():
         Path(temp.name).write_text("""\
 To: recipient@example.com
 Subject: no sender""")
-        status = gpost(['gpost.py', '-whom', temp.name])
+        status = gpost(['gpost.py', '-saslmech', 'xoauth2', '-whom', temp.name])
     assert 'whom: message has no From: header' in stderr.getvalue() and status == 1
 
 def test_whom():
@@ -135,7 +135,7 @@ Cc: <cc@example.com>
 Bcc: bcc@example.com
 From: from@example.com
 """)
-        status = gpost(['gpost.py', '-whom', temp.name])
+        status = gpost(['gpost.py', '-saslmech', 'xoauth2', '-whom', temp.name])
     assert """\
   -- Network Recipients --
   recipient1 at example.com
@@ -154,7 +154,7 @@ To: recipient2@example.com
 To: recipient3@example.com
 From: from@example.com
 """)
-        status = gpost(['gpost.py', '-whom', temp.name])
+        status = gpost(['gpost.py', '-saslmech', 'xoauth2', '-whom', temp.name])
     assert """\
   -- Network Recipients --
   recipient1 at example.com
@@ -170,7 +170,7 @@ def test_whom_with_multiple_from_without_sender():
 To: recipient@example.com
 From: from1@example.com, from2@example.com
 """)
-        status = gpost(['gpost.py', '-whom', temp.name])
+        status = gpost(['gpost.py', '-saslmech', 'xoauth2', '-whom', temp.name])
     assert 'whom: A Sender: or Envelope-From:' in stderr.getvalue() and status == 1
 
 def test_no_from_with_sender():
@@ -180,7 +180,7 @@ def test_no_from_with_sender():
         Path(temp.name).write_text("""\
 To: recipient@example.com
 Sender: sender@example.com""")
-        status = gpost(['gpost.py', temp.name])
+        status = gpost(['gpost.py', '-saslmech', 'xoauth2', temp.name])
     assert re.search(r': message has no From:', stderr.getvalue()) and status == 1
 
 def test_no_from_with_envelope_from():
@@ -190,7 +190,7 @@ def test_no_from_with_envelope_from():
         Path(temp.name).write_text("""\
 To: recipient@example.com
 Envelope-From: envelope_from@example.com""")
-        status = gpost(['gpost.py', temp.name])
+        status = gpost(['gpost.py', '-saslmech', 'xoauth2', temp.name])
     assert re.search(r': message has no From:', stderr.getvalue()) and status == 1
 
 def test_envelope_from():
@@ -200,7 +200,7 @@ def test_envelope_from():
 To: recipient@example.com
 From: from@example.com
 Envelope-From: envelope_from@example.com""")
-        unused, config = parse_args(['gpost.py', temp.name])
+        unused, config = parse_args(['gpost.py', '-saslmech', 'xoauth2', temp.name])
         msg_contents, sender, recipients, fccs = prepare_message(config)
     assert """\
 To: recipient@example.com
@@ -216,7 +216,7 @@ To: recipient@example.com
 From: from@example.com
 Sender: sender@example.com
 Envelope-From: envelope_from@example.com""")
-        unused, config = parse_args(['gpost.py', temp.name])
+        unused, config = parse_args(['gpost.py', '-saslmech', 'xoauth2', temp.name])
         msg_contents, sender, recipients, fccs = prepare_message(config)
     assert """\
 To: recipient@example.com
@@ -231,7 +231,7 @@ def test_angle_bracket_addresses():
 To: recipient1@example.com, <recipient2@example.com>
 Cc: <cc1@example.com>, cc2@example.com
 From: <from@example.com>""")
-        unused, config = parse_args(['gpost.py', temp.name])
+        unused, config = parse_args(['gpost.py', '-saslmech', 'xoauth2', temp.name])
         msg_contents, sender, recipients, fccs = prepare_message(config)
     assert """\
 To: recipient1@example.com, <recipient2@example.com>
@@ -250,7 +250,7 @@ def test_bcc():
 To: recipient@example.com
 Bcc: bcc@example.com
 From: <from@example.com>""")
-        unused, config = parse_args(['gpost.py', temp.name])
+        unused, config = parse_args(['gpost.py', '-saslmech', 'xoauth2', temp.name])
         msg_contents, sender, recipients, fccs = prepare_message(config)
     assert """\
 To: recipient@example.com
@@ -267,7 +267,7 @@ def test_fcc():
 To: recipient@example.com
 Fcc: +outbox
 From: <from@example.com>""")
-        unused, config = parse_args(['gpost.py', temp.name])
+        unused, config = parse_args(['gpost.py', '-saslmech', 'xoauth2', temp.name])
         msg_contents, sender, recipients, fccs = prepare_message(config)
     assert """\
 To: recipient@example.com
@@ -284,7 +284,7 @@ To: recipient@example.com
 Fcc: +outbox, +save
 FCC: +another
 From: <from@example.com>""")
-        unused, config = parse_args(['gpost.py', temp.name])
+        unused, config = parse_args(['gpost.py', '-saslmech', 'xoauth2', temp.name])
         msg_contents, sender, recipients, fccs = prepare_message(config)
     assert """\
 To: recipient@example.com
