@@ -16,4 +16,11 @@
  */
 int decode_qp(unsigned char byte1, unsigned char byte2) CONST;
 
-bool decode_rfc2047(char *, char *, size_t);
+/*
+ * Decode first argument string to destination of specified length.
+ * Returns length in octets of decoded string, excluding terminating
+ * NUL, or -1 if unable to decode.  The last argument can optionally
+ * specify the destination charset.  If NULL, the user's locale charset
+ * is used.
+ */
+ssize_t decode_rfc2047(char *, char *, size_t, const char *);

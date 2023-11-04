@@ -103,6 +103,7 @@ TESTS = \
     test/mhlist/test-mhlist \
     test/mhmail/test-mhmail \
     test/mhparam/test-etcpath \
+    test/mhparam/test-home \
     test/mhparam/test-mhparam \
     test/mhpath/test-mhpath \
     test/mhshow/test-binary \
@@ -441,8 +442,7 @@ noinst_HEADERS = \
     sbr/signals.h \
     sbr/smatch.h \
     sbr/snprintb.h \
-    sbr/ssequal.h \
-    sbr/strindex.h \
+    sbr/stringdex.h \
     sbr/terminal.h \
     sbr/trimcpy.h \
     sbr/unquote.h \
@@ -1020,7 +1020,7 @@ test_runpty_LDADD = $(POSTLINK)
 config/version.c: Makefile $(srcdir)/config/version.sh
 	env srcdir="$(srcdir)" sh $(srcdir)/config/version.sh $(VERSION) > ./config/version.c
 
-etc/bash_completion_nmh: $(srcdir)/etc/bash_completion_nmh-gen
+etc/bash_completion_nmh: $(srcdir)/etc/bash_completion_nmh-gen man/mh-chart.man
 	$(srcdir)/etc/bash_completion_nmh-gen > $@
 
 etc/mts.conf: $(srcdir)/etc/mts.conf.in Makefile
@@ -1188,8 +1188,7 @@ sbr_libmh_a_SOURCES = \
     sbr/signals.c \
     sbr/smatch.c \
     sbr/snprintb.c \
-    sbr/ssequal.c \
-    sbr/strindex.c \
+    sbr/stringdex.c \
     sbr/terminal.c \
     sbr/trimcpy.c \
     sbr/unquote.c \
@@ -1205,7 +1204,7 @@ sbr_libmh_a_LIBADD = $(LIBOBJS)
 ## Need explicit dependency so that YACC is run before LEX.
 ##
 sbr/icalendar.c: sbr/icalparse.c
-uip/mhical.c: sbr/icalparse.h
+$(srcdir)/uip/mhical.c: sbr/icalparse.h
 
 ##
 ## Because these files use the definitions in the libmh rule below,

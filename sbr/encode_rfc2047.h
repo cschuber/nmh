@@ -20,5 +20,10 @@
  *
  * Returns 0 on success, any other value on failure.
  */
-
 int encode_rfc2047(const char *, char **, int, const char *);
+
+/*
+ * "Unfold" a header, making it a single line (without continuation)
+ *
+ */
+void unfold_header(char **, size_t);

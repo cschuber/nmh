@@ -192,7 +192,7 @@ show_single_message (CT ct, char *form, int concatsw, int textonly,
     sigaddset (&set, SIGTERM);
     sigprocmask (SIG_BLOCK, &set, &oset);
 
-    while (!concatsw && wait (&status) != NOTOK) {
+    while (!concatsw && wait (&status) != -1) {
 	pidcheck (status);
 	continue;
     }
@@ -455,7 +455,7 @@ show_content_aux2 (CT ct, int alternate, char *cracked, char *buffer,
 
 	if (cc < 0) {
 	    advise("read", "while reading text content");
-	    return NOTOK;
+	    return -1;
 	}
 
 	/*

@@ -43,8 +43,6 @@
 #define MHSTORE_SWITCHES \
     X("auto", 0, AUTOSW) \
     X("noauto", 0, NAUTOSW) \
-    X("check", -5, CHECKSW) \
-    X("nocheck", -7, NCHECKSW) \
     X("verbose", 0, VERBSW) \
     X("noverbose", 0, NVERBSW) \
     X("file file", 0, FILESW)		/* interface from show */ \
@@ -130,11 +128,6 @@ main (int argc, char **argv)
 		continue;
 	    case NAUTOSW:
 		autosw = false;
-		continue;
-
-	    case CHECKSW:
-	    case NCHECKSW:
-		/* Currently a NOP */
 		continue;
 
 	    case PARTSW:
@@ -265,7 +258,7 @@ main (int argc, char **argv)
 	    folder = getfolder (1);
 	maildir = m_maildir (folder);
 
-	if (chdir (maildir) == NOTOK)
+	if (chdir (maildir) == -1)
 	    adios (maildir, "unable to change directory to");
 
 	/* read folder and create message structure */
@@ -315,7 +308,7 @@ main (int argc, char **argv)
 
 	ct = *ctp;
 	if (type_ok (ct, 1) && !ct->c_umask) {
-	    if (stat (ct->c_file, &st) != NOTOK)
+	    if (stat (ct->c_file, &st) != -1)
 		ct->c_umask = ~(st.st_mode & 0777);
 	    else
 		ct->c_umask = ~m_gmprot();

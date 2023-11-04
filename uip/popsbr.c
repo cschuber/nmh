@@ -693,13 +693,14 @@ multiline (void)
 
     if (pop_getline (buffer, sizeof buffer, nsc) != OK)
 	return NOTOK;
+
+    char *b = buffer;
     if (has_prefix(buffer, TRM)) {
-	if (buffer[LEN(TRM)] == 0)
-	    return DONE;
-        ABORTCPY(response, buffer + LEN(TRM));
-    } else
-	strncpy (response, buffer,
-		 min (strlen(buffer) + 1, sizeof(response) - 1));
+        b += LEN(TRM);
+        if (!*b)
+            return DONE;
+    }
+    ABORTCPY(response, b);
 
     return OK;
 }

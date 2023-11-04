@@ -305,6 +305,7 @@ extern struct str2init str2methods[];
 CT parse_mime (char *);
 
 int add_header (CT, char *, char *);
+bool remove_header (CT, const char *);
 int get_ctinfo (char *, CT, int);
 int params_external (CT, int);
 int open7Bit (CT, char **);

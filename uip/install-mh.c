@@ -109,7 +109,7 @@ main (int argc, char **argv)
      *	exist, succeeds if it does.
      */
 
-    if (stat (defpath, &st) != NOTOK) {
+    if (stat (defpath, &st) != -1) {
 	if (check)
 	    done(0);
 	if (autof)
@@ -131,7 +131,7 @@ main (int argc, char **argv)
     }
 
     cp = concat (mypath, "/", "Mail", NULL);
-    if (stat (cp, &st) != NOTOK) {
+    if (stat (cp, &st) != -1) {
 	if (!S_ISDIR(st.st_mode))
 	    goto query;
         cp = concat ("You already have the standard nmh directory \"",
@@ -166,7 +166,7 @@ query:
     if (chdir (mypath) < 0) {
 	advise (mypath, "chdir");
     }
-    if (chdir (pathname) == NOTOK) {
+    if (chdir (pathname) == -1) {
 	cp = concat ("\"", pathname, "\" doesn't exist; Create it? ", NULL);
 	if (autof || read_switch (cp, anoyes))
 	    if (makedir (pathname) == 0)
@@ -216,6 +216,8 @@ query:
 	if (!np->n_context)
 	    fprintf (out, "%s: %s\n", np->n_name, np->n_field);
     }
+    fprintf (out, "Draft-Folder: drafts\n");
+    fprintf (out, "send: -draftfolder drafts\n");
     fclose (out);
 
     puts ("\nPlease see nmh(7) for an introduction to nmh.\n");

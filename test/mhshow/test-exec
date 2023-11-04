@@ -36,7 +36,8 @@ for w in false foo bar xyzzy; do
     cp "$MH.orig" "$MH"
     echo "mhshow-show-text/foo: $cmd" >>"$MH"
     set +e
-    run_prog mhshow last >"$got" 2>&1
+    #### map 255, which is the status on Solaris, to 1
+    run_prog mhshow last | sed 's/\(exited\) 255/\1 1/' >"$got" 2>&1
     set -e
     cat >"$want" <<\E
 [ Message inbox:11 ]

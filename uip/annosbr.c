@@ -189,7 +189,7 @@ annosbr (int fd, char *file, char *comp, char *text, bool inplace, bool datesw, 
     int		length;		/* length of field name */
     int		n;		/* number of bytes written */
 
-    mode = fstat (fd, &st) != NOTOK ? (int) (st.st_mode & 0777) : m_gmprot ();
+    mode = fstat (fd, &st) != -1 ? (int) (st.st_mode & 0777) : m_gmprot ();
 
     if ((cp = m_mktemp2(file, "annotate", NULL, &tmp)) == NULL) {
 	die("unable to create temporary file");
@@ -404,7 +404,7 @@ annosbr (int fd, char *file, char *comp, char *text, bool inplace, bool datesw, 
     fclose (tmp);
 
     if (inplace) {
-	if ((tmpfd = open (tmpfil, O_RDONLY)) == NOTOK)
+	if ((tmpfd = open (tmpfil, O_RDONLY)) == -1)
 	    adios (tmpfil, "unable to open for re-reading");
 
 	lseek(fd, 0, SEEK_SET);
@@ -422,7 +422,7 @@ annosbr (int fd, char *file, char *comp, char *text, bool inplace, bool datesw, 
 	(void) m_unlink (tmpfil);
     } else {
 	strncpy (buffer, m_backup (file), sizeof(buffer) - 1);
-	if (rename (file, buffer) == NOTOK) {
+	if (rename (file, buffer) == -1) {
 	    switch (errno) {
 		case ENOENT:	/* unlinked early - no annotations */
 		    (void) m_unlink (tmpfil);
@@ -434,7 +434,7 @@ annosbr (int fd, char *file, char *comp, char *text, bool inplace, bool datesw, 
 	    }
 	    return 1;
 	}
-	if (rename (tmpfil, file) == NOTOK) {
+	if (rename (tmpfil, file) == -1) {
 	    admonish (file, "unable to rename %s to", tmpfil);
 	    return 1;
 	}

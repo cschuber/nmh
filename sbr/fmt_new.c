@@ -35,16 +35,17 @@ new_fs (char *form, char *format, char *default_fs)
     free(formats);
 
     if (form) {
-	if ((fp = fopen (etcpath (form), "r")) == NULL)
-	    adios (form, "unable to open format file");
+        char *path = etcpath(form);
+        if ((fp = fopen(path, "r")) == NULL)
+            adios(path, "unable to open format file");
 
 	if (fstat (fileno (fp), &st) == -1)
-	    adios (form, "unable to stat format file");
+            adios(path, "unable to stat format file");
 
 	formats = mh_xmalloc ((size_t) st.st_size + 1);
 
 	if (read (fileno(fp), formats, (int) st.st_size) != st.st_size)
-	    adios (form, "error reading format file");
+            adios(path, "error reading format file");
 
 	formats[st.st_size] = '\0';
 

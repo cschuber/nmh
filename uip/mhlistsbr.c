@@ -29,22 +29,6 @@ static int list_encoding (CT);
 
 
 /*
- * various formats for -list option
- */
-#define	LSTFMT1		"%4s %-5s %-24s %5s %s\n"
-#define	LSTFMT2a	"%4d "
-#define	LSTFMT2b	"%-5s %-24.24s "
-#define	LSTFMT2bv	"%-5s %-24s "
-#define	LSTFMT2c1	"%5lu"
-#define	LSTFMT2c2	"%4lu%c"
-#define	LSTFMT2c3	"huge "
-#define	LSTFMT2c4	"     "
-#define	LSTFMT2d1	" %.36s"
-#define	LSTFMT2d1v	" %s"
-#define	LSTFMT2d2	"\t     %-65s\n"
-
-
-/*
  * Top level entry point to list group of messages
  */
 
@@ -55,7 +39,7 @@ list_all_messages (CT *cts, int headers, int realsize, int verbose, bool debug,
     CT ct, *ctp;
 
     if (headers)
-	printf (LSTFMT1, "msg", "part", "type/subtype", "size", "description");
+        puts(" msg part  type/subtype              size description");
 
     for (ctp = cts; *ctp; ctp++) {
 	ct = *ctp;
@@ -137,16 +121,16 @@ list_content (CT ct, int toplevel, int realsize, int verbose, bool debug,
     PM pm;
 
     if (toplevel > 0)
-	printf (LSTFMT2a, atoi (r1bindex (FENDNULL(ct->c_file), '/')));
+        printf("%4d ", atoi(r1bindex(FENDNULL(ct->c_file), '/')));
     else
-	printf(toplevel < 0 ? "part " : "     ");
+        fputs(toplevel < 0 ? "part " : "     ", stdout);
 
     snprintf (buffer, sizeof(buffer), "%s/%s", FENDNULL(ci->ci_type),
 		FENDNULL(ci->ci_subtype));
     if (verbose)
-	printf (LSTFMT2bv, FENDNULL(ct->c_partno), buffer);
+        printf("%-5s %-24s ", FENDNULL(ct->c_partno), buffer);
     else
-	printf (LSTFMT2b, FENDNULL(ct->c_partno), buffer);
+        printf("%-5s %-24.24s ", FENDNULL(ct->c_partno), buffer);
 
     if (ct->c_cesizefnx && realsize)
 	size = (*ct->c_cesizefnx) (ct);
@@ -162,17 +146,17 @@ list_content (CT ct, int toplevel, int realsize, int verbose, bool debug,
     switch (*cp) {
         case ' ':
 	    if (size > 0 || ct->c_encoding != CE_EXTERNAL)
-		printf (LSTFMT2c1, size);
+                printf("%5lu", size);
 	    else
-		printf (LSTFMT2c4);
+                fputs("     ", stdout);
 	    break;
 
 	default:
-	    printf (LSTFMT2c2, size, *cp);
+            printf("%4lu%c", size, *cp);
 	    break;
 
 	case '\0':
-	    printf (LSTFMT2c3);
+            fputs("huge ", stdout);
     }
 
     /* print Content-Description */
@@ -181,9 +165,9 @@ list_content (CT ct, int toplevel, int realsize, int verbose, bool debug,
 
 	dp = cpytrim (ct->c_descr);
 	if (verbose)
-	    printf (LSTFMT2d1v, dp);
+            printf(" %s", dp);
 	else
-	    printf (LSTFMT2d1, dp);
+            printf(" %.36s", dp);
 	free (dp);
     }
 
@@ -207,7 +191,7 @@ list_content (CT ct, int toplevel, int realsize, int verbose, bool debug,
 	    dp = cpytrim (ci->ci_comment);
 	    snprintf (buffer, sizeof(buffer), "(%s)", dp);
 	    free (dp);
-	    printf (LSTFMT2d2, buffer);
+            printf("\t     %-65s\n", buffer);
 	}
     }
 
@@ -257,7 +241,7 @@ list_debug (CT ct)
     fprintf (stderr, "    magic   \"%s\"\n", FENDNULL(ci->ci_magic));
 
     /* print parsed parameters attached to content type */
-    fprintf (stderr, "    parameters\n");
+    fputs("    parameters\n", stderr);
     for (pm = ci->ci_first_pm; pm; pm = pm->pm_next)
 	fprintf (stderr, "      %s=\"%s\"\n", pm->pm_name,
 		 get_param_value(pm, '?'));

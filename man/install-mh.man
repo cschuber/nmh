@@ -1,4 +1,4 @@
-.TH INSTALL-MH %manext1% 2002-11-18 "%nmhversion%"
+.TH INSTALL-MH %manext1% 2022-12-22 "%nmhversion%"
 .
 .\" %nmhwarning%
 .
@@ -65,6 +65,11 @@ is installed.
 (This can be used by other programs to determine if
 .B nmh
 has been installed.)
+.PP
+.B install\-mh
+sets up the user's profile to support the
+.IR mh\-draft (5)
+draft folder facility.
 .SH FILES
 .PD 0
 .TP 20
@@ -78,6 +83,8 @@ Used to initialize user's profile.
 .TP 20
 Path:
 To set the user's nmh directory.
+.SH "SEE ALSO"
+.IR mh\-draft (5)
 .SH CONTEXT
 With
 .BR \-auto ,

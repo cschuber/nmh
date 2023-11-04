@@ -22,16 +22,9 @@ for A in $SEARCHPATH; do
 	continue
     fi
 
-    # if program was found in /usr/local/bin, then
-    # just echo program name, else echo full pathname
+    # if program was found then echo full pathname
     if test -f "$A/$PROGRAM"; then
-	if test "$A" = "/usr/local/bin"; then
-	    PGM="$PROGRAM"
-	else
-	    PGM="$A/$PROGRAM"
-	fi
-
-	echo "$PGM"
+	echo "$A/$PROGRAM"
 	exit 0
     fi
 done

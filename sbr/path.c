@@ -8,7 +8,6 @@
 #include "h/mh.h"
 #include <pwd.h>
 #include "error.h"
-#include "ssequal.h"
 #include "getfolder.h"
 #include "path.h"
 #include "utils.h"
@@ -39,10 +38,8 @@ void
 set_mypath(void)
 {
     char *var = getenv("HOME");
-    if (var) {
-        if (!*var)
-            die("environment variable HOME is empty");
 
+    if (var && *var) {
         mypath = mh_xstrdup(var);
         return;
     }
@@ -96,7 +93,7 @@ expath (char *name, int flag)
 	name = m_mailpath (buffer);
 	compath (name);
 	snprintf (buffer, sizeof(buffer), "%s/", m_maildir (""));
-	if (ssequal (buffer, name)) {
+	if (has_prefix(name, buffer)) {
 	    cp = name;
 	    name = mh_xstrdup(name + strlen(buffer));
 	    free (cp);
@@ -267,7 +264,7 @@ etcpath (char *file)
                     inform("etcpath(%s) overflow, continuing", file);
                     goto failed;
                 }
-                if (access (epath, R_OK) != NOTOK) {
+                if (access (epath, R_OK) != -1) {
                     goto succeeded;
                 }
             }
@@ -284,7 +281,7 @@ etcpath (char *file)
             }
             memcpy(epath, cp, need);
             free (cp);
-            if (access (epath, R_OK) != NOTOK) {
+            if (access (epath, R_OK) != -1) {
                 goto succeeded;
             }
     }
@@ -295,7 +292,7 @@ etcpath (char *file)
         inform ("etcpath(%s/%s) overflow when checking etc directory, continuing",
                 NMHETCDIR, file);
         goto failed;
-    } else if (access (epath, R_OK) == NOTOK) {
+    } else if (access (epath, R_OK) == -1) {
         goto failed;
     }
 succeeded:

@@ -278,7 +278,7 @@ main (int argc, char **argv)
 	    folder = getfolder (1);
 	maildir = m_maildir (folder);
 
-	if (chdir (maildir) == NOTOK)
+	if (chdir (maildir) == -1)
 	    adios (maildir, "unable to change directory to");
 
 	/* read folder and create message structure */
@@ -298,7 +298,7 @@ main (int argc, char **argv)
 	if (mp->numsel > 1)
 	    die("only one message at a time!");
 
-	if ((in = open (form = mh_xstrdup(m_name (mp->lowsel)), O_RDONLY)) == NOTOK)
+	if ((in = open (form = mh_xstrdup(m_name (mp->lowsel)), O_RDONLY)) == -1)
 	    adios (form, "unable to open message");
     } else {
 	struct comp *cptr;
@@ -348,7 +348,7 @@ try_it_again:
     /*
      * Check if we have an existing draft
      */
-    if (!build && (out = open (drft, O_RDONLY)) != NOTOK) {
+    if (!build && (out = open (drft, O_RDONLY)) != -1) {
 	i = fdcompare (in, out);
 	close (out);
 
@@ -360,7 +360,7 @@ try_it_again:
 	if (use || i)
 	    goto edit_it;
 
-	if (stat (drft, &st) == NOTOK)
+	if (stat (drft, &st) == -1)
 	    adios (drft, "unable to stat");
 	printf ("Draft \"%s\" exists (%ld bytes).", drft, (long) st.st_size);
 	for (i = LISTDSW; i != YESW;) {
@@ -396,7 +396,7 @@ try_it_again:
 	    adios (drft, "unable to open");
     }
 
-    if ((out = creat (drft, m_gmprot ())) == NOTOK)
+    if ((out = creat (drft, m_gmprot ())) == -1)
 	adios (drft, "unable to create");
     if (cp) {
 	charstring_t scanl;

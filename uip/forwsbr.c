@@ -189,7 +189,7 @@ finished:
     }
     strncpy (tmpfil, cp, sizeof(tmpfil) - 1);
     (void) m_unlink (tmpfil);
-    if ((in = dup (fileno (tmp))) == NOTOK)
+    if ((in = dup (fileno (tmp))) == -1)
 	adios ("dup", "unable to");
 
     line = charstring_create (fmtsize);

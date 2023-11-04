@@ -35,9 +35,10 @@ touch "$expected" "$actual"
 warnings="-ww"
 
 #### If the prefix is too long, groff will report that it can't break
-#### the `aliasfiles' line in ali.1.
+#### the `aliasfile' line in ali.1 and the `replaliases' line in
+#### mhbuild.1.
 length=`echo $prefix | awk '{print length($0)}'`
-[ $length -gt 32 ]  &&  warnings="${warnings} -Wbreak"
+[ $length -gt 31 ]  &&  warnings="${warnings} -Wbreak"
 
 #### OpenBSD's mandoc spits out a lot of "unbalance .el request" warnings;
 #### -Wel suppresses them.

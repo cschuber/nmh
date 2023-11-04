@@ -257,7 +257,7 @@ usage:
 	folder = getfolder (1);
     maildir = m_maildir (folder);
 
-    if (chdir (maildir) == NOTOK)
+    if (chdir (maildir) == -1)
 	adios (maildir, "unable to change directory to");
 
     /* read folder and create message structure */

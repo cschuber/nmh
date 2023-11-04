@@ -174,7 +174,7 @@ main (int argc, char **argv)
 	folder = getfolder (1);
     maildir = m_maildir (folder);
 
-    if (chdir (maildir) == NOTOK)
+    if (chdir (maildir) == -1)
 	adios (maildir, "unable to change directory to");
 
     /* read folder and create message structure */
@@ -401,7 +401,7 @@ burst (struct msgs **mpp, int msgnum, struct smsg *smsgs, int numburst,
 	adios (msgnam, "unable to read message");
 
     mode =
-      fstat (fileno(in), &st) != NOTOK ? (int) (st.st_mode & 0777) : m_gmprot();
+      fstat (fileno(in), &st) != -1 ? (int) (st.st_mode & 0777) : m_gmprot();
     mp = *mpp;
 
     /*
@@ -441,7 +441,7 @@ burst (struct msgs **mpp, int msgnum, struct smsg *smsgs, int numburst,
 		if (verbosw)
 		    printf ("message %d becomes message %d\n", j, i);
 
-		if (rename (f2, f1) == NOTOK)
+		if (rename (f2, f1) == -1)
 		    admonish (f1, "unable to rename %s to", f2);
 
 		(void)snprintf(f1, sizeof (f1), "%s/%d", maildir, i);
@@ -498,13 +498,13 @@ burst (struct msgs **mpp, int msgnum, struct smsg *smsgs, int numburst,
 
 	if (i == msgnum) {
 	    strncpy (f3, m_backup (f1), sizeof(f3) - 1);
-	    if (rename (f1, f3) == NOTOK)
+	    if (rename (f1, f3) == -1)
 		admonish (f3, "unable to rename %s to", f1);
 
 	    (void)snprintf(f3, sizeof (f3), "%s/%d", maildir, i);
 	    ext_hook("del-hook", f3, NULL);
 	}
-	if (rename (f2, f1) == NOTOK)
+	if (rename (f2, f1) == -1)
 	    admonish (f1, "unable to rename %s to", f2);
 
 	(void)snprintf(f3, sizeof (f3), "%s/%d", maildir, i);

@@ -39,7 +39,7 @@ start_test 'success, though alias not found'
 COLUMNS=1 check_exit '-eq 0' $ap foo
 
 #### Make sure that 8-bit character is properly interpreted.
-require_locale en_US.UTF-8 en_US.UTF8 en_US.utf-8 en_US.utf8
+require_locale $en_locales
 start_test 'address with 8-bit character'
 check_exit '-eq 1' $ap -width 0 `printf 'f\357o'`
 

@@ -141,7 +141,7 @@ static void sendit(char *, char **, char *, bool);
 static int buildfile (char **, char *);
 static int whomfile (char **, char *);
 static int removefile (char *);
-static int checkmimeheader (char *);
+static bool checkmimeheader (char *);
 static void writelscmd(char *, int, char *, char **);
 static void writesomecmd(char *buf, int bufsz, char *cmd, char *trailcmd, char **argp);
 static FILE* popen_in_dir(const char *dir, const char *cmd, const char *type);
@@ -305,7 +305,7 @@ WhatNow (int argc, char **argv)
 		((*argp)[0] == '-' && (*argp)[1] == 'd'))) {
 		removefile (drft);
 	    } else {
-		if (stat (drft, &st) != NOTOK)
+		if (stat (drft, &st) != -1)
 		    inform("draft left on %s", drft);
 	    }
 	    done (1);
@@ -711,7 +711,7 @@ editfile (char **ed, char **arg, char *file, int use, struct msgs *mp,
 
 	if (atfile) {
 	    (void) m_unlink (linkpath);
-	    if (link (altpath, linkpath) == NOTOK) {
+	    if (link (altpath, linkpath) == -1) {
 		if (symlink (altpath, linkpath) < 0) {
 		    adios (linkpath, "symlink");
 		}
@@ -761,7 +761,7 @@ editfile (char **ed, char **arg, char *file, int use, struct msgs *mp,
 		if (((status & 0xff00) != 0xff00)
 		    && (!reedit || (status & 0x00ff))) {
 		    if (!use && (status & 0xff00) &&
-			    (rename (file, cp = m_backup (file)) != NOTOK)) {
+			    (rename (file, cp = m_backup (file)) != -1)) {
 			inform("problems with edit--draft left in %s", cp);
 		    } else {
 			inform("problems with edit--%s preserved", file);
@@ -776,13 +776,13 @@ editfile (char **ed, char **arg, char *file, int use, struct msgs *mp,
 		    && mp
 		    && !is_readonly(mp)
 		    && (slinked
-		           ? lstat (linkpath, &st) != NOTOK
+		           ? lstat (linkpath, &st) != -1
 				&& S_ISREG(st.st_mode)
 				&& copyf (linkpath, altpath) == NOTOK
-		           : stat (linkpath, &st) != NOTOK
+		           : stat (linkpath, &st) != -1
 				&& st.st_nlink == 1
 				&& (m_unlink (altpath) == NOTOK
-					|| link (linkpath, altpath) == NOTOK)))
+					|| link (linkpath, altpath) == -1)))
 		advise (linkpath, "unable to update %s from", altmsg);
     }
 
@@ -804,9 +804,9 @@ copyf (char *ifile, char *ofile)
     int i, in, out;
     char buffer[BUFSIZ];
 
-    if ((in = open (ifile, O_RDONLY)) == NOTOK)
+    if ((in = open (ifile, O_RDONLY)) == -1)
 	return NOTOK;
-    if ((out = open (ofile, O_WRONLY | O_TRUNC)) == NOTOK) {
+    if ((out = open (ofile, O_WRONLY | O_TRUNC)) == -1) {
 	admonish (ofile, "unable to open and truncate");
 	close (in);
 	return NOTOK;
@@ -1222,7 +1222,7 @@ sendit(char *sp, char **arg, char *file, bool pushed)
 	}
 	distfile = mh_xstrdup(cp);
 	(void) m_unlink(distfile);
-	if (link (altmsg, distfile) == NOTOK)
+	if (link (altmsg, distfile) == -1)
 	    adios (distfile, "unable to link %s to", altmsg);
     } else {
 	distfile = NULL;
@@ -1242,7 +1242,7 @@ sendit(char *sp, char **arg, char *file, bool pushed)
     NMH_UNUSED(saslmech);
 #endif /* OAUTH_SUPPORT */
 
-    if (altmsg == NULL || stat (altmsg, &st) == NOTOK) {
+    if (altmsg == NULL || stat (altmsg, &st) == -1) {
 	st.st_mtime = 0;
 	st.st_dev = 0;
 	st.st_ino = 0;
@@ -1269,7 +1269,7 @@ whomfile (char **arg, char *file)
     fflush (stdout);
 
     switch (pid = fork()) {
-	case NOTOK:
+	case -1:
 	    advise ("fork", "unable to");
 	    return 1;
 
@@ -1310,7 +1310,7 @@ removefile (char *drft)
  * Return 1 if we already have a MIME-Version header, 0 otherwise.
  */
 
-static int
+static bool
 checkmimeheader (char *drft)
 {
     FILE *f;
@@ -1320,7 +1320,7 @@ checkmimeheader (char *drft)
 
     if ((f = fopen(drft, "r")) == NULL) {
 	admonish(drft, "unable to read draft");
-	return 0;
+	return false;
     }
 
     gstate = m_getfld_state_init(f);

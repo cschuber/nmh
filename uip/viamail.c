@@ -191,7 +191,7 @@ via_mail (char *mailsw, char *subjsw, char *parmsw, char *descsw,
     if (fflush (fp))
 	adios (tmpfil, "error writing to");
 
-    if (fstat (fileno (fp), &st) == NOTOK)
+    if (fstat (fileno (fp), &st) == -1)
 	adios ("failed", "fstat of %s", tmpfil);
 
     vec = argsplit(postproc, &program, &vecp);

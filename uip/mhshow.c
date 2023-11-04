@@ -46,8 +46,6 @@
 #include "sbr/globals.h"
 
 #define MHSHOW_SWITCHES \
-    X("check", 0, CHECKSW) \
-    X("nocheck", 0, NCHECKSW) \
     X("verbose", 0, VERBSW) \
     X("noverbose", 0, NVERBSW) \
     X("concat", 0, CONCATSW) \
@@ -139,11 +137,6 @@ main (int argc, char **argv)
 	    case VERSIONSW:
 		print_version(invo_name);
 		done (0);
-
-	    case CHECKSW:
-	    case NCHECKSW:
-		/* Currently a NOP */
-		continue;
 
 	    case CONCATSW:
 		concatsw = 1;
@@ -327,7 +320,7 @@ main (int argc, char **argv)
 	    folder = getfolder (1);
 	maildir = m_maildir (folder);
 
-	if (chdir (maildir) == NOTOK)
+	if (chdir (maildir) == -1)
 	    adios (maildir, "unable to change directory to");
 
 	/* read folder and create message structure */
@@ -387,7 +380,7 @@ main (int argc, char **argv)
 
 	ct = *ctp;
 	if (type_ok (ct, 1) && !ct->c_umask) {
-	    if (stat (ct->c_file, &st) != NOTOK)
+	    if (stat (ct->c_file, &st) != -1)
 		ct->c_umask = ~(st.st_mode & 0777);
 	    else
 		ct->c_umask = ~m_gmprot();

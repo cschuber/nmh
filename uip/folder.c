@@ -14,7 +14,6 @@
 #include "sbr/seq_setcur.h"
 #include "sbr/seq_save.h"
 #include "sbr/smatch.h"
-#include "sbr/ssequal.h"
 #include "sbr/getcpy.h"
 #include "sbr/m_convert.h"
 #include "sbr/getfolder.h"
@@ -323,7 +322,7 @@ main (int argc, char **argv)
     }
     if (pushsw || popsw) {
 	cp = m_maildir(argfolder);
-	if (access (cp, F_OK) == NOTOK)
+	if (access (cp, F_OK) == -1)
 	    adios (cp, "unable to find folder");
 	context_replace (pfolder, argfolder);	/* update current folder   */
 	context_save ();		/* save the context file   */
@@ -353,7 +352,7 @@ main (int argc, char **argv)
      * Scan the folders
      */
     /* change directory to base of nmh directory for crawl_folders */
-    if (chdir (nmhdir) == NOTOK)
+    if (chdir (nmhdir) == -1)
 	adios (nmhdir, "unable to change directory to");
     if (all || ftotal > 0) {
 	/*
@@ -669,7 +668,7 @@ readonly_folders (void)
     atrlen = strlen (atrcur);
 
     for (np = m_defs; np; np = np->n_next)
-	if (ssequal (atrcur, np->n_name)
-		&& !ssequal (nmhdir, np->n_name + atrlen))
+	if (has_prefix(np->n_name, atrcur)
+		&& !has_prefix(np->n_name + atrlen, nmhdir))
 	    get_folder_info (np->n_name + atrlen, NULL);
 }

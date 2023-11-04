@@ -119,6 +119,8 @@ encoding(const char *filename)
 
 #ifdef MIMEENCODINGPROC
     mimeencoding = get_file_info(MIMEENCODINGPROC, filename);
+#else
+    NMH_UNUSED(filename);
 #endif /* MIMEENCODINGPROC */
 
     return mimeencoding;

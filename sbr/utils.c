@@ -618,7 +618,7 @@ nmh_version_changed (int older)
         const float old_version =
             context_version  &&  has_prefix(context_version, "nmh-")
             ?  strtof (context_version + 4, NULL)
-            :  99999999;
+            :  99999999.0;
 
         if (context_version == NULL  ||  old_version < current_version) {
             context_replace ("Version", "nmh-" VERSION);
@@ -665,32 +665,32 @@ contains8bit(const char *start, const char *end)
 
 
 /*
- * See if file has any 8-bit bytes.
- * Arguments include:
+ * See if fd has a top-bit-set byte.  fd is rewound before reading.
  *
  * fd    	- file descriptor
- * eightbit	- address of result, will be set to 1 if the file contains
- *                any 8-bit bytes, 0 otherwise.
+ * eightbit	- true only if fd contains a top-bit-set byte.
  *
- * Returns OK on success, NOTOK on read failure.
+ * Return -1 on a read(2) error, else 0.
  */
 int
-scan_input (int fd, int *eightbit)
+scan_input (int fd, bool *eightbit)
 {
-    int state;
     char buf[BUFSIZ];
 
-    *eightbit = 0;
     lseek(fd, 0, SEEK_SET);
 
-    while ((state = read (fd, buf, sizeof buf)) > 0) {
-        if (contains8bit (buf, buf + state)) {
-            *eightbit = 1;
-            return OK;
+    for (;;) {
+        int n = read(fd, buf, sizeof buf);
+        if (n == -1 || n == 0) {
+            *eightbit = false;
+            return n;
+        }
+
+        if (contains8bit(buf, buf + n)) {
+            *eightbit = true;
+            return 0;
         }
     }
-
-    return state == NOTOK  ?  NOTOK  :  OK;
 }
 
 

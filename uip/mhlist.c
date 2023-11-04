@@ -40,8 +40,6 @@
 #include "sbr/globals.h"
 
 #define MHLIST_SWITCHES \
-    X("check", -5, CHECKSW) \
-    X("nocheck", -7, NCHECKSW) \
     X("headers", 0, HEADSW) \
     X("noheaders", 0, NHEADSW) \
     X("realsize", 0, SIZESW) \
@@ -126,11 +124,6 @@ main (int argc, char **argv)
 	    case VERSIONSW:
 		print_version(invo_name);
 		done (0);
-
-	    case CHECKSW:
-	    case NCHECKSW:
-		/* Currently a NOP */
-		continue;
 
 	    case HEADSW:
 		headsw = true;
@@ -247,7 +240,7 @@ main (int argc, char **argv)
 	    folder = getfolder (1);
 	maildir = m_maildir (folder);
 
-	if (chdir (maildir) == NOTOK)
+	if (chdir (maildir) == -1)
 	    adios (maildir, "unable to change directory to");
 
 	/* read folder and create message structure */
@@ -293,7 +286,7 @@ main (int argc, char **argv)
 
 	ct = *ctp;
 	if (type_ok (ct, 1) && !ct->c_umask) {
-	    if (stat (ct->c_file, &st) != NOTOK)
+	    if (stat (ct->c_file, &st) != -1)
 		ct->c_umask = ~(st.st_mode & 0777);
 	    else
 		ct->c_umask = ~m_gmprot();

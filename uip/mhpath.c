@@ -98,7 +98,7 @@ main(int argc, char **argv)
 	done (0);
     }
 
-    if (chdir (maildir) == NOTOK)
+    if (chdir (maildir) == -1)
 	adios (maildir, "unable to change directory to");
 
     /* read folder and create message structure */

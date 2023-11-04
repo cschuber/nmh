@@ -1,4 +1,4 @@
-.TH WHOM %manext1% 2016-09-23 "%nmhversion%"
+.TH WHOM %manext1% 2022-12-22 "%nmhversion%"
 .
 .\" %nmhwarning%
 .
@@ -150,12 +150,13 @@ for more information.
 .ta 2.4i
 .ta \w'ExtraBigProfileName  'u
 ^Path:~^To determine the user's nmh directory
-^Draft\-Folder:~^To find the default draft-folder
+^Draft\-Folder:~^To specify the default draftfolder
 ^Aliasfile:~^For a default alias file
 ^postproc:~^Program to post the message
 .fi
 .SH "SEE ALSO"
 .IR mh\-alias (5),
+.IR mh\-draft (5),
 .IR mh\-profile (5),
 .IR post (8)
 .SH DEFAULTS

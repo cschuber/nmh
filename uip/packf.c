@@ -126,7 +126,7 @@ main (int argc, char **argv)
      * Check if file to be created (or appended to)
      * exists.  If not, ask for confirmation.
      */
-    if (stat (file, &st) == NOTOK) {
+    if (stat (file, &st) == -1) {
 	if (errno != ENOENT)
 	    adios (file, "error on file");
 	cp = concat ("Create file \"", file, "\"? ", NULL);
@@ -146,7 +146,7 @@ main (int argc, char **argv)
 	folder = getfolder (1);
     maildir = m_maildir (folder);
 
-    if (chdir (maildir) == NOTOK)
+    if (chdir (maildir) == -1)
 	adios (maildir, "unable to change directory to ");
 
     /* read folder and create message structure */
@@ -170,7 +170,7 @@ main (int argc, char **argv)
     /* copy all the SELECTED messages to the file */
     for (msgnum = mp->lowsel; msgnum <= mp->hghsel; msgnum++)
 	if (is_selected(mp, msgnum)) {
-	    if ((fd = open (msgnam = m_name (msgnum), O_RDONLY)) == NOTOK) {
+	    if ((fd = open (msgnam = m_name (msgnum), O_RDONLY)) == -1) {
 		admonish (msgnam, "unable to read message");
 		break;
 	    }

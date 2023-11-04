@@ -267,7 +267,7 @@ echo 13 >"$expected"
 
 set +e
 
-require_locale en_US.UTF-8 en_US.UTF8 en_US.utf-8 en_US.utf8
+require_locale $en_locales
 # Don't use run_prog here because it loses the environment setting.
 pick -subject foobar 13 >"$actual" 2>&1
 set -e

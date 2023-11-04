@@ -1,4 +1,4 @@
-.TH SEND %manext1% 2017-05-11 "%nmhversion%"
+.TH SEND %manext1% 2022-12-22 "%nmhversion%"
 .
 .\" %nmhwarning%
 .
@@ -268,7 +268,7 @@ is specified, then this copy is filtered
 .B mhl
 prior to being sent to the blind recipients.
 Alternately, if you specify the
-.B -mime
+.B \-mime
 switch, then
 .B send
 will
@@ -536,15 +536,12 @@ This allows different switches to
 such as -user, to be associated with different email addresses.
 If a domain name is used, it matches all users in that domain.
 .PP
-Here is an example profile entry using OAuth for an account hosted by gmail:
+Here is an example profile entry to use the SMTP on the localhost when the
+sender address is clearly local:
 .PP
 .nf
 .RS 5
-sendfrom-gmail_address@example.com: -sasl -saslmech xoauth2
-.RS 5
--authservice gmail -tls -server smtp.gmail.com
--user gmail_login@example.com
-.RE
+sendfrom-localuser@localhost: -server localhost -port smtp
 .RE
 .fi
 .PP
@@ -613,7 +610,6 @@ for login credentials.
 .ta 2.4i
 .ta \w'ExtraBigProfileName  'u
 ^Path:~^To determine the user's nmh directory
-^Draft\-Folder:~^To find the default draft-folder
 ^Aliasfile:~^For a default alias file
 ^Signature:~^To determine the user's mail signature
 ^mailproc:~^Program to post failure notices

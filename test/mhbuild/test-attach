@@ -14,7 +14,7 @@ fi
 
 setup_test
 
-require_locale en_US.UTF-8 en_US.UTF8 en_US.utf-8 en_US.utf8
+require_locale $en_locales
 
 draft="$MH_TEST_DIR/$$.draft"
 backup="${MH_TEST_DIR}/`mhparam sbackup`$$.draft.orig"
@@ -44,7 +44,7 @@ Content-Description: tiny.jpg
 Content-Disposition: attachment; filename="tiny.jpg"
 Content-Transfer-Encoding: base64
 
-/9g=
+/9j////////Z
 EOF
 
 check "$draft" "$expected"
@@ -84,7 +84,7 @@ Content-Description: tiny.jpg
 Content-Disposition: attachment; filename="tiny.jpg"
 Content-Transfer-Encoding: base64
 
-/9g=
+/9j////////Z
 
 ------- =_aaaaaaaaaa0
 Content-Type: application/octet-stream; name="nulls"
@@ -273,7 +273,7 @@ Content-Description: tiny.jpg
 Content-Disposition: attachment; filename="tiny.jpg"
 Content-Transfer-Encoding: base64
 
-/9g=
+/9j////////Z
 
 ------- =_aaaaaaaaaa0--
 EOF

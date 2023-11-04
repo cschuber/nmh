@@ -75,7 +75,7 @@ read_switch_multiword (const char *prompt, const struct swit *ansp)
 	*cp = '\0';
 	if (ansbuf[0] == '?' || cp == ansbuf) {
 	    puts("Options are:");
-	    print_sw (ALL, ansp, "", stdout);
+	    print_sw("", ansp, "", stdout);
 	    continue;
 	}
 	cpp = brkstring (ansbuf, " ", NULL);

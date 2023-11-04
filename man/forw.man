@@ -1,4 +1,4 @@
-.TH FORW %manext1% 2013-03-22 "%nmhversion%"
+.TH FORW %manext1% 2022-12-22 "%nmhversion%"
 .
 .\" %nmhwarning%
 .
@@ -401,7 +401,7 @@ Current\-Folder:
 To find the default current folder.
 .TP
 Draft\-Folder:
-To find the default draft-folder.
+To specify the default draftfolder.
 .TP
 Editor:
 To override the default editor.
@@ -421,6 +421,7 @@ Program to ask the \*(lqWhat now?\*(rq questions.
 .SH "SEE ALSO"
 .IR burst (1),
 .IR comp (1),
+.IR mh\-draft (5),
 .IR mh\-format (5),
 .IR mhbuild (1),
 .IR mhl (1),

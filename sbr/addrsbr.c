@@ -7,7 +7,7 @@
 
 #include "h/mh.h"
 #include "snprintb.h"
-#include "strindex.h"
+#include "stringdex.h"
 #include "uprf.h"
 #include "getcpy.h"
 #include "context_find.h"
@@ -81,12 +81,12 @@ static char *grp = NULL;
 static char *note = NULL;
 static char err[BUFSIZ];
 static char adr[BUFSIZ];
-static int eai = 0;
+static bool eai;
 
 void
 enable_eai(void)
 {
-    eai = 1;
+    eai = true;
 }
 
 

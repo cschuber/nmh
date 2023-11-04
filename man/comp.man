@@ -1,4 +1,4 @@
-.TH COMP %manext1% 2013-10-18 "%nmhversion%"
+.TH COMP %manext1% 2022-12-22 "%nmhversion%"
 .
 .\" %nmhwarning%
 .
@@ -261,7 +261,7 @@ Path:
 To determine the user's nmh directory.
 .TP
 Draft\-Folder:
-To find the default draft-folder.
+To specify the default draftfolder.
 .TP
 Editor:
 To override the default editor.
@@ -281,7 +281,8 @@ Program to ask the \*(lqWhat now?\*(rq questions
 .IR repl (1),
 .IR send (1),
 .IR whatnow (1),
-.IR mh-profile (5)
+.IR mh\-draft (5),
+.IR mh\-profile (5)
 .SH DEFAULTS
 .PD 0
 .TP 20

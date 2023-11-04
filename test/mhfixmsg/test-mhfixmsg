@@ -19,7 +19,7 @@ setup_test
 check_exit '-eq 1' mhfixmsg -
 
 #### Make sure that html-to-text conversion is what we expect.
-require_locale en_US.UTF-8 en_US.UTF8 en_US.utf-8 en_US.utf8
+require_locale $en_locales
 
 expected="$MH_TEST_DIR/test-mhfixmsg$$.expected"
 expected_err="$MH_TEST_DIR/test-mhfixmsg$$.expected_err"
@@ -30,8 +30,7 @@ mhn_defaults="$MH_INST_DIR${nmhetcdir}/mhn.defaults"
 
 if grep mhfixmsg-format-text/html "${mhn_defaults}" >/dev/null; then
   can_reformat_texthtml=1
-  if grep 'mhfixmsg-format-text/html.*w3m' "${mhn_defaults}" \
-    >/dev/null; then
+  if grep 'mhfixmsg-format-text/html.*w3m' "${mhn_defaults}" >/dev/null; then
     #### w3m uses $HOME/.w3m/, and creates it if it doesn't exist.  To
     #### support testing with non-writeable $HOME, and to not leave
     #### relics from this test if it is writeable but doesn't already
@@ -53,7 +52,7 @@ Usage: mhfixmsg [+folder] [msgs] [switches]
   -decodetext 8bit|7bit|binary
   -nodecodetext
   -decodetypes
-  -decodeheaderfieldbodies utf-8
+  -decodeheaderfieldbodies charset
   -nodecodeheaderfieldbodies
   -[no]crlflinebreaks
   -[no]textcharset
@@ -270,16 +269,10 @@ ding-left: 4pt; border-left: #800000 2px solid; } --></style>
 EOF
 
 if [ $can_reformat_texthtml -eq 1 ]; then
-  printf '%s\n' "mhfixmsg: 12, insert text/plain part
-mhfixmsg: 12 part 1, decode text/html; charset=\"Windows-1252\"
-mhfixmsg: 12 part 2, convert us-ascii to Windows-1252" \
-       >"$expected.err"
-
   #### lynx inserts multiple blank lines, so squeeze them.
-  run_prog mhfixmsg last -textcharset Windows-1252 -outfile - -verbose \
+  run_prog mhfixmsg last -textcharset Windows-1252 -outfile - \
            2>"$actual.err" | squeeze_lines >"$actual"
   check "$expected" "$actual" 'ignore space'
-  check "$expected.err" "$actual.err"
 else
   rm -f "$expected"
 fi
@@ -354,16 +347,10 @@ ding-left: 4pt; border-left: #800000 2px solid; } --></style>
 EOF
 
 if [ $can_reformat_texthtml -eq 1 ]; then
-  printf '%s\n' "mhfixmsg: 12, insert text/plain part
-mhfixmsg: 12 part 1, decode text/html; charset=\"Windows-1252\"
-mhfixmsg: 12 part 2, convert us-ascii to Windows-1252" \
-       >"$expected.err"
-
   #### lynx inserts multiple blank lines, so squeeze them.
-  run_prog mhfixmsg last -textcharset Windows-1252 -outfile - -verbose \
+  run_prog mhfixmsg last -textcharset Windows-1252 -outfile - \
            2>"$actual.err" | squeeze_lines >"$actual"
   check "$expected" "$actual" 'ignore space'
-  check "$expected.err" "$actual.err"
 else
   rm -f "$expected"
 fi
@@ -431,14 +418,10 @@ ding-left: 4pt; border-left: #800000 2px solid; } --></style>
 EOF
 
 if [ $can_reformat_texthtml -eq 1 ]; then
-  printf '%s\n' "mhfixmsg: 12, insert text/plain part
-mhfixmsg: 12 part 2, convert us-ascii to Windows-1252" >"$expected.err"
-
   #### lynx inserts multiple blank lines, so squeeze them.
   run_prog mhfixmsg last  -textcharset Windows-1252 -nodecodetext \
-           -outfile - -verbose 2>"$actual.err" | squeeze_lines >"$actual"
+           -outfile - 2>"$actual.err" | squeeze_lines >"$actual"
   check "$expected" "$actual" 'ignore space'
-  check "$expected.err" "$actual.err"
 else
   rm -f "$expected"
 fi
@@ -1050,7 +1033,7 @@ Subject: multipart/related, not /alternative
 Content-Type: multipart/alternative; boundary="----=_Part_90310_101292502.1"
 
 ------=_Part_90310_101292502.1
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
 This is the real content.
@@ -1847,7 +1830,7 @@ run_prog mhfixmsg -file - -outfile - -decodeheaderfieldbodies utf-8 \
 check `mhpath last` "$actual" 'keep first'
 
 
-start_test "test decoding of UTF-8 header value"
+start_test "decode UTF-8 header value"
 cat >"$expected" <<EOF
 To: recipient@example.com
 From: sender@example.com
@@ -1874,7 +1857,69 @@ is test.txt.
 EOF
 
 run_prog mhfixmsg -file - -outfile - -decodeheaderfieldbodies utf-8 \
-     <`mhpath last` >"$actual" 2>/dev/null
+     <`mhpath last` >"$actual" 2>&1
+check "$expected" "$actual"
+
+
+start_test "decode ASCII header value"
+cat >"$expected" <<EOF
+Subject: Here's a /Subject/ that's split across two encoded strings
+EOF
+cat >"`mhpath new`" <<EOF
+Subject: =?ascii?Q?Here's=20a=20=2FSubject=2F=20that's=20?=
+ =?ascii?Q?split=20across=20two=20encoded=20strings?=
+EOF
+run_prog mhfixmsg -file `mhpath last` -outfile "$actual" \
+         -decodeheaderfieldbodies utf-8
+check "$expected" "$actual"
+
+
+start_test "decode mixed undecoded and decoded header values"
+cat >"$expected" <<EOF
+Subject: Here's a /Subject/ that mixes undecoded and decoded strings
+X: This one also mixes undecoded  and decoded strings
+EOF
+cat >"`mhpath new`" <<EOF
+Subject: Here's a /Subject/ that
+ =?ascii?Q?mixes=20undecoded=20and=20decoded=20strings?=
+X: This one
+ =?UTF-8?Q?also=20mix?=
+ =?ascii?Q?es=20undecoded?=  and
+ =?ISO8859-1?Q?decoded?= strings
+EOF
+run_prog mhfixmsg -file `mhpath last` -outfile "$actual" \
+         -decodeheaderfieldbodies utf-8
+check "$expected" "$actual"
+
+
+start_test "attempt to decode with embedded NUL"
+#### It would be better to expect unchanged input, but decode_rfc2047()
+#### suppresses NULs instead of decoding them.
+cat >"$expected" <<EOF
+Subject: Here's a null: 
+EOF
+cat >"`mhpath new`" <<EOF
+Subject: =?us?Q?Here=27s=20a=20null=3A=20=00?=
+EOF
+run_prog mhfixmsg -file `mhpath last` -outfile "$actual" \
+         -decodeheaderfieldbodies utf-8
+#### First check against input to see if there was no change.  Only
+#### check against $expected if the input was decoded.
+if cmp `mhpath last` "$expected" >/dev/null; then
+  check "$expected" "$actual"
+fi
+
+
+start_test "decode to specified destination charset"
+cat >"$expected" <<EOF
+Subject: Re: Fwd: r?pertoire des ensembles musicaux
+EOF
+cat >"`mhpath new`" <<EOF
+Subject: Re:
+ =?utf-8?q?Fwd=3A_r=C3=A9pertoire_des_ensembles_musicau?=
+ =?utf-8?q?x?=
+EOF
+run_prog mhfixmsg -file `mhpath last` -outfile "$actual" -decodeh ascii
 check "$expected" "$actual"
 
 
@@ -2174,8 +2219,9 @@ run_prog mhfixmsg last -outfile "$actual"
 check "$expected" "$actual"
 
 
-start_test "use correct encoding for new text/plain part"
-cat >"`mhpath new`" <<EOF
+if [ $can_reformat_texthtml -eq 1 ]; then
+  start_test "use correct encoding for new text/plain part"
+  cat >"`mhpath new`" <<EOF
 MIME-Version: 1.0
 Content-Type: multipart/alternative; boundary="mime-boundary"
 Content-Transfer-Encoding: 8bit
@@ -2184,33 +2230,34 @@ Content-Transfer-Encoding: 8bit
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/html; charset=iso-8859-1
 
-&#233;
+&nu;&mu;&chi;
 
 --mime-boundary--
 EOF
 
-cat >"$expected" <<EOF
+  cat >"$expected" <<EOF
 MIME-Version: 1.0
 Content-Type: multipart/alternative; boundary="mime-boundary"
 Content-Transfer-Encoding: 8bit
 
 --mime-boundary
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-é
+νμχ
 
 --mime-boundary
 Content-Transfer-Encoding: 7bit
 Content-Type: text/html; charset=iso-8859-1
 
-&#233;
+&nu;&mu;&chi;
 
 --mime-boundary--
 EOF
 
-run_prog mhfixmsg last -textcharset utf-8 -outfile "$actual"
-check "$expected" "$actual"
+  run_prog mhfixmsg last -textcharset utf-8 -outfile "$actual"
+  check "$expected" "$actual"
+fi
 
 
 start_test "change text/plain charset"

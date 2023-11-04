@@ -387,7 +387,7 @@ try_it_again:
              : m_draft (dfolder, NULL, NOUSE, &isdf), sizeof(drft) - 1);
 
     /* Check if a draft exists */
-    if (!buildsw && stat (drft, &st) != NOTOK) {
+    if (!buildsw && stat (drft, &st) != -1) {
 	printf ("Draft \"%s\" exists (%ld bytes).", drft, (long) st.st_size);
 	for (i = LISTDSW; i != YESW;) {
 	    if (!(argp = read_switch_multiword ("\nDisposition? ",
@@ -430,7 +430,7 @@ try_it_again:
 	    folder = getfolder (1);
 	maildir = m_maildir (folder);
 
-	if (chdir (maildir) == NOTOK)
+	if (chdir (maildir) == -1)
 	    adios (maildir, "unable to change directory to");
 
 	/* read folder and create message structure */

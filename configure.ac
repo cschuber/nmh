@@ -5,7 +5,7 @@ AC_PREREQ([2.68])
 
 AC_INIT([nmh], m4_normalize(m4_include([VERSION])), [nmh-workers@nongnu.org])
 AC_CONFIG_SRCDIR([h/nmh.h])
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([-Wall foreign serial-tests subdir-objects 1.12])
 
 AC_CANONICAL_HOST
@@ -135,15 +135,14 @@ fi
 AC_CACHE_CHECK([whether compiler supports -Wall], [nmh_cv_has_wall],
                [nmh_saved_cflags="$CFLAGS"
                CFLAGS="$AM_CFLAGS $CFLAGS -Wall -Werror"
-               AC_TRY_COMPILE([],[],nmh_cv_has_wall=yes,nmh_cv_has_wall=no)
+               AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[])],nmh_cv_has_wall=yes,nmh_cv_has_wall=no)
                CFLAGS="$nmh_saved_cflags"])
 test "$nmh_cv_has_wall" = "yes"  &&  CFLAGS="${CFLAGS:+$CFLAGS }-Wall"
 
 AC_CACHE_CHECK([whether compiler supports -Wextra], [nmh_cv_has_wextra],
                [nmh_saved_cflags="$CFLAGS"
                CFLAGS="$AM_CFLAGS $CFLAGS -Wextra -Werror"
-               AC_TRY_COMPILE([],[],nmh_cv_has_wextra=yes,
-                              nmh_cv_has_wextra=no)
+               AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[])],nmh_cv_has_wextra=yes,nmh_cv_has_wextra=no)
                CFLAGS="$nmh_saved_cflags"])
 test "$nmh_cv_has_wextra" = "yes"  &&  CFLAGS="${CFLAGS:+$CFLAGS }-Wextra"
 
@@ -191,8 +190,8 @@ AC_CACHE_CHECK([whether linker supports -Qunused-arguments],
                        grep clang >/dev/null`],
                       [nmh_saved_ldflags="$LDFLAGS"
                        LDFLAGS="$AM_LDFLAGS $LDFLAGS -Qunused-arguments"
-                       AC_TRY_LINK([],[],nmh_cv_has_q_unused_arguments=yes,
-                                         nmh_cv_has_q_unused_arguments=no)
+                       AC_LINK_IFELSE([AC_LANG_PROGRAM([],[])],nmh_cv_has_q_unused_arguments=yes,
+                                      nmh_cv_has_q_unused_arguments=no)
                        LDFLAGS="$nmh_saved_ldflags"],
                        [nmh_cv_has_q_unused_arguments=no])])
 test "$nmh_cv_has_q_unused_arguments" = "yes"  &&  \
@@ -210,7 +209,8 @@ AC_PROG_RANLIB          dnl Check for `ranlib'
 AC_PROG_AWK             dnl Check for mawk,gawk,nawk, then awk
 AC_PROG_SED             dnl Check for Posix-compliant sed
 AC_PROG_YACC            dnl Check for yacc/bison
-AM_PROG_LEX             dnl Check for lex/flex
+dnl AM_PROG_LEX doesn't yet have the [no]yywrap argument
+AC_PROG_LEX(noyywrap)   dnl Check for lex/flex
 
 AM_PROG_AR
 

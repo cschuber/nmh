@@ -5,6 +5,8 @@
  * complete copyright information.
  */
 
+#include <signal.h>
+
 #include "h/mh.h"
 #include "sbr/pidwait.h"
 #include "sbr/r1bindex.h"
@@ -304,7 +306,7 @@ sendmail_init (char *client, int watch, int verbose, int debug, int sasl,
 	    return sm_nerror(errstr);
     }
 
-    if (pipe (pdi) == NOTOK)
+    if (pipe (pdi) == -1)
 	return sm_ierror ("no pipes");
     if (pipe (pdo) == NOTOK) {
 	close (pdi[0]);

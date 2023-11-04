@@ -1,4 +1,4 @@
-.TH WHATNOW %manext1% 2014-01-23 "%nmhversion%"
+.TH WHATNOW %manext1% 2022-12-22 "%nmhversion%"
 .
 .\" %nmhwarning%
 .
@@ -116,7 +116,7 @@ List files in the attachment working directory using
 .TP
 \fBattach [-v]\fP \fIfiles\fP
 Add the named files to the message as MIME attachments;
-.B -v
+.B \-v
 displays the
 .IR mhbuild (1)
 directive that
@@ -125,15 +125,15 @@ will use.
 .TP
 .B alist [-ln]
 List the MIME attachments' filenames.
-.B -l
+.B \-l
 gives a long listing showing their full path.
-.B -n
+.B \-n
 numbers them for use with
 .B detach .
 .TP
 \fBdetach [-n]\fP \fIfiles-or-numbers\fP
 Remove MIME attachments, either by file name or by number with
-.BR -n .
+.BR \-n .
 .RE
 .PP
 When entering your response, you need only type enough characters
@@ -239,7 +239,7 @@ commands for managing MIME attachments.
 .ta 2.4i
 .ta \w'ExtraBigProfileName  'u
 ^Path:~^To determine the user's nmh directory
-^Draft\-Folder:~^To find the default draft-folder
+^Draft\-Folder:~^To specify the default draftfolder
 ^Editor:~^To override the default editor
 ^<lasteditor>\-next:~^To name an editor to be used after exit
 ^~^from <lasteditor>
@@ -250,6 +250,7 @@ commands for managing MIME attachments.
 ^whomproc:~^Program to determine who a message would go to
 .fi
 .SH "SEE ALSO"
+.IR mh\-draft (5),
 .IR send (1),
 .IR whom (1)
 .SH DEFAULTS

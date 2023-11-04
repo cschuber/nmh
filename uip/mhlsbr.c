@@ -571,7 +571,7 @@ mhl_format (char *file, int length, int width)
     static time_t mtime = 0;
 
     if (fmthd != NULL) {
-	if (stat (etcpath (file), &st) != NOTOK
+	if (stat (etcpath (file), &st) != -1
 		&& mtime == st.st_mtime
 		&& dev == st.st_dev
 		&& ino == st.st_ino)
@@ -582,7 +582,7 @@ mhl_format (char *file, int length, int width)
     if ((fp = fopen (etcpath (file), "r")) == NULL)
 	mhladios (file, "unable to open format file");
 
-    if (fstat (fileno (fp), &st) != NOTOK) {
+    if (fstat (fileno (fp), &st) != -1) {
 	mtime = st.st_mtime;
 	dev = st.st_dev;
 	ino = st.st_ino;
@@ -614,7 +614,7 @@ mhl_format (char *file, int length, int width)
 	}
 
 	parptr = bp;
-	strncpy (name, parse(), sizeof(name) - 1);
+        strcpy(name, parse());
 	switch (*parptr) {
 	    case '\0': 
 	    case ',': 
@@ -729,7 +729,7 @@ evalvar (struct mcomp *c1)
 
     if (!*parptr)
 	return 0;
-    strncpy (name, parse(), sizeof(name) - 1);
+    strcpy(name, parse());
 
     if (!strcasecmp (name, "component")) {
 	if (ptos (name, &c1->c_text))
@@ -861,7 +861,8 @@ parse (void)
     char *cp;
     static char result[NAMESZ];
 
-    for (cp = result; *parptr && (cp - result < NAMESZ); parptr++) {
+    /* FIXME: silently truncates. */
+    for (cp = result; *parptr && (cp - result < (NAMESZ - 1)); parptr++) {
 	c = *parptr;
 	if (!isalnum (c)
 		&& c != '.'

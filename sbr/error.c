@@ -93,22 +93,23 @@ admonish (char *what, char *fmt, ...)
 
 
 /* advertise prints fmt and ap to stderr after flushing stdout.
- * If invo_name isn't NULL or empty then "invo_name: " is output.
- *                                       fmt       is appended.
- * If what isn't NULL or empty      then " what"   is appended.
- * If what isn't NULL               then ": errno" is appended.
- * If tail isn't NULL or empty      then ", tail"  is appended.
- * A "\n" finishes the output to stderr.
+ * The print happens in a single syscall from a buffer.
+ * If invo_name isn't NULL or empty     then "invo_name: " is buffered.
+ *                                      Then fmt           is buffered.
+ * If what isn't NULL or empty          then " what"       is buffered.
+ * If what isn't NULL and errno isn't 0 then ": errno"     is buffered.
+ * If tail isn't NULL or empty          then ", tail"      is buffered.
+ *                                      Then "\n"          is buffered.
  *
  * Note, a what of "" doesn't print it or the preceding space, but does
- * trigger the printing of errno; such is the cunning design.
+ * trigger the printing of a non-zero errno; such is the cunning design.
  *
  * In summary: "[invo_name: ]fmt[[ what]: errno][, tail]\n". */
 void
 advertise (const char *what, char *tail, const char *fmt, va_list ap)
 {
     int	eindex = errno;
-    char buffer[NMH_BUFSIZ], *err;
+    char buffer[NMH_BUFSIZ];
     struct iovec iob[10], *iov;
     size_t niov;
 
@@ -134,9 +135,11 @@ advertise (const char *what, char *tail, const char *fmt, va_list ap)
             ADD_LITERAL(" ");
             ADD_VAR((void *)what);
 	}
-        ADD_LITERAL(": ");
-        err = strerror(eindex);
-        ADD_VAR(err);
+        if (eindex) {
+            ADD_LITERAL(": ");
+            char *err = strerror(eindex);
+            ADD_VAR(err);
+        }
     }
     if (tail && *tail) {
         ADD_LITERAL(", ");

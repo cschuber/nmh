@@ -2,6 +2,7 @@
 .DS_Store
 __pycache__
 /atags
+/configure~
 /docs/doxygen/
 /etags
 /tags

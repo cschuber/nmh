@@ -34,15 +34,15 @@ in messages.
 Header fields consist of a field name and an optional field body
 as defined by RFC 2822.
 The
-.B -component
+.B \-component
 switch specifies the field name, and the
-.B -text
+.B \-text
 switch specifies the field body.
 .PP
 The messages are either the
 .I msgs
 in the named folder, or the draft if invoked with the
-.B -draft
+.B \-draft
 switch.
 .PP
 Usually, annotation is performed by the commands
@@ -72,7 +72,7 @@ By default,
 .B anno
 prepends the annotations to the message.
 Annotations are instead appended if the
-.B -append
+.B \-append
 switch is specified.
 .PP
 If a
@@ -96,44 +96,44 @@ any links to the message.  You may change this by using the
 switch.
 .PP
 The
-.B -list
+.B \-list
 switch produces a listing of the field bodies for header fields with
 names matching the specified component, one per line.
 The listing is numbered, starting at 1, if the
-.B -number
+.B \-number
 switch is also used.
 A tab character separates the number and the field body.
 The field body is treated as if it is a file name, and only the final
 path name component is listed.
 The complete field body is listed if the
-.B -text
+.B \-text
 switch is used; the argument to the
-.B -text
+.B \-text
 switch is required but ignored.
 .PP
 The
-.B -delete
+.B \-delete
 switch removes header fields from messages.
 The first header field whose name matches the component is deleted if
 no other options are specified.
 If the
-.B -text
+.B \-text
 switch is used in conjunction with the
-.B -delete
+.B \-delete
 switch, the first header field whose name matches the component and
 whose body matches the text is deleted.
 The text is treated as if it was a file name; if it begins with a
 slash, the entire field body must match the text, otherwise just the
 last path name component of the field body must match.
 If the
-.B -number
+.B \-number
 switch is used in conjunction with the
-.B -delete
+.B \-delete
 switch, header field
 .I num
 whose name matches the component is deleted.
 The number matches that which is produced by the
-.B -list
+.B \-list
 switch.
 The special value
 .B all
@@ -146,10 +146,10 @@ changes the last-accessed and last-modified times on annotated messages
 to the time of the annotation.
 .B anno
 preserves the original times if the
-.B -preserve
+.B \-preserve
 switch is used.
 A matching
-.B -nopreserve
+.B \-nopreserve
 switch allows time preservation to be turned off, if enabled
 in the profile.
 .SH FILES

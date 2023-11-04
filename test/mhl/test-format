@@ -11,7 +11,7 @@ fi
 
 . "$MH_OBJ_DIR/test/common.sh"
 
-require_locale en_US.UTF-8 en_US.UTF8 en_US.utf-8 en_US.utf8
+require_locale $en_locales
 
 setup_test
 mhl="${MH_LIBEXEC_DIR}/mhl"

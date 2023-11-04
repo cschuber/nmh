@@ -126,7 +126,7 @@ make_intermediates (char *file)
 	struct stat st;
 
 	*cp = '\0';
-	if (stat (file, &st) == NOTOK) {
+	if (stat (file, &st) == -1) {
 	    int answer;
 	    char *ep;
 	    if (errno != ENOENT) {

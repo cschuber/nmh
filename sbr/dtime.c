@@ -185,17 +185,12 @@ dgmtime (time_t *clock)
 }
 
 
-/*
- * Using a nmh "broken-down" time structure,
- * produce a 26-byte date/time string, such as
- *
- *	Tue Jan 14 17:49:03 1992\n\0
- */
-
+/* dctime turns an nmh "broken-down" time structure into a fixed-length
+ * date/time string, e.g. "Tue Jan 14 17:49:03 1992\n". */
 char *
 dctime (struct tws *tw)
 {
-    static char buffer[26];
+    static char buffer[DCTIME_SIZEOF];
 
     if (!tw)
 	return NULL;

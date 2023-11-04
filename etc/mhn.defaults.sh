@@ -25,19 +25,25 @@ fi
 TMP=/tmp/nmh_temp.$$
 trap "rm -f $TMP" 0 1 2 3 13 15
 
+replfmt=" | sed 's/  *$//; s/^\(.\)/> \1/; s/^$/>/;'"
 PGM=`$SEARCHPROG "$SEARCHPATH" par`
 if [ -n "$PGM" ]; then
-    #### The widths here correspond to those for the text browsers below.
-    textfmt=" | $PGM 64"
-    replfmt=" | sed 's/^\(.\)/> \1/; s/^$/>/;' | $PGM 64"
-else
+    if par version | grep '1\.52-i18n' >/dev/null; then
+        #### Don't use patched par.
+        echo "mhn.defaults.sh: $PGM uses a patch that is known to improperly handle " 1>&2
+        echo 'some multibyte characters.  If fmt is installed, mhn.defaults will ' 1>&2
+        echo 'use it.' 1>&2
+        unset PGM
+    else
+        textfmt=" | $PGM 64"
+    fi
+fi
+if [ -z "$PGM" ]; then
     PGM=`$SEARCHPROG "$SEARCHPATH" fmt`
     if [ -n "$PGM" ]; then
         textfmt=" | $PGM"
-        replfmt=" | $PGM | sed 's/^\(.\)/> \1/; s/^$/>/;'"
     else
         textfmt=
-        replfmt=
     fi
 fi
 iconv=`$SEARCHPROG "$SEARCHPATH" iconv`
@@ -255,7 +261,7 @@ if [ -n "$PGM" ]; then
 $PGM "'-dump ${charset:+-I} ${charset:+"$charset"} -O utf-8 -T text/html %F' \
          >> $TMP
     echo 'mhbuild-convert-text/html: charset="%{charset}"; '"\
-$PGM "'-dump ${charset:+-I} ${charset:+"$charset"} -O utf-8 -T text/html %F '"\
+$PGM "'-cols 9999 -dump ${charset:+-I} ${charset:+"$charset"} -O utf-8 -T text/html %F'"\
 ${replfmt}" >> $TMP
 else
     PGM=`$SEARCHPROG "$SEARCHPATH" lynx`
@@ -263,21 +269,29 @@ else
 	echo 'mhshow-show-text/html: charset="%{charset}"; '"\
 %l$PGM"' -child -dump -force-html ${charset:+-assume_charset} ${charset:+"$charset"} %F' >> $TMP
         #### lynx indents with 3 spaces, remove them and any trailing spaces.
+        #### Remove last line if it is blank.
         echo 'mhfixmsg-format-text/html: charset="%{charset}"; '"\
 $PGM "'-child -dump -force_html ${charset:+-assume_charset} ${charset:+"$charset"} '"\
-"'-display_charset utf-8 %F | '"expand | sed -e 's/^   //' -e 's/  *$//'" >> $TMP
+"'-display_charset utf-8 %F | '"expand | sed -e 's/^   //' -e 's/  *$//' | \
+sed '$ {/^$/d;}'" >> $TMP
         echo 'mhbuild-convert-text/html: charset="%{charset}"; '"\
-$PGM "'-child -dump -force_html ${charset:+-assume_charset} ${charset:+"$charset"} '"\
-%F${replfmt}" >> $TMP
+$PGM "'-child -dump -nolist -width=9999 -force_html ${charset:+-assume_charset} ${charset:+"$charset"} '"\
+%F | sed -e 's/^   //' -e 's/  *$//' -e 's/^\(.\)/> \1/' -e 's/^$/>/'" >> $TMP
     else
         PGM=`$SEARCHPROG "$SEARCHPATH" elinks`
         if [ -n "$PGM" ]; then
+            #### M. Levinson noted that -eval "set document.codepage.assume='$charset'"
+            #### can be used with elinks, after setting charset as done above.  However,
+            #### quoting becomes a nightmare because the argument must be quoted.  And
+            #### with that, bad effects of malicious parameter value quoting, such as shown
+            #### in test/mhshow/test-textcharset, seems very difficult to avoid.  It might
+            #### be easier if the parameters are put into a temporary config-file.
             echo "mhshow-show-text/html: %l$PGM -dump -force-html \
--eval 'set document.browse.margin_width = 0' %F" >> $TMP
+-eval 'set document.browse.margin_width=0' %F" >> $TMP
             echo "mhfixmsg-format-text/html: $PGM -dump -force-html \
--no-numbering -eval 'set document.browse.margin_width = 0' %F" >> $TMP
+-no-numbering -no-references -eval 'set document.browse.margin_width=0' %F" >> $TMP
             echo "mhbuild-convert-text/html: $PGM -dump -force-html \
--no-numbering -eval 'set document.browse.margin_width = 0' %F${replfmt}" >> $TMP
+-no-numbering -no-references -eval 'set document.browse.margin_width=0' %F${replfmt}" >> $TMP
         else
             echo 'mhbuild-convert-text/html: cat %F' >> $TMP
         fi
@@ -286,8 +300,8 @@ fi
 
 PGM=`$SEARCHPROG "$SEARCHPATH" mpv`
 if [ -n "$PGM" ]; then
-    echo "mhshow-show-image: %l$PGM --keep-open %F" >> $TMP
-    echo "mhshow-show-video: %l$PGM %F" >> $TMP
+    echo "mhshow-show-image: %l$PGM --keep-open --really-quiet %F" >> $TMP
+    echo "mhshow-show-video: %l$PGM --really-quiet %F" >> $TMP
 else
     PGM=`$SEARCHPROG "$SEARCHPATH" xv`
     if [ -n "$PGM" ]; then

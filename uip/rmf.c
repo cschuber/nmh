@@ -11,7 +11,6 @@
 #include "sbr/concat.h"
 #include "sbr/smatch.h"
 #include "sbr/remdir.h"
-#include "sbr/ssequal.h"
 #include "sbr/m_atoi.h"
 #include "sbr/getfolder.h"
 #include "sbr/ext_hook.h"
@@ -157,11 +156,11 @@ rmf (char *folder)
 
     switch (i = chdir (maildir = m_maildir (folder))) {
 	case OK: 
-	    if (access (".", W_OK) != NOTOK && access ("..", W_OK) != NOTOK)
+	    if (access (".", W_OK) != -1 && access ("..", W_OK) != -1)
 		break;
 	    /* FALLTHRU */
 
-	case NOTOK: 
+	case -1: 
             fp = m_mailpath(folder);
 	    snprintf (cur, sizeof(cur), "atr-%s-%s", current, fp);
             free(fp);
@@ -170,7 +169,7 @@ rmf (char *folder)
 		return OK;
 	    }
 	    inform("you have no profile entry for the %s folder +%s",
-		    i == NOTOK ? "unreadable" : "read-only", folder);
+		    i == -1 ? "unreadable" : "read-only", folder);
 	    return NOTOK;
     }
 
@@ -252,7 +251,7 @@ rma (char *folder)
      * "atr-something-folderpath", and remove them.
      */
     for (np = m_defs, pp = NULL; np; np = np->n_next) {
-	if (ssequal ("atr-", np->n_name)
+	if (has_prefix(np->n_name, "atr-")
 		&& (j = strlen (np->n_name) - plen) > alen
 		&& *(np->n_name + j) == '-'
 		&& strcmp (cp, np->n_name + j + 1) == 0) {
@@ -265,7 +264,7 @@ rma (char *folder)
 	    } else {
 		m_defs = np->n_next;
 	    }
-	    ctxflags |= CTXMOD;
+            context_dirty = true;
 	} else {
 	    pp = np;
 	}

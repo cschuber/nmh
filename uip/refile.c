@@ -219,7 +219,7 @@ main (int argc, char **argv)
 	folder = getfolder (1);
     strncpy (maildir, m_maildir (folder), sizeof(maildir) - 1);
 
-    if (chdir (maildir) == NOTOK)
+    if (chdir (maildir) == -1)
 	adios (maildir, "unable to change directory to");
 
     /* read source folder and create message structure */
@@ -322,7 +322,7 @@ opnfolds (struct msgs *src_folder, struct st_fold *folders, int nfolders)
 	if (! src_folder  ||  strcmp (src_folder->foldpath, nmaildir)) {
 	    create_folder (nmaildir, 0, done);
 
-	    if (chdir (nmaildir) == NOTOK)
+	    if (chdir (nmaildir) == -1)
 		adios (nmaildir, "unable to change directory to");
 	    if (!(mp = folder_read (fp->f_name, 1)))
 		die("unable to read folder %s", fp->f_name);

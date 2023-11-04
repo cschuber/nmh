@@ -320,7 +320,7 @@ main (int argc, char **argv)
     if (dfolder == NULL) {
 	if (msgp == 0) {
 	    msgs[msgp++] = mh_xstrdup(m_draft(NULL, NULL, 1, &isdf));
-	    if (stat (msgs[0], &st) == NOTOK)
+	    if (stat (msgs[0], &st) == -1)
 		adios (msgs[0], "unable to stat draft file");
 	    cp = concat ("Use \"", msgs[0], "\"? ", NULL);
 	    for (status = LISTDSW; status != YESW;) {
@@ -351,7 +351,7 @@ main (int argc, char **argv)
 	    msgs[msgp++] = "cur";
 	maildir = m_maildir (dfolder);
 
-	if (chdir (maildir) == NOTOK)
+	if (chdir (maildir) == -1)
 	    adios (maildir, "unable to change directory to");
 
 	/* read folder and create message structure */
@@ -388,7 +388,7 @@ go_to_it:
 	    setenv("SIGNATURE", cp, 1);
 
     for (msgnum = 0; msgnum < msgp; msgnum++)
-	if (stat (msgs[msgnum], &st) == NOTOK)
+	if (stat (msgs[msgnum], &st) == -1)
 	    adios (msgs[msgnum], "unable to stat draft file");
 
     if ((annotext = getenv ("mhannotate")) == NULL || *annotext == 0)
@@ -408,9 +408,12 @@ go_to_it:
 	}
 	distfile = mh_xstrdup(cp);
 	(void) m_unlink(distfile);
-	if (link (altmsg, distfile) == NOTOK) {
-	    /* Cygwin with FAT32 filesystem produces EPERM. */
-	    if (errno != EXDEV  &&  errno != EPERM
+	if (link (altmsg, distfile) == -1) {
+	    /*
+	     * Cygwin with FAT32 filesystem produces EPERM.
+	     * Android produces EACCES.
+	     */
+	    if (errno != EXDEV  &&  errno != EPERM  &&  errno != EACCES
 #ifdef EISREMOTE
 		    && errno != EISREMOTE
 #endif /* EISREMOTE */
@@ -426,10 +429,10 @@ go_to_it:
 		int in, out;
 		struct stat st;
 
-		if ((in = open (altmsg, O_RDONLY)) == NOTOK)
+		if ((in = open (altmsg, O_RDONLY)) == -1)
 		    adios (altmsg, "unable to open");
 		fstat(in, &st);
-		if ((out = creat (distfile, (int) st.st_mode & 0777)) == NOTOK)
+		if ((out = creat (distfile, (int) st.st_mode & 0777)) == -1)
 		    adios (distfile, "unable to write");
 		cpydata (in, out, altmsg, distfile);
 		close (in);
@@ -456,7 +459,7 @@ go_to_it:
     NMH_UNUSED(saslmech);
 #endif /* OAUTH_SUPPORT */
 
-    if (altmsg == NULL || stat (altmsg, &st) == NOTOK) {
+    if (altmsg == NULL || stat (altmsg, &st) == -1) {
 	st.st_mtime = 0;
 	st.st_dev = 0;
 	st.st_ino = 0;

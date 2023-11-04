@@ -63,7 +63,7 @@ also forks a local copy of
 .B sendmail
 but feeds the message directly to it, using
 .B sendmail
-.BR -t .
+.BR \-t .
 This replaces the old, undocumented
 .B spost
 mechanism and retains some of its limitations, such as lack of

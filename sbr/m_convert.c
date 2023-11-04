@@ -8,7 +8,6 @@
 #include <inttypes.h>
 
 #include "h/mh.h"
-#include "ssequal.h"
 #include "m_convert.h"
 #include "folder_realloc.h"
 #include "context_find.h"
@@ -370,7 +369,7 @@ attr (struct msgs *mp, char *cp)
 
     /* Check for sequence negation */
     bool inverted = false;
-    if ((dp = context_find (nsequence)) && *dp != '\0' && ssequal (dp, cp)) {
+    if ((dp = context_find (nsequence)) && *dp != '\0' && has_prefix(cp, dp)) {
 	inverted = true;
 	cp += strlen (dp);
     }

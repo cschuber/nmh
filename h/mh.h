@@ -22,7 +22,6 @@ typedef union {
 #define	NOTOK        (-1)	/* syscall()s return this on error */
 #define	OK             0	/*  ditto on success               */
 #define	DONE           1	/* ternary logic                   */
-#define ALL           ""
 
 #define MAXARGS	    1000	/* max arguments to exec                */
 #define NFOLDERS    1000	/* max folder arguments on command line */
@@ -432,5 +431,3 @@ typedef struct nmh_creds *nmh_creds_t;
 #ifndef abs
 # define abs(a) ((a) > 0 ? (a) : -(a))
 #endif
-
-#define CTXMOD	0x01		/* context information modified */

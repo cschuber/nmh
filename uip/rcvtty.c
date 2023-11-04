@@ -31,11 +31,11 @@
 #include "sbr/done.h"
 #include "sbr/utils.h"
 #include "sbr/m_mktemp.h"
+#include "sbr/globals.h"
 #include <fcntl.h>
 
 #ifdef HAVE_GETUTXENT
 #include <utmpx.h>
-#include "sbr/globals.h"
 #endif /* HAVE_GETUTXENT */
 
 #define	SCANFMT	\
@@ -200,7 +200,7 @@ message_fd (char **vec)
     }
     (void) m_unlink(tfile);  /* Use fd, no longer need the file name. */
 
-    if ((child_id = fork()) == NOTOK) {
+    if ((child_id = fork()) == -1) {
 	/* fork error */
 	close (fd);
 	return header_fd ();
@@ -209,7 +209,7 @@ message_fd (char **vec)
 	/* parent process */
 	if (!setjmp (myctx)) {
 	    SIGNAL (SIGALRM, alrmser);
-	    bytes = fstat(fileno (stdin), &st) != NOTOK ? (int) st.st_size : 100;
+	    bytes = fstat(fileno (stdin), &st) != -1 ? (int) st.st_size : 100;
 
 	    /* amount of time to wait depends on message size */
 	    if (bytes <= 100) {
@@ -225,7 +225,7 @@ message_fd (char **vec)
 	    pidwait(child_id, OK);
 	    alarm (0);
 
-	    if (fstat (fd, &st) != NOTOK && st.st_size > 0)
+	    if (fstat (fd, &st) != -1 && st.st_size > 0)
 		return fd;
 	} else {
 	    /*
@@ -240,10 +240,10 @@ message_fd (char **vec)
 
     /* child process */
     rewind (stdin);
-    if (dup2 (fd, 1) == NOTOK || dup2 (fd, 2) == NOTOK)
+    if (dup2 (fd, 1) == -1 || dup2 (fd, 2) == -1)
 	_exit(1);
     setpgid(0, getpid());	/* put in own process group */
-    if (execvp (vec[0], vec) == NOTOK) {
+    if (execvp (vec[0], vec) == -1) {
         _exit(1);
     }
 
@@ -305,7 +305,7 @@ alert (char *tty, int md)
      * write permission based on `biff' or `mesg'.
      */
     mask = biff ? S_IEXEC : (S_IWRITE >> 3);
-    if (stat (ttyspec, &st) == NOTOK || (st.st_mode & mask) == 0)
+    if (stat (ttyspec, &st) == -1 || (st.st_mode & mask) == 0)
 	return;
 
     if (setjmp (myctx)) {
@@ -316,7 +316,7 @@ alert (char *tty, int md)
     alarm (2);
     td = open (ttyspec, O_WRONLY);
     alarm (0);
-    if (td == NOTOK)
+    if (td == -1)
         return;
 
     lseek(md, 0, SEEK_SET);

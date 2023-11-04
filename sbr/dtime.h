@@ -4,6 +4,9 @@
  * COPYRIGHT file in the root directory of the nmh distribution for
  * complete copyright information. */
 
+/* The size of the string returned by dctime(), including the NUL. */
+#define DCTIME_SIZEOF (sizeof "Tue Jan 14 17:49:03 1992\n")
+
 extern char *tw_moty[];
 extern char *tw_dotw[];
 extern char *tw_ldotw[];

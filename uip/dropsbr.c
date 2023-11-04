@@ -8,7 +8,8 @@
 #include "h/nmh.h"
 #include "h/mh.h"
 #include "sbr/dtime.h"
-#include "sbr/strindex.h"
+#include "sbr/concat.h"
+#include "sbr/stringdex.h"
 #include "sbr/error.h"
 #include "sbr/utils.h"
 #include "dropsbr.h"
@@ -65,7 +66,7 @@ mbx_open (char *file, int mbx_style, uid_t uid, gid_t gid, mode_t mode)
     /*
      * Do sanity checks on maildrop.
      */
-    if (fstat (fd, &st) == NOTOK) {
+    if (fstat (fd, &st) == -1) {
 	/*
 	 * The stat failed.  So we make sure file
 	 * has right ownership/modes
@@ -110,7 +111,7 @@ static int
 mbx_chk_mbox (int fd)
 {
     /* just seek to the end */
-    if (lseek(fd, 0, SEEK_END) == (off_t) NOTOK)
+    if (lseek(fd, 0, SEEK_END) == (off_t) -1)
 	return NOTOK;
 
     return OK;
@@ -129,7 +130,7 @@ mbx_chk_mmdf (int fd)
 
     count = LEN(MMDF_DELIM);
 
-    if (lseek (fd, -count, SEEK_END) == (off_t) NOTOK)
+    if (lseek (fd, -count, SEEK_END) == (off_t) -1)
 	return NOTOK;
     if (read (fd, ldelim, count) != count)
 	return NOTOK;
@@ -190,10 +191,10 @@ mbx_copy (char *mailbox, int mbx_style, int md, int fd,
 	    if (write (md, MMDF_DELIM, j) != j)
 		return NOTOK;
 
-            return i == NOTOK ? NOTOK : OK;
+            return i == -1 ? -1 : OK;
 
 	case MBOX_FORMAT:
-	    if ((j = dup (fd)) == NOTOK)
+	    if ((j = dup (fd)) == -1)
 		return NOTOK;
 	    if ((fp = fdopen (j, "r")) == NULL) {
 		close (j);
@@ -243,19 +244,12 @@ mbx_copy (char *mailbox, int mbx_style, int md, int fd,
 			ep = tmpbuffer + 17;
 			snprintf (buffer, sizeof(buffer), "From %s", ep);
 		    } else if (!has_prefix(buffer, "From ")) {
-			/*
-			 * If there is already a "From " line,
-			 * then leave it alone.  Else we add one.
-			 */
-			char tmpbuffer[sizeof buffer-21];
-			char *tp, *ep;
-
-			(void) strncpy(tmpbuffer, buffer,
-				       min(strlen(buffer) + 1,
-					   sizeof(tmpbuffer) - 1));
-			ep = "nobody@nowhere";
-			tp = dctime(dlocaltimenow());
-			snprintf (buffer, sizeof(buffer), "From %s  %s%s", ep, tp, tmpbuffer);
+                        /* There is no "From " line; add one. */
+                        char from[] = "From nobody@nowhere\t";
+                        char prefixed[LEN(from) + DCTIME_SIZEOF - 1 + sizeof buffer];
+                        snprintf(prefixed, sizeof prefixed, "%s%s%s",
+                            from, dctime(dlocaltimenow()), buffer);
+                        ABORTCPY(buffer, prefixed);
 		    }
 		}
 

@@ -40,9 +40,3 @@ software, under the direction of Marshall T. Rose and John L. Romine.
 nmh was started by Richard Coleman (coleman@math.gatech.edu) after
 development on MH mostly stopped.  He did the original autoconfiscation
 and most of the other work up until version 1.0.
-
-nmh uses (v)snprintf code from the Apache web server, so we need to
-make the following acknowlegement:
-
-This product includes software developed by the Apache Group
-for use in the Apache HTTP server project (http://www.apache.org/).

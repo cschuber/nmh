@@ -7,6 +7,8 @@
 #   installation on your $PATH, if any.
 # * Unless the -y option is provided, this script then interactively
 #   walks you through confirmation of common configuration settings.
+# * If this script is run without a terminal, e.g, fed to the standard
+#   input of /bin/sh, then the -v and -y options are enabled.
 #
 # This file can be downloaded and immediately run using, e.g.,
 #   wget http://git.savannah.gnu.org/cgit/nmh.git/plain/build_nmh
@@ -45,7 +47,7 @@
 # is required to be available if the -r option is used.
 
 logfile=build_nmh.log
-usage="usage:
+usage="usage: build_nmh [OPTION]... [CONFIGURE OPTIONS]...
   [-a to analyze with scan-build (Clang Static Analyzer)]
   [-b <branch>, only if downloading]
   [-c to run 'make distcheck' instead of 'make check']
@@ -55,7 +57,9 @@ usage="usage:
   [-r to build rpm]
   [-s to use 'make superclean': requires recent autoconf and automake]
   [-v to display progress]
-  [-y to accept all configuration options without confirmation]"
+  [-y to accept all configuration options without confirmation]
+  configure options start with --
+  -v and -y are enabled if standard input is not a terminal"
 
 #### Find location of a program.  Bourne shell just puts the name in
 #### $0 if it's found from the PATH, so search that if necessary.
@@ -157,6 +161,21 @@ download_sources() {
   fi
 }
 
+#### Output summary of test results from make check.
+report_test_results() {
+  divider=`echo "$checkoutput" | grep ==== | head -1`
+  tests_not_run=`echo "$checkoutput" | grep 'test was not run'`
+  tests_failed=`echo "$checkoutput" | grep FAIL`
+  echo $divider
+  printf %s ${tests_not_run:+"$tests_not_run"'
+'}
+  printf %s ${tests_failed:+"$tests_failed"'
+'}
+  printf %s ${tests_summary:+"$tests_summary"'
+'}
+  echo $divider
+}
+
 directory=
 download=0
 gitrepo=git.savannah.nongnu.org
@@ -176,18 +195,26 @@ exec 3>&1 4>&2 >"$tmpfile" 2>&1
 analyze=
 branch=master
 check=check
+config_opts=
 debug=0
 install=0
 build_rpm=0
 superclean=0
-verbose=0
-yes=0
+if [ -t 0 ]; then
+  verbose=0
+  yes=0
+else
+  #### To support download of this script and piping it directly to /bin/sh.
+  verbose=1
+  yes=1
+fi
 
 #### With dash, heirloom shell, and posh, need to catch INT and QUIT
 #### in order for cleanup to be call:  just EXIT isn't sufficient.
 trap cleanup EXIT INT QUIT
 
-while getopts 'acb:dil:rsvy?' arg; do
+have_configure_opts=0
+while getopts 'acb:dil:rsvy-?' arg; do
   case $arg in
     a  ) analyze='scan-build ' ;;
     b  ) branch="$OPTARG" ;;
@@ -199,6 +226,7 @@ while getopts 'acb:dil:rsvy?' arg; do
     s  ) superclean=1 ;;
     v  ) verbose=1 ;;
     y  ) yes=1 ;;
+    -  ) have_configure_opts=1; break ;;
     '?') echo "$0: $usage"; logfile=-; status=0; exit ;;
   esac
 done
@@ -206,15 +234,17 @@ shift `expr $OPTIND - 1`
 
 echo "$invocation"
 
-#### No non-option command line arguments are supported.
-[ $# -gt 0 ]  &&  die "$usage"
+if [ $have_configure_opts ]; then
+  #### Pass first -- option and all remaining options to configure.
+  config_opts="$*"
+  DISTCHECK_CONFIGURE_FLAGS="$*"
+else
+  #### No non-option command line arguments are supported.
+  [ $# -gt 0 ]  &&  die "$usage"
+fi
 
 #### Check to see that we're in a nmh source directory.
-if grep 'the authors of nmh' COPYRIGHT >/dev/null 2>&1; then
-  :
-else
-  download=1
-fi
+grep 'the authors of nmh' COPYRIGHT >/dev/null 2>&1  ||  download=1
 
 ####
 #### Set up configure options.
@@ -226,8 +256,6 @@ config_prefix=/usr/local/nmh
 config_locking=
 config_mts=smtp
 config_smtpserver=localhost
-config_sasl='determined by configure'
-config_tls='determined by configure'
 config_debug=n
 
 
@@ -259,23 +287,6 @@ if install-mh -check >/dev/null 2>&1; then
       [ "$servers" ]  &&  config_smtpserver="$servers"
     fi
   fi
-
-  if test $yes -eq 1  -a  -x "$mhbin/mhparam"; then
-    if mhparam sasl >/dev/null; then
-      case `$mhbin/mhparam sasl` in
-        *sasl*) config_sasl=y ;;
-      esac
-
-      case `$mhbin/mhparam tls` in
-        *tls*) config_tls=y ;;
-      esac
-    else
-      tput smso
-      echo "$0: SASL and TLS detection not supported with current nmh"
-      [ $yes -eq 1 ]  &&  echo "configure will determine whether to enable"
-      tput rmso
-    fi
-  fi
 fi
 
 #### Don't confirm debug interactively below; obey the -d option.
@@ -300,17 +311,9 @@ if [ $yes -eq 0 ]; then
     read server
     [ "$server" ]  &&  config_smtpserver="$servers"
   fi
-
-  printf 'Cyrus SASL support (y|n) [%s]: ' "$config_sasl" >&3
-  read response
-  [ "$response" = y  -o  "$response" = Y ]  &&  config_sasl=y
-
-  printf 'TLS support (y|n) [%s]: ' "$config_tls" >&3
-  read response
-  [ "$response" = y  -o  "$response" = Y ]  &&  config_tls=y
 fi
 
-config_opts="--prefix=$config_prefix"
+config_opts="${config_opts:+${config_opts} }--prefix=$config_prefix"
 
 [ "$config_locking" ]  &&
   config_opts="$config_opts --with-locking=$config_locking"
@@ -318,16 +321,6 @@ config_opts="--prefix=$config_prefix"
   config_opts="$config_opts --with-mts=$config_mts"
 [ "$config_smtpserver"  -a  "$config_smtpserver" != localhost ]  &&
   config_opts="$config_opts --with-smtpserver=$config_smtpserver"
-if [ "$config_sasl" = y ]; then
-    config_opts="$config_opts --with-cyrus-sasl"
-elif [ "$config_sasl" != 'determined by configure' ]; then
-    config_opts="$config_opts --with-cyrus-sasl=no"
-fi
-if [ "$config_tls" = y ]; then
-    config_opts="$config_opts --with-tls"
-elif [ "$config_tls" != 'determined by configure' ]; then
-    config_opts="$config_opts --with-tls=no"
-fi
 
 #### dotlocking, the usual default, requires chgrp and chmod of inc.
 installpriv=
@@ -358,6 +351,7 @@ fi
 
 if [ ! -f configure  -o  ! -f Makefile.in ]; then
   [ $verbose -ge 1 ]  &&  echo autoconfiguring . . . >&3
+  rm -fr autom4te.cache
   ./autogen.sh
   [ $? -ne 0 ]  &&
     die "autogen failed, see MACHINES file for autoconf,
@@ -371,22 +365,43 @@ fi
 [ $verbose -ge 1 ]  &&  echo configuring . . . >&3
 if [ -z "$CFLAGS" ]; then
   #### Only use these flags with gcc.
-  if cc -dM -E - </dev/null 2>&1 | grep __GNUC__ >/dev/null; then
+  [ -f /bin/gcc -o -L /bin/gcc ] && cc=gcc || cc=cc
+  if $cc -dM -E - </dev/null 2>&1 | grep __GNUC__ >/dev/null; then
     #### configure will supply -g -O2 with gcc, but only if CFLAGS
     #### isn't defined.  Always add -g here.
     #### Try all this, borrowed from Fedora 32 build.
-    CFLAGS="-g -std=c99 -pedantic -Wall -Werror=format-security \
+    CFLAGS="-g -std=c99 -pedantic -Wformat -Werror=format-security \
 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong \
 -grecord-gcc-switches -fasynchronous-unwind-tables \
--fstack-clash-protection -fcf-protection"
-    if ! cc -x c -c $CFLAGS /dev/null -o /dev/null 2>/dev/null; then
+-fno-omit-frame-pointer"
+
+    #### -fstack-clash-protection triggers internal compiler error
+    #### in 64-bit Cygwin gcc 11.2.0 on sbr/fmt_scan.c.
+    case `uname -s` in
+      CYGWIN*) fstackclashprotection= ;;
+      *      ) fstackclashprotection='-fstack-clash-protection ' ;;
+    esac
+    for opt in ${fstackclashprotection} -fcf-protection; do
+        if $cc -x c -c $opt /dev/null -o /dev/null 2>/dev/null; then
+            CFLAGS="$CFLAGS $opt"
+        fi
+    done
+
+    if ! $cc -x c -c $CFLAGS /dev/null -o /dev/null 2>/dev/null; then
         #### All that wasn't supported.  The following should be.
         CFLAGS='-g -std=c99 -pedantic'
     fi
     if [ "$config_debug" = n ]; then
-      CFLAGS="$CFLAGS -O2 -Wp,-D_FORTIFY_SOURCE=2"
+      CFLAGS="$CFLAGS -O2 -Wp,-D_FORTIFY_SOURCE=3"
     else
       CFLAGS="$CFLAGS -O0"
+    fi
+
+    if [ `uname -s` = SunOS ]; then
+      #### Add all this to work around multiple bool definitions,
+      #### both #define and typedef, on Solaris 11.4.
+      CFLAGS="$CFLAGS -D_POSIX_C_SOURCE=200809L -D__EXTENSIONS__ \
+-I/usr/xpg4/include -I."
     fi
   fi
 fi
@@ -420,7 +435,7 @@ if [ $status -eq 0 ]; then
     if [ "$CFLAGS" ]; then
         #### Pass DISTCHECK_CONFIGURE_FLAGS through an environment
         #### variable to avoid automake's quoting.
-        DISTCHECK_CONFIGURE_FLAGS="CFLAGS='${CFLAGS}'"
+        DISTCHECK_CONFIGURE_FLAGS="$DISTCHECK_CONFIGURE_FLAGS CFLAGS='${CFLAGS}'"
         export DISTCHECK_CONFIGURE_FLAGS
     fi
 
@@ -432,16 +447,12 @@ if [ $status -eq 0 ]; then
     tests_summary=`echo "$checkoutput" | grep tests`
     #### If multiple tests not run, that line will be caught by the
     #### "grep tests" above.
-    test_not_run=`echo "$checkoutput" | grep 'test was not run'`
-    fails=`echo "$checkoutput" | grep FAIL`
     if [ "$tests_summary" ]; then
-      echo '==================='
-      [ "$test_not_run" ]  &&  echo "$test_not_run"
-      [ "$fails" ]  &&  echo "$fails"
-      echo "$tests_summary"
-      echo '==================='
-      [ "$check" = distcheck ]  &&  echo "$checkoutput" | ${tail}4
+      test_results=`report_test_results`
+      echo "$test_results"
+      [ $verbose -ge 1 ]  &&  echo "$test_results" >&3
     fi
+    [ "$check" = distcheck ]  &&  echo "$checkoutput" | ${tail}4
 
     if [ $status -eq 0 ]; then
       if [ $install -ge 1 ]; then

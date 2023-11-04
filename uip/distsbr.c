@@ -39,7 +39,7 @@ distout (char *drft, char *msgnam, char *backup)
     FILE *ifp, *ofp;
     m_getfld_state_t gstate;
 
-    if (rename (drft, strcpy (backup, m_backup (drft))) == NOTOK)
+    if (rename (drft, strcpy (backup, m_backup (drft))) == -1)
 	adios (backup, "unable to rename %s to",drft);
     if ((ifp = fopen (backup, "r")) == NULL)
 	adios (backup, "unable to read");
@@ -105,7 +105,7 @@ distout (char *drft, char *msgnam, char *backup)
 		fclose (ifp);
 		fclose (ofp);
 		(void) m_unlink (drft);
-		if (rename (backup, drft) == NOTOK)
+		if (rename (backup, drft) == -1)
 		    adios (drft, "unable to rename %s to", backup);
 		return NOTOK;
 
@@ -122,7 +122,7 @@ process: ;
 	inform(BADMSG, "draft");
 	fclose (ofp);
 	(void) m_unlink (drft);
-	if (rename (backup, drft) == NOTOK)
+	if (rename (backup, drft) == -1)
 	    adios (drft, "unable to rename %s to", backup);
 	return NOTOK;
     }
@@ -165,7 +165,7 @@ ready_msg (char *msgnam)
 	die("unable to create temporary file in %s", get_temp_dir());
     }
     strncpy(tmpfil, cp, sizeof(tmpfil) - 1);
-    if ((out = dup (hdrfd)) == NOTOK
+    if ((out = dup (hdrfd)) == -1
 	    || (ofp = fdopen (out, "w")) == NULL)
 	die("no file descriptors -- you lose big");
     (void) m_unlink (tmpfil);
@@ -196,7 +196,7 @@ ready_msg (char *msgnam)
                 }
                 fchmod(txtfd, 0600);
 		strncpy (tmpfil, cp, sizeof(tmpfil) - 1);
-		if ((out = dup (txtfd)) == NOTOK
+		if ((out = dup (txtfd)) == -1
 			|| (ofp = fdopen (out, "w")) == NULL)
 		    die("no file descriptors -- you lose big");
 		(void) m_unlink (tmpfil);

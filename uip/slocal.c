@@ -27,7 +27,7 @@
 #include "sbr/m_getfld.h"
 #include "sbr/getarguments.h"
 #include "sbr/smatch.h"
-#include "sbr/strindex.h"
+#include "sbr/stringdex.h"
 #include "sbr/trimcpy.h"
 #include "sbr/getcpy.h"
 #include "sbr/ambigsw.h"
@@ -45,6 +45,7 @@
 #include "sbr/utils.h"
 #include "sbr/lock_file.h"
 #include "sbr/m_mktemp.h"
+#include "sbr/globals.h"
 
 #include <pwd.h>
 #include <sys/ioctl.h>
@@ -68,7 +69,6 @@
 
 #ifdef HAVE_GETUTXENT
 #include <utmpx.h>
-#include "sbr/globals.h"
 #endif /* HAVE_GETUTXENT */
 
 #define SLOCAL_SWITCHES \
@@ -907,9 +907,18 @@ glob (int fd)
 	p->p_value = getcpy (info);
 
     if (debug) {
-	for (p = vars; p->p_name; p++)
-	    debug_printf ("vars[%td]: name=\"%s\" value=\"%s\"\n",
-		    p - vars, p->p_name, trim(p->p_value));
+        for (p = vars; p->p_name; p++) {
+            char *value, *quote;
+            if (p->p_value) {
+                value = trim(p->p_value);
+                quote = "\"";
+            } else {
+                value = "null";
+                quote = "";
+            }
+            debug_printf("vars[%td]: name=\"%s\" value=%s%s%s\n",
+                p - vars, p->p_name, quote, value, quote);
+        }
     }
 }
 
@@ -1484,7 +1493,7 @@ suppress_duplicates (int fd, char *file)
 		if (value.dptr) {
 		    if (verbose)
 		        verbose_printf ("Message-ID: %s\n            already received on %s",
-				 cp, value.dptr);
+				 cp, (const char *) value.dptr);
 		    result = DONE;
 		} else {
 		    value.dptr  = ddate + sizeof("Delivery-Date:");

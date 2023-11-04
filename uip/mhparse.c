@@ -242,7 +242,7 @@ parse_mime (char *file)
 	    return NULL;
 	}
 	fseek (fp, 0L, SEEK_SET);
-    } else if (stat (file, &statbuf) == NOTOK) {
+    } else if (stat (file, &statbuf) == -1) {
 	advise (file, "unable to stat");
 	return NULL;
     } else if (S_ISDIR(statbuf.st_mode)) {
@@ -585,6 +585,36 @@ add_header (CT ct, char *name, char *value)
     }
 
     return 0;
+}
+
+
+/*
+ * small routine to remove first occurence, if any, from list of header fields
+ */
+
+bool
+remove_header (CT ct, const char *name)
+{
+    HF *hf;
+    bool found_name = false;
+
+    for (hf = &ct->c_first_hf; *hf; hf = &(*hf)->next) {
+        if (strcasecmp (name, (*hf)->name) == 0) {
+            found_name = true;
+            break;
+        }
+    }
+
+    if (found_name) {
+        HF remove = *hf;
+        free (remove->name);
+        free (remove->value);
+        *hf = remove->next;
+        free (remove);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 
@@ -1673,11 +1703,11 @@ size_encoding (CT ct)
     CE ce = &ct->c_cefile;
     struct stat st;
 
-    if (ce->ce_fp && fstat (fileno (ce->ce_fp), &st) != NOTOK)
+    if (ce->ce_fp && fstat (fileno (ce->ce_fp), &st) != -1)
 	return (long) st.st_size;
 
     if (ce->ce_file) {
-	if (stat (ce->ce_file, &st) != NOTOK)
+	if (stat (ce->ce_file, &st) != -1)
 	    return (long) st.st_size;
         return 0L;
     }
@@ -1689,7 +1719,7 @@ size_encoding (CT ct)
     if ((fd = (*ct->c_ceopenfnx) (ct, &file)) == NOTOK)
 	return ct->c_end - ct->c_begin;
 
-    if (fstat (fd, &st) != NOTOK)
+    if (fstat (fd, &st) != -1)
 	size = (long) st.st_size;
     else
 	size = 0L;

@@ -68,36 +68,38 @@ decode_qp (unsigned char byte1, unsigned char byte2)
 /* Add character to the destination buffer, and bomb out if it fills up */
 #define ADDCHR(C) do { *q++ = (C); dstlen--; if (!dstlen) goto buffull; } while (0)
 
-bool
-decode_rfc2047 (char *str, char *dst, size_t dstlen)
+ssize_t
+decode_rfc2047 (char *str, char *dst, size_t dstlen, const char *dest_charset)
 {
     char *p, *q, *pp;
     char *startofmime, *endofmime, *endofcharset;
     int c, quoted_printable;
     int whitespace = 0;		/* how much whitespace between encodings? */
+    size_t initialdstlen = dstlen;
 #ifdef HAVE_ICONV
     iconv_t cd = NULL;
     int fromutf8 = 0;
     char *saveq, *convbuf = NULL;
     size_t savedstlen;
+#else
+    NMH_UNUSED (dest_charset);
 #endif
 
     if (!str)
-	return false;
+	return -1;
 
     /*
      * Do a quick and dirty check for the '=' character.
      * This should quickly eliminate many cases.
      */
     if (!strchr (str, '='))
-	return false;
+	return -1;
 
 #ifdef HAVE_ICONV
     bool use_iconv = false; /* are we converting encoding with iconv? */
 #endif
     bool between_encodings = false;
     bool equals_pending = false;
-    bool encoding_found = false;   /* Did we decode anything? */
     for (p = str, q = dst; *p; p++) {
 
         /* reset iconv */
@@ -146,7 +148,7 @@ decode_rfc2047 (char *str, char *dst, size_t dstlen)
 	     *
 	     * =?us-ascii*en?Q?Foo?=
 	     *
-	     * Right now we don't use language information, so ignore it.
+	     * Without iconv, we don't use language information, so ignore it.
 	     */
 
 	    for (endofcharset = startofmime;
@@ -154,15 +156,23 @@ decode_rfc2047 (char *str, char *dst, size_t dstlen)
 							endofcharset++)
 		;
 
-	    /* Check if character set can be handled natively */
-	    if (!check_charset(startofmime, endofcharset - startofmime)) {
 #ifdef HAVE_ICONV
-	        /* .. it can't. We'll use iconv then. */
+	    /* If destination charset has been explicitly specified, or
+	       check if character set can be handled natively ... */
+	    if (dest_charset  ||
+		!check_charset(startofmime, endofcharset - startofmime)) {
+#else
+	    /* Check if character set can be handled natively ... */
+	    if (!check_charset(startofmime, endofcharset - startofmime)) {
+#endif
+#ifdef HAVE_ICONV
+		/* ... it can't. We'll use iconv then. */
 		*endofcharset = '\0';
-	        cd = iconv_open(get_charset(), startofmime);
+		cd = iconv_open(dest_charset ? dest_charset : get_charset(),
+				startofmime);
 		fromutf8 = !strcasecmp(startofmime, "UTF-8");
 		*pp = '?';
-                if (cd == (iconv_t)-1) continue;
+		if (cd == (iconv_t)-1) continue;
 		use_iconv = true;
 #else
 		continue;
@@ -323,9 +333,9 @@ decode_rfc2047 (char *str, char *dst, size_t dstlen)
 	    if (use_iconv) {
 		size_t inbytes = q - convbuf;
 		ICONV_CONST char *start = convbuf;
-		
+
 		while (inbytes) {
-		    if (iconv(cd, &start, &inbytes, &saveq, &savedstlen) ==
+		    if (iconv (cd, &start, &inbytes, &saveq, &savedstlen) ==
 		            (size_t)-1) {
 			if (errno != EILSEQ) break;
 			/* character couldn't be converted. we output a `?'
@@ -361,14 +371,13 @@ decode_rfc2047 (char *str, char *dst, size_t dstlen)
 		free(convbuf);
 	    }
 #endif
-	    
+
 	    /*
 	     * Now that we are done decoding this particular
 	     * encoded word, advance string to trailing '='.
 	     */
 	    p = endofmime + 1;
 
-	    encoding_found = true;      /* we found (at least 1) encoded word */
 	    between_encodings = true;	/* we have just decoded something     */
 	    whitespace = 0;		/* re-initialize amount of whitespace */
 	}
@@ -382,11 +391,13 @@ decode_rfc2047 (char *str, char *dst, size_t dstlen)
 	ADDCHR('=');
     *q = '\0';
 
-    return encoding_found;
+    return initialdstlen - dstlen;
 
   buffull:
     /* q is currently just off the end of the buffer, so rewind to NUL terminate */
     q--;
     *q = '\0';
-    return encoding_found;
+    /* Decrement by 1 below because the last octed was discarded (q was
+       decremented) to make room for the trailing NUL. */
+    return initialdstlen - dstlen - 1;
 }

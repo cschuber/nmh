@@ -1,4 +1,4 @@
-.TH MHBUILD %manext1% 2016-10-15 "%nmhversion%"
+.TH MHBUILD %manext1% 2023-02-07 "%nmhversion%"
 .
 .\" %nmhwarning%
 .
@@ -181,9 +181,7 @@ and
 .B mhbuild-convert-text/plain
 entries.  Profile entries can be used to override corresponding
 .I mhn.defaults
-entries, as usual.  Text converters should limit text line lengths
-to a maximum of 78 characters, and must limit them to a maximum of 998
-characters, per RFC 5322 Sec.\& 2.1.1.
+entries, as usual.
 .PP
 For each
 .I TYPE
@@ -214,13 +212,7 @@ Only the highest precedence alternative with a supported
 of a multipart/alternative part is used.
 .PP
 mhn.defaults.sh selects the text/html-to-text/plain converter at
-install time.  It includes
-.B iconv
-and
-.BR par ,
-or
-.BR fmt ,
-in the pipeline only if they are found.
+install time.
 .PP
 Some content types require the addition of parameters to the
 Content-Type header, such as \*(lqmethod=REPLY\*(rq
@@ -255,20 +247,23 @@ at the \*(lqWhat now?\*(rq prompt, or with an
 .B \-editor mhbuild
 switch.
 .PP
+If there are any
+.B Nmh-mhbuild-
+pseudoheaders in the composition file,
+.B mhbuild
+divides the translation into two stages.  The first stage
+includes all translations except encoding of text content.
+The second stage encodes text content as needed.  This allows
+the user to edit the text prior to encoding.  The second stage,
+along with the first stage if it had not yet been performed,
+is selected with the
+.B \-auto
+switch.
+.PP
 These (optional) setup steps can make the convert support
 easier to use:
 .TP 5
 1)
-If the
-.B par
-program is installed on your system, it will be set by default
-(in
-.IR mhn.defaults )
-to filter the converter output.  It helps to set the PARINIT
-environment variable, as described in
-.IR par (1).
-.TP 5
-2)
 Add this line to your profile:
 .IP "" 10
 mhbuild-next: $EDITOR
@@ -280,13 +275,11 @@ specification of your editor if an
 .B \-editor mhbuild
 switch is used.
 .TP 5
-3)
+2)
 If using
 .BR repl ,
 source the Bourne-shell compatible functions in
 .IR %docdir%/contrib/replaliases .
-.br
-That script also sets the PARINIT environment variable if it was not set.
 .SS "Translating the Composition File"
 .B mhbuild
 is essentially a filter to aid in the composition of MIME messages.
@@ -955,9 +948,6 @@ Template for composing contents.
 .PP
 .I "Proposed Standard for Message Encapsulation"
 (RFC 934)
-.PP
-.I "The Content-MD5 Header Field"
-(RFC 1864)
 .PP
 .I "Definition of the URL MIME External-Body Access-Type"
 (RFC 2017)

@@ -6,7 +6,7 @@
  */
 
 #include "h/mh.h"
-#include "ssequal.h"
+#include "sbr/utils.h"
 #include "print_sw.h"
 
 
@@ -22,7 +22,7 @@ print_sw (const char *substr, const struct swit *swp, char *prefix, FILE *fp)
     len = strlen(substr);
     for (; swp->sw; swp++) {
 	/* null matches all strings */
-	if (!*substr || (ssequal (substr, swp->sw) && len >= swp->minchars)) {
+	if (!*substr || (has_prefix(swp->sw, substr) && len >= swp->minchars)) {
 	    optno = false;
 	    /* next switch */
 	    if ((sp = (&swp[1])->sw)) {

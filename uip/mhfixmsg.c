@@ -17,6 +17,7 @@
 #include "sbr/seq_setcur.h"
 #include "sbr/seq_save.h"
 #include "sbr/smatch.h"
+#include "sbr/encode_rfc2047.h"
 #include "sbr/fmt_rfc2047.h"
 #include "sbr/cpydata.h"
 #include "sbr/trimcpy.h"
@@ -55,7 +56,7 @@
     X("decodetext 8bit|7bit|binary", 0, DECODETEXTSW) \
     X("nodecodetext", 0, NDECODETEXTSW) \
     X("decodetypes", 0, DECODETYPESW) \
-    X("decodeheaderfieldbodies utf-8", 0, DECODEHEADERFIELDBODIESSW) \
+    X("decodeheaderfieldbodies charset", 0, DECODEHEADERFIELDBODIESSW) \
     X("nodecodeheaderfieldbodies", 0, NDECODEHEADERFIELDBODIESSW) \
     X("crlflinebreaks", 0, CRLFLINEBREAKSSW) \
     X("nocrlflinebreaks", 0, NCRLFLINEBREAKSSW) \
@@ -112,7 +113,7 @@ typedef struct {
     text_properties text_props;
     int decodetext;
     char *decodetypes;
-    char *decodeheaderfieldbodies; /* Either NULL or "utf-8". */
+    char *decodeheaderfieldbodies; /* Either NULL or the destination charset. */
     /* Whether to use CRLF linebreaks, per RFC 2046 Sec. 4.1.1, par.1. */
     int lf_line_endings;
     bool checkbase64;
@@ -155,7 +156,9 @@ static int least_restrictive_encoding (CT) PURE;
 static int less_restrictive (int, int);
 static int convert_charsets (CT, char *, int *);
 static int fix_always (CT *, const fix_transformations *, int *);
-static int decode_header_field_bodies (CT, int *);
+static int decode_header_field_bodies (CT, const char *, int *);
+static int decode_field_body (const char *, char **, const char *, int *);
+static bool contains_nuls(const char *, ssize_t);
 static int fix_filename_param (char *, char *, PM *, PM *);
 static int fix_filename_encoding (CT);
 static int write_content (CT, const char *, char *, FILE *, int, int);
@@ -245,12 +248,6 @@ main (int argc, char **argv)
                     die("missing argument to %s", argp[-2]);
                 }
                 fx.decodeheaderfieldbodies = cp;
-                if (strcasecmp (cp, "utf-8")  && strcasecmp (cp, "utf8")) {
-                    /* Because UTF-8 strings can't have embedded nulls.  Other
-                       encodings support that, too, but we won't bother to
-                       enumerate them. */
-                    die("-decodeheaderfieldbodies only supports utf-8");
-                }
                 continue;
             case NDECODEHEADERFIELDBODIESSW:
                 fx.decodeheaderfieldbodies = NULL;
@@ -468,7 +465,7 @@ main (int argc, char **argv)
 
         /* chdir so that error messages, esp. from MIME parser, just
            refer to the message and not its path. */
-        if (chdir (maildir) == NOTOK) {
+        if (chdir (maildir) == -1) {
             adios (maildir, "unable to change directory to");
         }
 
@@ -646,7 +643,8 @@ mhfixmsgsbr (CT *ctp, char *maildir, const fix_transformations *fx,
         update_cte (*ctp);
     }
     if (status == OK  &&  fx->decodeheaderfieldbodies) {
-        status = decode_header_field_bodies(*ctp, &message_mods);
+        status = decode_header_field_bodies(*ctp, fx->decodeheaderfieldbodies,
+                                            &message_mods);
     }
     if (status == OK  &&  fx->text_props.textcharset != NULL) {
         status = convert_charsets (*ctp, fx->text_props.textcharset, &message_mods);
@@ -657,7 +655,7 @@ mhfixmsgsbr (CT *ctp, char *maildir, const fix_transformations *fx,
            isn't used but just in case it is in the future. */
         struct stat st;
 
-        if (stat ((*ctp)->c_file, &st) != NOTOK) {
+        if (stat ((*ctp)->c_file, &st) != -1) {
             (*ctp)->c_umask = ~(st.st_mode & 0777);
         } else {
             (*ctp)->c_umask = ~m_gmprot();
@@ -1932,7 +1930,6 @@ reformat_part (CT ct, char *file, char *type, char *subtype, int c_type,
                const text_properties *text_props)
 {
     int output_subtype, output_encoding;
-    const char *reason = NULL;
     char *charset = NULL;
     char *cp, *cf;
     int status;
@@ -1963,49 +1960,61 @@ reformat_part (CT ct, char *file, char *type, char *subtype, int c_type,
     status = show_content_aux (ct, 0, cp, NULL, NULL);
     free (cp);
 
-    /* Update charset based on file contents or -textcharset value. */
-    charset = encoding(file);
-    if (charset == NULL) {
-        charset = text_props && text_props->textcharset
-        ? mh_xstrdup (text_props->textcharset) : NULL;
-    }
-    if (charset == NULL) {
-        charset = mh_xstrdup(get_charset());
-        advise(NULL, "Assuming %s for new text/plain part, "
-               "use -textcharset to override", charset);
-    }
-    /* This is necessary to update the charset in the part headers. */
-    replace_param(&ct->c_ctinfo.ci_first_pm,
-                  &ct->c_ctinfo.ci_last_pm, "charset",
-                  charset, 0);
-    /* This is necessary to output the correct charset. */
-    add_header (ct, mh_xstrdup (TYPE_FIELD), concat (ct->c_ctline, "\n", NULL));
+    if (status == OK) {
+        const char *reason = NULL;
 
-    /* Unlink decoded content tmp file and free its filename to avoid
-       leaks.  The file stream should already have been closed. */
-    if (ct->c_cefile.ce_unlink) {
-        (void) m_unlink (ct->c_cefile.ce_file);
-        free (ct->c_cefile.ce_file);
-        ct->c_cefile.ce_file = NULL;
-        ct->c_cefile.ce_unlink = 0;
-    }
+        /* Update charset based on file contents or -textcharset value. */
+        charset = encoding(file);
+        if (charset == NULL) {
+            charset = text_props && text_props->textcharset
+                ? mh_xstrdup (text_props->textcharset) : NULL;
+        }
+        if (charset == NULL) {
+            charset = mh_xstrdup(get_charset());
+            advise(NULL, "Assuming %s for new text/plain part, "
+                   "use -textcharset to override", charset);
+        }
+        /* This is necessary to update the charset in the part headers. */
+        replace_param(&ct->c_ctinfo.ci_first_pm,
+                      &ct->c_ctinfo.ci_last_pm, "charset",
+                      charset, 0);
+        /* This is necessary to output the correct charset. */
+        add_header (ct, mh_xstrdup (TYPE_FIELD),
+                    concat (ct->c_ctline, "\n", NULL));
 
-    if (c_type == CT_TEXT) {
-        output_subtype = TEXT_PLAIN;
-    } else {
-        /* Set subtype to 0, which is always an UNKNOWN subtype. */
-        output_subtype = 0;
-    }
+        /* Unlink decoded content tmp file and free its filename to avoid
+           leaks.  The file stream should already have been closed. */
+        if (ct->c_cefile.ce_unlink) {
+            (void) m_unlink (ct->c_cefile.ce_file);
+            free (ct->c_cefile.ce_file);
+            ct->c_cefile.ce_file = NULL;
+            ct->c_cefile.ce_unlink = 0;
+        }
 
-    output_encoding = content_encoding (ct, &reason);
-    if (status == OK  &&
-        set_ct_type (ct, c_type, output_subtype, output_encoding,
-                     charset) == OK) {
+        if (c_type == CT_TEXT) {
+            output_subtype = TEXT_PLAIN;
+        } else {
+            /* Set subtype to 0, which is always an UNKNOWN subtype. */
+            output_subtype = 0;
+        }
+
+        /* Wrap charset in double quotes if it's not already. */
+        if (charset  &&  charset[0] != '"') {
+            char *temp = charset;
+            charset = concat ("\"", charset, "\"", NULL);
+            free (temp);
+        }
+
         ct->c_cefile.ce_file = file;
         ct->c_cefile.ce_unlink = 1;
+        output_encoding = content_encoding (ct, &reason);
+
+        if ((status = set_ct_type (ct, c_type, output_subtype, output_encoding,
+                                   charset)) != OK) {
+            ct->c_cefile.ce_unlink = 0;
+        }
     } else {
         ct->c_cefile.ce_unlink = 0;
-        status = NOTOK;
     }
     free (charset);
 
@@ -2963,7 +2972,7 @@ fix_always (CT *ctp, const fix_transformations *fx, int *message_mods)
  * does not modify any MIME parameter values.
  */
 static int
-decode_header_field_bodies (CT ct, int *message_mods)
+decode_header_field_bodies (CT ct, const char *dest_charset, int *message_mods)
 {
     int status = OK;
 
@@ -2973,7 +2982,8 @@ decode_header_field_bodies (CT ct, int *message_mods)
         struct part *part;
 
         for (part = m->mp_parts; status == OK  &&  part; part = part->mp_next) {
-            status = decode_header_field_bodies (part->mp_part, message_mods);
+            status = decode_header_field_bodies (part->mp_part, dest_charset,
+                                                 message_mods);
         }
         break;
     }
@@ -2982,7 +2992,8 @@ decode_header_field_bodies (CT ct, int *message_mods)
         if (ct->c_subtype == MESSAGE_EXTERNAL) {
             struct exbody *e = (struct exbody *) ct->c_ctparams;
 
-            status = decode_header_field_bodies (e->eb_content, message_mods);
+            status = decode_header_field_bodies (e->eb_content, dest_charset,
+                                                 message_mods);
         }
         break;
     }
@@ -2990,33 +3001,79 @@ decode_header_field_bodies (CT ct, int *message_mods)
     HF hf;
 
     for (hf = ct->c_first_hf; hf; hf = hf->next) {
-        /* Only decode UTF-8 values. */
-        if (hf->value  &&  has_suffix(hf->value, "?=\n")  &&
-            (! strncasecmp (hf->value, " =?utf8?", 8)  ||
-             ! strncasecmp (hf->value, " =?utf-8?", 9))) {
-            /* Looks like an RFC 2047 encoded parameter. */
-            char decoded[PATH_MAX + 1];
-
-            if (decode_rfc2047 (hf->value, decoded, sizeof decoded)) {
-                const size_t len = strlen(decoded);
-
-                /* decode_rfc2047() could truncate if the buffer fills up.
-                   Detect and discard if that happened. */
-                if (len < sizeof(decoded) - 1  &&  strcmp(hf->value, decoded)) {
-                    hf->value = mh_xrealloc (hf->value, len + 1);
-                    strncpy (hf->value, decoded, len + 1);
-                    ++*message_mods;
-                }
-            } else {
-                char *hf_value = cpytrim (hf->value);
-                inform("failed to decode %s parameter %s", hf->name, hf_value);
-                free (hf_value);
-                status = NOTOK;
-            }
-        }
+        status = decode_field_body(hf->name, &hf->value, dest_charset,
+                                   message_mods);
     }
 
     return status;
+}
+
+
+static int
+decode_field_body (const char *name, char **value, const char *dest_charset,
+                   int *message_mods)
+{
+    /*
+       Decode the header field body as follows.  We don't want to produce a
+       decoded string with embedded NULs because that can interfere with
+       parsing of the message header.
+       1. Attempt to decode body, given any charset for the encoding.
+       2. If unable to decode or if any NUL octets in the decoded text, leave
+          the body encoded.  If unable to decode, that's allowed by
+          RFC 2047 § 6.2.  If any NULs, that seems to be in the same spirit.
+    */
+    ssize_t len = NMH_BUFSIZ;
+    char *buffer = mh_xmalloc (len);
+    int status = OK;
+
+    if (*value  &&  strstr (*value, "?=")) {
+        /* Looks like an RFC 2047 encoded parameter. */
+
+        if ((len = decode_rfc2047 (*value, buffer, len, dest_charset)) > 0) {
+            /* decode_rfc2047() could truncate if the buffer fills up.
+               Detect and discard if that happened.  Also discard if
+               there are any embedded NULs. */
+            if (len < NMH_BUFSIZ - 1  &&  ! contains_nuls (buffer, len)  &&
+                strcmp (*value, buffer)) {
+                char *cp;
+                /* Successfully decoded *value. */
+                unfold_header (&buffer, len);
+                len = strlen (buffer);
+                /* Restore the trailing newline that unfold_header() removed. */
+                cp = &buffer[len];
+                *cp++ = '\n';
+                *cp = '\0';
+                *value = mh_xrealloc (*value, len + 2);
+                strncpy (*value, buffer, len + 2);
+                ++message_mods;
+            }
+        } else {
+            char *val = cpytrim (*value);
+            inform ("failed to decode %s value %s", name, val);
+            free (val);
+            status = NOTOK;
+        }
+    }
+
+    free (buffer);
+    return status;
+}
+
+
+/*
+ * Returns whether a string of the specific charset has any
+ * embedded NUL octects.
+ */
+static bool
+contains_nuls(const char *string, ssize_t len)
+{
+    for (const char *cp = string; len > 1; ++cp, --len) {
+        if (*cp == '\0') {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 
@@ -3032,7 +3089,7 @@ fix_filename_param (char *name, char *value, PM *first_pm, PM *last_pm)
         /* Looks like an RFC 2047 encoded parameter. */
         char decoded[PATH_MAX + 1];
 
-        if (decode_rfc2047 (value, decoded, sizeof decoded)) {
+        if (decode_rfc2047 (value, decoded, sizeof decoded, NULL) > 0) {
             /* Encode using RFC 2231. */
             replace_param (first_pm, last_pm, name, decoded, 0);
             fixed = true;

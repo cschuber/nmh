@@ -153,7 +153,7 @@ content type(s).
 Using either
 .B \-part
 or
-.B -type
+.B \-type
 switches alone will cause either switch to select the part(s) they match.
 Using them together will select only the part(s) matched by both (sets of)
 switches.  In other words, the result is the intersection, and not the union,
@@ -692,7 +692,6 @@ is checked.
 .nf
 .RB ` +folder "' defaults to the current folder"
 .RB ` msgs "' defaults to cur"
-.RB ` \-nocheck '
 .RB ` \-concat '
 .RB ` \-textonly '
 .RB ` \-inlineonly '

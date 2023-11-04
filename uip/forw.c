@@ -344,7 +344,7 @@ try_it_again:
                  : m_draft (dfolder, NULL, NOUSE, &isdf), sizeof(drft) - 1);
 
     /* Check if a draft already exists */
-    if (!buildsw && stat (drft, &st) != NOTOK) {
+    if (!buildsw && stat (drft, &st) != -1) {
 	printf ("Draft \"%s\" exists (%ld bytes).", drft, (long) st.st_size);
 	for (i = LISTDSW; i != YESW;) {
 	    if (!(argp = read_switch_multiword ("\nDisposition? ",
@@ -387,7 +387,7 @@ try_it_again:
 	    folder = getfolder (1);
 	maildir = m_maildir (folder);
 
-	if (chdir (maildir) == NOTOK)
+	if (chdir (maildir) == -1)
 	    adios (maildir, "unable to change directory to");
 
 	/* read folder and create message structure */
@@ -421,7 +421,7 @@ try_it_again:
 	    die("Unable to find input message");
     }
 
-    if (filter && access (filter, R_OK) == NOTOK)
+    if (filter && access (filter, R_OK) == -1)
 	adios (filter, "unable to read");
 
     /*
@@ -458,7 +458,7 @@ try_it_again:
     in = build_form (form, digest, dat, from, to, cc, fcc, subject,
 		     file ? file : fwdmsg);
 
-    if ((out = creat (drft, m_gmprot ())) == NOTOK)
+    if ((out = creat (drft, m_gmprot ())) == -1)
 	adios (drft, "unable to create");
 
     /*
@@ -469,7 +469,7 @@ try_it_again:
 
     if (file) {
 	/* just copy the file into the draft */
-	if ((in = open (file, O_RDONLY)) == NOTOK)
+	if ((in = open (file, O_RDONLY)) == -1)
 	    adios (file, "unable to open");
 	cpydata (in, out, file, drft);
 	close (in);
@@ -526,7 +526,7 @@ mhl_draft (int out, char *digest, int volume, int issue,
     char *program;
     struct msgs_array vec = { 0, 0, NULL };
 
-    if (pipe (pd) == NOTOK)
+    if (pipe (pd) == -1)
 	adios ("pipe", "unable to create");
 
     argsplit_msgarg(&vec, mhlproc, &program);
@@ -634,7 +634,7 @@ copy_draft (int out, char *digest, char *file, int volume, int issue, int dashst
 		advise (drft, "write");
 	    }
 
-	    if ((fd = open (msgnam = m_name (msgnum), O_RDONLY)) == NOTOK) {
+	    if ((fd = open (msgnam = m_name (msgnum), O_RDONLY)) == -1) {
 		admonish (msgnam, "unable to read message");
 		continue;
 	    }

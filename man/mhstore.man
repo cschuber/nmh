@@ -98,7 +98,7 @@ subpart that matches (one of) the given content type(s).
 Using either
 .B \-part
 or
-.B -type
+.B \-type
 switches alone will cause either to select the part(s) they match.
 Using them together will select only the part(s) matched by both
 (sets of) switches.  In other words, the result is the intersection,
@@ -510,7 +510,6 @@ is checked.
 .RB ` msgs "' defaults to cur"
 .RB ` \-noauto '
 .RB ` \-clobber\ always '
-.RB ` \-nocheck '
 .RB ` \-verbose '
 .SH CONTEXT
 If a folder is given, it will become the current folder.  The last

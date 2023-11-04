@@ -16,7 +16,6 @@
 #include "h/mh.h"
 #include "sbr/getarguments.h"
 #include "sbr/smatch.h"
-#include "sbr/ssequal.h"
 #include "sbr/getfolder.h"
 #include "sbr/folder_read.h"
 #include "sbr/folder_free.h"
@@ -313,7 +312,7 @@ ScanFolders(void)
     /*
      * change directory to base of nmh directory
      */
-    if (chdir (nmhdir) == NOTOK)
+    if (chdir (nmhdir) == -1)
 	adios (nmhdir, "unable to change directory to");
 
     if (numfolders > 0) {
@@ -586,6 +585,9 @@ PrintFolders(void)
 	}
     }
 
+    int maxnum_digits = num_digits(maxnum);
+    int maxseq_digits = num_digits(maxseq);
+
     /* Now print all the folder/sequence information */
     for (i = 0; i < nFolders; i++) {
 	for (j = 0; j < svector_size (sequencesToDo); j++) {
@@ -604,11 +606,11 @@ PrintFolders(void)
 		}
 
 		printf("has %*d in sequence %-*s%s; out of %*d\n",
-		       num_digits(maxseq), ivector_at (folders[i].nSeq, j),
+                       maxseq_digits, ivector_at(folders[i].nSeq, j),
 		       maxseqlen, svector_at (sequencesToDo, j),
 		       !has_private ? "" : ivector_at (folders[i].private, j)
 			   ? " (private)" : "          ",
-		       num_digits(maxnum), folders[i].nMsgs);
+                       maxnum_digits, folders[i].nMsgs);
 	    }
 	}
     }
@@ -692,7 +694,7 @@ do_readonly_folders (void)
     atrlen = strlen (atrcur);
 
     for (np = m_defs; np; np = np->n_next)
-        if (ssequal (atrcur, np->n_name)
-                && !ssequal (nmhdir, np->n_name + atrlen))
+        if (has_prefix(np->n_name, atrcur)
+                && !has_prefix(np->n_name + atrlen, nmhdir))
             BuildFolderList (np->n_name + atrlen, 0);
 }
