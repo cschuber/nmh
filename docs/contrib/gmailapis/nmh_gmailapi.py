@@ -57,7 +57,7 @@ def get_service(config, sender, scopes):
         cred_contents, access, refresh, expire = \
             get_oauth2_creds(progname, config.login_name(), config.cred_file())
         try:
-            return login(progname, config, cred_contents, scopes)
+            return login(config, cred_contents, scopes)
         except KeyboardInterrupt:
             raise UnableToRetrieveOAuthCredentials('login terminated by keyboard break')
         return None
@@ -67,7 +67,7 @@ def get_service(config, sender, scopes):
 
     #### Authenticate with Google services.
     try:
-        return authenticate(progname, sender, config.cred_file(), cred_contents, creds)
+        return authenticate(sender, config.cred_file(), cred_contents, creds)
     except RefreshError:
         message = 'Refresh error, please log in using glogin.py as {} and re-try'.format(sender)
         raise UnableToRetrieveOAuthCredentials(message)
@@ -130,10 +130,9 @@ def load_nmh_credential_file(progname, cred_filename):
     return cred_contents
 
 
-def login(progname, config, nmh_creds, scopes):
+def login(config, nmh_creds, scopes):
     """Authorizes user accesss to the Gmail service.  Returns 0 on success.
 
-    progname -- name of this program
     config -- OAuthConfig instance with relevant configuration values
     nmh_creds -- contents of nmh credential file
     scopes -- list of scopes from ['modify', 'readonly', 'send']
@@ -151,8 +150,7 @@ def login(progname, config, nmh_creds, scopes):
             print("""\nIf you got a "something went wrong" message, try signing out of
 your Google account and then retry this login.""")
             return 1
-        update_oauth2_creds(progname, config.login_name(),
-                            config.cred_file(), nmh_creds, creds)
+        update_oauth2_creds(config.login_name(), config.cred_file(), nmh_creds, creds)
         return 0
 
 
@@ -167,10 +165,9 @@ def oauth_gmail_scope(scopes):
     return gmail_scopes
 
 
-def update_oauth2_creds(progname, sender, cred_filename, cred_contents, creds):
+def update_oauth2_creds(sender, cred_filename, cred_contents, creds):
     """Updates or creates user's nmh OAuth credentials file.
 
-    progname -- name of this program
     sender -- sender address
     cred_filename -- name of nmh credential file
     cred_contents -- contents of nmh credential file
@@ -276,10 +273,9 @@ def construct_credentials(config, scopes, access, refresh, expire):
         expiry = datetime.fromtimestamp(float(expire)))
 
 
-def authenticate(progname, sender, cred_filename, cred_contents, creds):
+def authenticate(sender, cred_filename, cred_contents, creds):
     """Returns Gmail service after authenticates with Gmail API.
 
-    progname -- name of this program
     sender -- sender address
     cred_filename -- name of nmh credential file
     cred_contents -- contents of nmh credential file
@@ -289,7 +285,7 @@ def authenticate(progname, sender, cred_filename, cred_contents, creds):
     if creds and creds.expired and creds.refresh_token and \
        creds.client_id and creds.client_secret:
         creds.refresh(Request())
-        update_oauth2_creds(progname, sender, cred_filename, cred_contents, creds)
+        update_oauth2_creds(sender, cred_filename, cred_contents, creds)
     elif not creds or creds.expired:
         return None
     return build('gmail', 'v1', credentials=creds)
