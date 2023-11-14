@@ -59,7 +59,7 @@ def get_service(config, sender, scopes):
         try:
             return login(config, cred_contents, scopes)
         except KeyboardInterrupt:
-            raise UnableToRetrieveOAuthCredentials('login terminated by keyboard break')
+            raise UnableToRetrieveOAuthCredentials
         return None
 
     #### Get OAuth credentials.
@@ -69,8 +69,7 @@ def get_service(config, sender, scopes):
     try:
         return authenticate(sender, config.cred_file(), cred_contents, creds)
     except RefreshError:
-        message = 'Refresh error, please log in using glogin.py as {} and re-try'.format(sender)
-        raise UnableToRetrieveOAuthCredentials(message)
+        raise RefreshFailed
 
 
 def get_nmh_credential_filename(maildir):
@@ -91,7 +90,7 @@ def get_profile_value(component):
     """
     try:
         return check_output(['mhparam', component]).decode().rstrip()
-    except CalledProcessError as err:
+    except CalledProcessError:
         return None
 
 
@@ -124,7 +123,7 @@ def load_nmh_credential_file(progname, cred_filename):
     cred_contents = None
     try:
         cred_contents = Path(cred_filename).read_text().splitlines()
-    except FileNotFoundError as err:
+    except FileNotFoundError:
         print('{}: \'{}\' not found, run glogin.py first'.format(progname, cred_filename),
               file=stderr)
     return cred_contents
@@ -247,7 +246,7 @@ def get_credentials(config, sender, scopes):
     """
     cred_contents, access, refresh, expire = get_oauth2_creds(config.progname(), sender, config.cred_file())
     if not access or not refresh or not expire:
-        raise UnableToRetrieveOAuthCredentials('unable to retrieve Google OAuth2 credentials')
+        raise UnableToRetrieveOAuthCredentials
     creds = construct_credentials(config, scopes, access, refresh, expire)
     return cred_contents, creds
 
@@ -380,6 +379,9 @@ class InvalidInvocation(Exception):
     pass
 
 class UnableToRetrieveOAuthCredentials(Exception):
+    pass
+
+class RefreshFailed(Exception):
     pass
 
 

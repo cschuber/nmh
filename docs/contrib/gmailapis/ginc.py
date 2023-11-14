@@ -24,7 +24,7 @@ David Levine <levinedl@acm.org> 28 feb 2021
 """
 
 from nmh_gmailapi import OAuthConfig, get_service
-from nmh_gmailapi import InvalidInvocation, UnableToRetrieveOAuthCredentials
+from nmh_gmailapi import InvalidInvocation, UnableToRetrieveOAuthCredentials, RefreshFailed
 from google.auth.exceptions import TransportError
 from argparse import ArgumentParser, SUPPRESS
 from base64 import urlsafe_b64decode
@@ -43,30 +43,32 @@ def ginc(argv):
     arglist = [argv[0]] + ginc_profile_entry + argv[1:]
     try:
         config, folder, user, all, disposition, delivery, snoop = parse_args(arglist)
-    except InvalidInvocation as err:
-        print(err, file=sys.stderr)
+    except InvalidInvocation:
         return 2
     progname = config.progname()
 
     #### Authenticate with Google services.
     try:
         service = get_service(config, user, ['readonly'] if disposition == 'keep' else ['modify'])
-    except UnableToRetrieveOAuthCredentials as err:
-        print('{}: {}'.format(progname, err), file=sys.stderr)
+    except UnableToRetrieveOAuthCredentials:
+        print('{}: unable to retrieve OAuth credentials'.format(progname), file=sys.stderr)
         return 1
-    except TransportError as err:
-        print('{}: {}'.format(progname, err), file=sys.stderr)
+    except RefreshFailed:
+        print('{}: refresh error, please log in using glogin.py as {} and retry'.format(progname, user), file=sys.stderr)
+        return 1
+    except TransportError:
+        print('{}: transport error'.format(progname), file=sys.stderr)
         print('Check network connection?', file=sys.stderr)
         return 1
-    except Exception as err:
-        print('{}: {}'.format(progname, type(err)), file=sys.stderr)
+    except Exception:
+        print('{}: unhandled exception'.format(progname), file=sys.stderr)
         return 1
     try:
         count = retrieve_messages(progname, service, folder, all, disposition, delivery, snoop)
         if count == 0:
             return 0
-    except Exception as err:
-        print('{}: {}, message retrieval failed'.format(progname, err), file=sys.stderr)
+    except Exception:
+        print('{}: message retrieval failed'.format(progname), file=sys.stderr)
         return 1
     #### If using rcvstore (the default), show the newly incorporated messages.
     if delivery == rcvstore_path(progname):
@@ -265,7 +267,7 @@ def parse_args(arglist):
     raises InvalidInvocation
     Exits the program with status 0 if -version or -help is specified.
     """
-    progname = os.path.basename(arglist[0])
+    progname = 'ginc.py'
     usage = progname + """ [switches] -user username | -version | -help
   switches are:
   +folder
@@ -280,8 +282,7 @@ def parse_args(arglist):
 +folder is ignored if the delivery program is not rcvstore.
 -disposition delete (default) moves each message to Gmail trash.
 -disposition mark marks each message as read.
-The delivery program defaults to rcvstore.
-"""
+The delivery program defaults to rcvstore."""
     parser = ArgumentParser(usage=usage, add_help=False)
     parser.add_argument('folder', nargs='?', default=None, help=SUPPRESS)
     parser.add_argument('-all', action='store_true', help=SUPPRESS)
@@ -299,10 +300,11 @@ The delivery program defaults to rcvstore.
         if args.folder[0] == '+':
             folder = args.folder[1:]
         else:
-            message = 'Usage: {}{}: error: unrecognized argument: {}'.format(usage, progname, args.folder)
-            raise InvalidInvocation(message)
+            print('{}: error: unrecognized folder argument\nUsage: {}'.format(progname, usage), file=sys.stderr)
+            raise InvalidInvocation
     if not args.user:
-        raise InvalidInvocation('Usage: {}{}: error: missing -user switch'.format(usage, progname))
+        print('{}: error: missing -user switch\nUsage: {}'.format(progname, usage), file=sys.stderr)
+        raise InvalidInvocation
     return OAuthConfig(progname, False, args.user[0], None, None, None, None, None), \
         folder, args.user[0], args.all, args.disposition, args.delivery, args.snoop
 

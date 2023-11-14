@@ -33,7 +33,7 @@ David Levine <levinedl@acm.org> 01 jan 2021
 """
 
 from nmh_gmailapi import OAuthConfig, get_profile_value, get_service,\
-    parse_key_value_list, InvalidInvocation, UnableToRetrieveOAuthCredentials
+    parse_key_value_list, InvalidInvocation, UnableToRetrieveOAuthCredentials, RefreshFailed
 from pathlib import Path
 from nmh_addr import nmh_addr
 import argparse, base64, os.path, re, subprocess, sys, tempfile
@@ -52,13 +52,12 @@ def gpost(argv):
         os.execv(default_postproc, ['post'] + argv[1:]);
         print('{}: unable to exec post'.format(argv[0]), file=sys.stderr)
         return -1
-    except InvalidInvocation as err:
-        print('{}: {}'.format(argv[0], err), file=sys.stderr)
+    except InvalidInvocation:
         return 2
     progname = oauth_config.progname()
 
     if gpost_config.dist():
-        print('{}: {}'.format(argv[0], 'dist is not yet supported'), file=sys.stderr)
+        print('{}: dist is not yet supported'.format(progname), file=sys.stderr)
         return 2
 
     #### Extract the message data that we use.
@@ -69,17 +68,26 @@ def gpost(argv):
         print('{}: message file \'{}\' not found'.format(progname, gpost_config.message_path()),
               file=sys.stderr)
         return 1
-    except InvalidDraft as err:
-        print('{}: {}'.format(progname, err), file=sys.stderr)
+    except InvalidDraft:
+        print('{}: invalid draft'.format(progname), file=sys.stderr)
         return 1
-    except MissingFrom as err:
-        report_missing_from(progname, gpost_config.whom(), err)
+    except MissingFrom:
+        report_missing_from(progname, gpost_config.whom(), 'message has no From:')
         return 1
-    except MissingSender as err:
-        report_missing_sender(progname, gpost_config.whom(), err)
+    except MissingSender:
+        report_missing_sender(progname, gpost_config.whom(), 'missing unique message sender')
         return 1
-    except (SenderNotAnAddress, SenderNotUnique) as err:
-        print('{}: {}'.format(progname, err), file=sys.stderr)
+    except FromNotAnAddress:
+        print('{}: From does not have valid address'.format(progname), file=sys.stderr)
+        return 1
+    except EnvFromNotAnAddress:
+        print('{}: Envelope-From does not have valid address'.format(progname), file=sys.stderr)
+        return 1
+    except SenderNotAnAddress:
+        print('{}: Sender does not have valid address'.format(progname), file=sys.stderr)
+        return 1
+    except SenderNotUnique:
+        print('{}: there can be only one unique sender'.format(progname), file=sys.stderr)
         return 1
     if not sender:
         print('{}: message file \'{}\' has no sender'.format(progname, gpost_config.message_path()),
@@ -94,20 +102,23 @@ def gpost(argv):
     user = gpost_config.user() if gpost_config.user() else sender
     try:
         service = get_service(oauth_config, user, ['send', 'readonly'])
-    except UnableToRetrieveOAuthCredentials as err:
-        print('{}: {}'.format(progname, err), file=sys.stderr)
+    except UnableToRetrieveOAuthCredentials:
+        print('{}: unable to retrieve Google OAuth2 credentials'.format(progname), file=sys.stderr)
         return 1
-    except Exception as err:
-        print('{}: {}'.format(progname, type(err)), file=sys.stderr)
+    except RefreshFailed:
+        print('{}: refresh error, please log in using glogin.py as {} and retry'.format(progname, user), file=sys.stderr)
+        return 1
+    except Exception:
+        print('{}: unhandled exception when getting service'.format(progname), file=sys.stderr)
         return 1
     encoded_msg = {'raw' : base64.urlsafe_b64encode(msg_contents.encode()).decode()}
     try:
         message = send_message(service, encoded_msg)
         if gpost_config.snoop():
             print('sent message {}'.format(message['id']), file=sys.stderr)
-        store_fccs(msg_contents, fccs, get_message_info(service, message['id']))
-    except Exception as err:
-        print('{}: {}, message not sent'.format(progname, err), file=sys.stderr)
+        store_fccs(gpost_config.progname(), msg_contents, fccs, get_message_info(service, message['id']))
+    except Exception:
+        print('{}: unhandled exception when attempting to send message'.format(progname), file=sys.stderr)
         return 1
 
 
@@ -129,7 +140,7 @@ def prepare_message(gpost_config):
     """Returns message contents as string, sender, recipients as a list, and Fccs as list.
 
     gpost_config -- config values object
-    raises InvalidDraft, MissingSender, SenderNotAnAddress, SenderNotUnique
+    raises InvalidDraft, MissingSender, FromNotAnAddress, EnvFromNotAnAddress, SenderNotAnAddress, SenderNotUnique
     """
     #### Load and parse the message.
     msg_string = Path(gpost_config.message_path()).read_text()
@@ -142,7 +153,8 @@ def prepare_message(gpost_config):
     header, fccs = get_fccs(gpost_config.dist(), header)
     header_fields = split_addresses(gpost_config.dist(), parse_key_value_list(header))
     if header_fields.get('dcc'):
-        raise InvalidDraft('Dcc is not supported')
+        print('Dcc is not supported', file=sys.stderr)
+        raise InvalidDraft
     #### Remove any Nmh- header fields.
     nmh_header_fields = [h for h in header_fields if re.match('nmh-', h, re.IGNORECASE)]
     for h in nmh_header_fields:
@@ -150,7 +162,8 @@ def prepare_message(gpost_config):
         del header_fields[h]
     #### Look for existing Date header field.
     if not gpost_config.dist() and header_fields.get('date'):
-        raise InvalidDraft('illegal header line -- Date:, re-format message and retry')
+        print('illegal header line -- Date:, re-format message and retry', file=sys.stderr)
+        raise InvalidDraft
     #### Don't bother adding a Date: field because Gmail will replace it.
     msg_contents, recipients = expand_aliases(gpost_config, msg_string, header, header_fields)
     if gpost_config.snoop():
@@ -161,7 +174,7 @@ def prepare_message(gpost_config):
             try:
                 sbackup = subprocess.check_output(['mhparam', 'sbackup']).decode().rstrip()
             except subprocess.CalledProcessError:
-                print('{}: mhparam sbackup failed'.format(progname), file=sys.stderr)
+                print('{}: mhparam sbackup failed'.format(gpost_config.progname()), file=sys.stderr)
                 raise
             path = gpost_config.message_path()
             backup = os.path.dirname(path) + '/' + sbackup + os.path.basename(path)
@@ -239,7 +252,7 @@ def extract_sender(gpost_config, header_in):
     Sender allows authenticating as user if different from message sender.
     gpost_config -- config values object
     header_in -- message header as list
-    raises MissingFrom, MissingSender, SenderNotAnAddress, SenderNotUnique
+    raises MissingFrom, MissingSender, FromNotAnAddress, EnvFromNotAnAddress, SenderNotAnAddress, SenderNotUnique
     """
     #### Envelope-From overrides both Sender and From.  Assume that caller
     #### checked for existence of at least one of these header fields.
@@ -269,11 +282,11 @@ def extract_sender(gpost_config, header_in):
             if len(addr_list) >= 1:
                 from_address.extend([expand_alias(gpost_config, addr).strip() for addr in addr_list])
             else: # len(addr_list) == 0:
-                raise SenderNotAnAddress('From does not have valid address')
+                raise FromNotAnAddress
         #### Retain From: and everything else.
         header.append(line)
     if not from_address:
-        raise MissingFrom('message has no From:')
+        raise MissingFrom
     if envelope_from:
         #### Envelope-From overrides Sender and From.
         sender = envelope_from
@@ -282,9 +295,11 @@ def extract_sender(gpost_config, header_in):
         sender = sender_address
     else:
         if len(from_address) == 0:
-            raise MissingSender('missing message sender')
+            print('gpost.py: missing message sender', file=sys.stderr)
+            raise MissingSender
         if len(from_address) > 1:
-            raise MissingSender('Envelope-From with multiple From:')
+            print('gpost.py: Envelope-From with multiple From:', file=sys.stderr)
+            raise MissingSender
         sender = from_address[0]
     return header, get_sendfrom_user(nmh_addr.get_mailboxes(sender)[0])
 
@@ -303,7 +318,7 @@ def get_sendfrom_user(sender):
 
 
 def get_sender(match, field_name, loc):
-    """Returns address contained in an Envelope-From, Sender, or From header field.
+    """Returns address contained in an Envelope-From or Sender header field.
 
     match -- match of a pattern with a named 'sender' group
     field_name -- Envelope-From, Sender, or From
@@ -312,11 +327,14 @@ def get_sender(match, field_name, loc):
     """
     addr_list = nmh_addr.get_mailboxes(match.group('sender'))
     if loc or len(addr_list) > 1:
-        raise SenderNotUnique('there should only be one ' + field_name)
+        raise SenderNotUnique
     elif len(addr_list) == 1:
         return addr_list[0].strip()
     else: # len(addr_list) == 0
-        raise SenderNotAnAddress(field_name + ' does not have valid address')
+        if field_name == 'Envelope-From':
+            raise EnvFromNotAnAddress
+        else:
+            raise SenderNotAnAddress
 
 
 def expand_aliases(gpost_config, msg_contents, msg_header, header_fields):
@@ -381,7 +399,7 @@ def expand_alias(gpost_config, addr):
         ali.append(addr)
         return subprocess.check_output(ali).decode().rstrip()
     except subprocess.CalledProcessError:
-        print('{}: \'{}\' failed'.format(sys.argv[0], ' '.join(ali)), file=sys.stderr)
+        print('{}: \'{}\' failed'.format(gpost_config.progname(), ' '.join(ali)), file=sys.stderr)
         raise
 
 
@@ -436,9 +454,10 @@ def send_message(service, message):
     return service.users().messages().send(userId='me', body=message).execute()
 
 
-def store_fccs(msg_contents, fccs, sent_header_fields):
+def store_fccs(progname, msg_contents, fccs, sent_header_fields):
     """Store message according to Fcc's.
 
+    progname -- name of this program
     msg_contents -- message contents as a string
     fccs -- list of folders to store the Fcc
     sent_header_fields -- Date: and Message-Id header fields, as single string
@@ -459,9 +478,9 @@ def store_fccs(msg_contents, fccs, sent_header_fields):
                         subprocess.check_output(['folder', '+' + fcc])
                     subprocess.check_output(['refile', '-link', '-file', temp.name, '+' + fcc])
                 except subprocess.CalledProcessError:
-                    print('{}: refile of Fcc to {} failed'.format(sys.argv[0], fcc), file=sys.stderr)
+                    print('{}: refile of Fcc to {} failed'.format(progname, fcc), file=sys.stderr)
                 except KeyboardInterrupt:
-                    print('{}: refile of Fcc to {} interrupted'.format(sys.argv[0], fcc), file=sys.stderr)
+                    print('{}: refile of Fcc to {} interrupted'.format(progname, fcc), file=sys.stderr)
 
 
 def get_message_info(service, id):
@@ -491,7 +510,7 @@ def parse_args(argv):
     raises InvalidInvocation
     Exits the program with status 0 if -version or -help is specified.
     """
-    progname = os.path.basename(argv[0])
+    progname = 'gpost.py'
     usage = progname + """ [switches] file
   switches are:
   -alias aliasfile
@@ -538,8 +557,7 @@ def parse_args(argv):
     -authservice auth-service-name
     -oauthauthendpoint authentication-endpoint
     -oauthredirect redirect-uri
-    -oauthscope scope
-"""
+    -oauthscope scope"""
     parser = argparse.ArgumentParser(usage=usage, add_help=False)
     parser.add_argument('-alias', help=argparse.SUPPRESS)
     parser.add_argument('-check', action='store_true', default=None, help=argparse.SUPPRESS)
@@ -596,25 +614,23 @@ def parse_args(argv):
     parser.add_argument('-oauthscope', help=argparse.SUPPRESS)
     parser.add_argument('file', nargs='?', default=None, help=argparse.SUPPRESS)
     args = parser.parse_args(argv[1:])
+    if args.file == None:
+        print('{}: missing file\nUsage: {}'.format(progname, usage), file=sys.stderr)
+        raise InvalidInvocation
     if (args.saslmech != 'xoauth2'):
         raise NotXOAuth2
-    handle_args(progname, vars(args))
-
-    if args.file == None:
-        raise InvalidInvocation('Usage: {}{}: missing file'.format(usage, progname))
+    handle_args(vars(args))
 
     return OAuthConfig(progname, False, None, args.library, args.oauthcredfile,
                        args.oauthclientid, args.oauthclientsecret, args.oauthtokenendpoint), \
-           GpostConfig(args.whom, args.file, args.user, args.dist, args.alias, args.snoop)
+           GpostConfig(progname, args.whom, args.file, args.user, args.dist, args.alias, args.snoop)
 
 
-def handle_args(progname, args):
+def handle_args(args):
     """Do what needs to be done with command line arguments.  Includes checking
     for use of any unsupported switch.
 
-    progname -- name of this program
     args -- dict of {switch: value}
-    raises InvalidInvocation
     """
     if args.get('verbose'):
         print(str(args))
@@ -632,13 +648,18 @@ class GpostConfig():
 
     The values come from either the command line or profile.
     """
-    def __init__(self, whom, message_path, user, dist, alias, snoop):
+    def __init__(self, progname, whom, message_path, user, dist, alias, snoop):
+        self._progname = progname
         self._whom = whom
         self._message_path = message_path
         self._user = user
         self._dist = dist
-        self._alias = resolve_alias_file(alias)
+        self._alias = resolve_alias_file(progname, alias)
         self._snoop = snoop
+
+    def progname(self):
+        """Accessor for program name."""
+        return self._progname
 
     def whom(self):
         """Accessor for whom."""
@@ -665,9 +686,10 @@ class GpostConfig():
         return self._snoop
 
 
-def resolve_alias_file(alias):
+def resolve_alias_file(progname, alias):
     """Find location of AliasFile.
 
+    progname -- name of this program
     alias -- -alias command line switch argument, or None
     """
     if not alias:
@@ -702,6 +724,12 @@ class MissingFrom(Exception):
     pass
 
 class MissingSender(Exception):
+    pass
+
+class FromNotAnAddress(Exception):
+    pass
+
+class EnvFromNotAnAddress(Exception):
     pass
 
 class SenderNotAnAddress(Exception):

@@ -13,7 +13,7 @@ for complete copyright and conditions information.
 David Levine <levinedl@acm.org> 14 mar 2021
 """
 
-from nmh_gmailapi import OAuthConfig, get_service, InvalidInvocation, UnableToRetrieveOAuthCredentials
+from nmh_gmailapi import OAuthConfig, get_service, InvalidInvocation, UnableToRetrieveOAuthCredentials, RefreshError
 from argparse import ArgumentParser, SUPPRESS
 from os.path import basename
 import oauthlib, sys
@@ -26,13 +26,16 @@ def glogin(argv):
     """
     try:
         oauth_config, glogin_config = parse_args(argv)
-    except InvalidInvocation as err:
-        print('{}: {}'.format(argv[0], err), file=sys.stderr)
+    except InvalidInvocation:
         return 2
     try:
         return get_service(oauth_config, None, glogin_config.scopes())
-    except UnableToRetrieveOAuthCredentials as err:
-        print('{}: {}'.format(oauth_config.progname(), err), file=sys.stderr)
+    except UnableToRetrieveOAuthCredentials:
+        print('{}: unable to retrieve Google OAuth2 credentials'.format(oauth_config.progname()), file=sys.stderr)
+        return 1
+    except RefreshFailed:
+        #### Shouldn't happen.
+        print('{}: refresh error, please retry'.format(progname, file=sys.stderr))
         return 1
     except oauthlib.oauth2.rfc6749.errors.AccessDeniedError:
         print('access denied: this can happen if you cancelled the login')
@@ -47,7 +50,7 @@ def parse_args(argv):
     Exits the program with status 0 if -version or -help is specified.
     Exits the program with status 2 if usage is not followed.
     """
-    progname = basename(argv[0])
+    progname = 'glogin.py'
     usage = progname + """ [switches] -user address | -version | -help
   switches are:
   -noginc
@@ -56,8 +59,7 @@ def parse_args(argv):
   -oauthcredfile path
 -noginc excludes authorization for ginc.py
 -nogincmodify excludes authorization for ginc.py -disposition delete (the default) and mark
--nogpost excludes authorization for gpost.py
-"""
+-nogpost excludes authorization for gpost.py"""
     parser = ArgumentParser(usage=usage, add_help=False)
     parser.add_argument('-user', nargs='?', default=None, help=SUPPRESS)
     parser.add_argument('-version', action='version', version='%(prog)s -- 0.9', help=SUPPRESS)
@@ -69,7 +71,8 @@ def parse_args(argv):
     args = parser.parse_args(argv[1:])
 
     if args.user == None:
-        raise InvalidInvocation('Usage: {}{}: missing user'.format(usage, progname))
+        print('{}: missing user\nUsage: {}'.format(progname, usage), file=sys.stderr)
+        raise InvalidInvocation
 
     return OAuthConfig(progname, True, args.user, None, args.oauthcredfile, None, None, None), \
         GloginConfig(args.noginc, args.nogincmodify, args.nogpost)

@@ -90,7 +90,17 @@ def test_dcc_not_supported():
 Dcc: dcc@example.com
 From: from@example.com""")
         status = gpost(['gpost.py', '-saslmech', 'xoauth2', temp.name])
-    assert re.search(r': Dcc is not supported', stderr.getvalue()) and status == 1
+    assert re.search(r'Dcc is not supported\ngpost.py: invalid draft', stderr.getvalue()) and status == 1
+
+def test_envelope_from_not_address():
+    from io import StringIO
+    sys.stderr = stderr = StringIO()
+    with tempfile.NamedTemporaryFile(mode='wt') as temp:
+        Path(temp.name).write_text("""\
+Envelope-From: envelope-from
+To: recipient@example.com""")
+        status = gpost(['gpost.py', '-saslmech', 'xoauth2', temp.name])
+    assert re.search(r'Envelope-From does not have valid address', stderr.getvalue()) and status == 1
 
 def test_sender_not_address():
     from io import StringIO
@@ -101,7 +111,7 @@ From: from@example.com
 Sender: sender
 To: recipient@example.com""")
         status = gpost(['gpost.py', '-saslmech', 'xoauth2', temp.name])
-    assert re.search(r': Sender does not have valid address', stderr.getvalue()) and status == 1
+    assert re.search(r'Sender does not have valid address', stderr.getvalue()) and status == 1
 
 def test_sender_not_unique():
     from io import StringIO
@@ -112,7 +122,7 @@ From: from@example.com
 Sender: sender1@example.com, sender2@example.com
 To: recipient@example.com""")
         status = gpost(['gpost.py', '-saslmech', 'xoauth2', temp.name])
-    assert re.search(r': there should only be one Sender', stderr.getvalue()) and status == 1
+    assert re.search(r'gpost.py: there can be only one unique sender', stderr.getvalue()) and status == 1
 
 def test_whom_without_sender():
     from io import StringIO
