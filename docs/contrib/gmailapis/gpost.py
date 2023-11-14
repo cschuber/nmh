@@ -301,6 +301,8 @@ def extract_sender(gpost_config, header_in):
             print('gpost.py: Envelope-From with multiple From:', file=sys.stderr)
             raise MissingSender
         sender = from_address[0]
+        if len(nmh_addr.get_mailboxes(sender)) == 0:
+            raise FromNotAnAddress
     return header, get_sendfrom_user(nmh_addr.get_mailboxes(sender)[0])
 
 

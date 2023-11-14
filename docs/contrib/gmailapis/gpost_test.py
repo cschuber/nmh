@@ -92,6 +92,16 @@ From: from@example.com""")
         status = gpost(['gpost.py', '-saslmech', 'xoauth2', temp.name])
     assert re.search(r'Dcc is not supported\ngpost.py: invalid draft', stderr.getvalue()) and status == 1
 
+def test_from_not_address():
+    from io import StringIO
+    sys.stderr = stderr = StringIO()
+    with tempfile.NamedTemporaryFile(mode='wt') as temp:
+        Path(temp.name).write_text("""\
+From: from
+To: recipient@example.com""")
+        status = gpost(['gpost.py', '-saslmech', 'xoauth2', temp.name])
+    assert re.search(r'From does not have valid address', stderr.getvalue()) and status == 1
+
 def test_envelope_from_not_address():
     from io import StringIO
     sys.stderr = stderr = StringIO()
