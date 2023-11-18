@@ -374,6 +374,36 @@ def _encrypt(plaintext):
     """
     return Fernet(_key).encrypt(plaintext)
 
+def neutralize(str, context):
+    """Returns the input string or raises an exception if it contains forbidden characters for context.
+
+    str -- the input string
+    context -- 'folder' for a folder name, 'filename' for a filename
+    raises FolderNameNotAllowed, FileNameNotAllowed, NameNotAllowed
+    """
+    if context == 'folder':
+        permitted_chars = compile(r'[,-9A-Z_a-z]')
+        for c in str:
+            if not permitted_chars.search(c):
+                raise FolderNameNotAllowed
+        return str
+    elif context == 'filename':
+        permitted_chars = compile(r'[+-9:=@A-Z^_a-z]')
+        for c in str:
+            if not permitted_chars.search(c):
+                raise FileNameNotAllowed
+        return str
+    else:
+        raise NameNotAllowed
+
+class FolderNameNotAllowed(Exception):
+    pass
+
+class FileNameNotAllowed(Exception):
+    pass
+
+class NameNotAllowed(Exception):
+    pass
 
 class InvalidInvocation(Exception):
     pass

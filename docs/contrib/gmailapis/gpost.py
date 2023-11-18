@@ -32,8 +32,9 @@ See nmh_gmailapi.py for documentation references.
 David Levine <levinedl@acm.org> 01 jan 2021
 """
 
-from nmh_gmailapi import OAuthConfig, get_profile_value, get_service,\
-    parse_key_value_list, InvalidInvocation, UnableToRetrieveOAuthCredentials, RefreshFailed
+from nmh_gmailapi import OAuthConfig, get_profile_value, get_service, neutralize, \
+    parse_key_value_list, InvalidInvocation, UnableToRetrieveOAuthCredentials, \
+    RefreshFailed, FolderNameNotAllowed, FileNameNotAllowed
 from pathlib import Path
 from nmh_addr import nmh_addr
 import argparse, base64, os.path, re, subprocess, sys, tempfile
@@ -89,6 +90,12 @@ def gpost(argv):
     except SenderNotUnique:
         print('{}: there can be only one unique sender'.format(progname), file=sys.stderr)
         return 1
+    except FolderNameNotAllowed:
+        print('{}: an Fcc folder name is not allowed'.format(progname), file=sys.stderr)
+        return 1
+    except FileNameNotAllowed:
+        print('{}: alias filename is not allowed'.format(progname), file=sys.stderr)
+        return 1
     if not sender:
         print('{}: message file \'{}\' has no sender'.format(progname, gpost_config.message_path()),
               file=sys.stderr)
@@ -140,7 +147,7 @@ def prepare_message(gpost_config):
     """Returns message contents as string, sender, recipients as a list, and Fccs as list.
 
     gpost_config -- config values object
-    raises InvalidDraft, MissingSender, FromNotAnAddress, EnvFromNotAnAddress, SenderNotAnAddress, SenderNotUnique
+    raises InvalidDraft, MissingSender, FromNotAnAddress, EnvFromNotAnAddress, SenderNotAnAddress, SenderNotUnique, FolderNameNotAllowed
     """
     #### Load and parse the message.
     msg_string = Path(gpost_config.message_path()).read_text()
@@ -230,6 +237,7 @@ def get_fccs(dist, header):
 
     dist -- dist flag
     header -- message header as list
+    raises FolderNameNotAllowed
     """
     header_field = r'^Resent-Fcc' if dist else r'^Fcc'
     kv_pat = re.compile(header_field + r':\s*(.*)', re.IGNORECASE)
@@ -240,7 +248,7 @@ def get_fccs(dist, header):
             ##### Strip leading + from each folder name.
             folders = [folder.strip()[1:] for folder in kv_match.group(1).split(',')]
             for folder in folders:
-                fccs.append(folder)
+                fccs.append(neutralize(folder, 'folder'))
 
     header = [line for line in header if not re.match(r'fcc:', line.lower())]
     return header, fccs if len(fccs) > 0 else None
@@ -509,7 +517,7 @@ def parse_args(argv):
     """Parse command line arguments, returning OAuthConfig and GpostConfig pair.
 
     argv -- command line argument list
-    raises InvalidInvocation
+    raises InvalidInvocation, FileNameNotAllowed
     Exits the program with status 0 if -version or -help is specified.
     """
     progname = 'gpost.py'
@@ -649,6 +657,7 @@ class GpostConfig():
     """Container for relevant configuration values.
 
     The values come from either the command line or profile.
+    raises FileNameNotAllowed
     """
     def __init__(self, progname, whom, message_path, user, dist, alias, snoop):
         self._progname = progname
@@ -693,11 +702,12 @@ def resolve_alias_file(progname, alias):
 
     progname -- name of this program
     alias -- -alias command line switch argument, or None
+    raises FileNameNotAllowed
     """
     if not alias:
         #### No -alias on command line.  Look in profile.
         try:
-            alias = subprocess.check_output(['mhparam', 'AliasFile']).decode().rstrip()
+            alias = neutralize(subprocess.check_output(['mhparam', 'AliasFile']).decode().rstrip(), 'filename')
         except subprocess.CalledProcessError:
             pass
     if alias:
@@ -708,7 +718,7 @@ def resolve_alias_file(progname, alias):
             except subprocess.CalledProcessError:
                 print('{}: mhparam path failed'.format(progname), file=sys.stderr)
                 raise
-        alias = path + '/' + alias
+        alias = neutralize(path + '/' + alias, 'filename')
     else:
         #### No -alias on command line or in profile.  Use default.
         try:
@@ -716,7 +726,7 @@ def resolve_alias_file(progname, alias):
         except subprocess.CalledProcessError:
             print('{}: mhparam etcdir failed'.format(progname), file=sys.stderr)
             raise
-        alias = etcdir + '/MailAliases'
+        alias = neutralize(etcdir + '/MailAliases', 'filename')
 
 
 class InvalidDraft(Exception):

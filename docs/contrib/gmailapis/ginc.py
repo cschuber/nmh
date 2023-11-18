@@ -23,13 +23,13 @@ See nmh_gmailapi.py for documentation references.
 David Levine <levinedl@acm.org> 28 feb 2021
 """
 
-from nmh_gmailapi import OAuthConfig, get_service
-from nmh_gmailapi import InvalidInvocation, UnableToRetrieveOAuthCredentials, RefreshFailed
+from nmh_gmailapi import OAuthConfig, get_service, neutralize
+from nmh_gmailapi import InvalidInvocation, UnableToRetrieveOAuthCredentials, RefreshFailed, FolderNameNotAllowed, FileNameNotAllowed
 from google.auth.exceptions import TransportError
 from argparse import ArgumentParser, SUPPRESS
 from base64 import urlsafe_b64decode
 from collections import defaultdict
-from subprocess import CalledProcessError, check_output, DEVNULL, Popen, PIPE, run, STDOUT
+from subprocess import CalledProcessError, check_output, DEVNULL, Popen, PIPE, run
 import os.path, sys
 
 
@@ -45,6 +45,12 @@ def ginc(argv):
         config, folder, user, all, disposition, delivery, snoop = parse_args(arglist)
     except InvalidInvocation:
         return 2
+    except FolderNameNotAllowed:
+        print('{}: folder name is not allowed'.format(progname), file=sys.stderr)
+        return 1
+    except FileNameNotAllowed:
+        print('{}: delivery program name is not allowed'.format(progname), file=sys.stderr)
+        return 1
     progname = config.progname()
 
     #### Authenticate with Google services.
@@ -264,7 +270,7 @@ def parse_args(arglist):
     all flag, disposition, delivery program, and snoop flag.
 
     arglist -- list of arguments from profile and command line
-    raises InvalidInvocation
+    raises InvalidInvocation, FolderNameNotAllowed, FileNameNotAllowed
     Exits the program with status 0 if -version or -help is specified.
     """
     progname = 'ginc.py'
@@ -298,7 +304,7 @@ The delivery program defaults to rcvstore."""
     folder = inbox_name()
     if args.folder:
         if args.folder[0] == '+':
-            folder = args.folder[1:]
+            folder = neutralize(args.folder[1:], 'folder')
         else:
             print('{}: error: unrecognized folder argument\nUsage: {}'.format(progname, usage), file=sys.stderr)
             raise InvalidInvocation
@@ -306,7 +312,7 @@ The delivery program defaults to rcvstore."""
         print('{}: error: missing -user switch\nUsage: {}'.format(progname, usage), file=sys.stderr)
         raise InvalidInvocation
     return OAuthConfig(progname, False, args.user[0], None, None, None, None, None), \
-        folder, args.user[0], args.all, args.disposition, args.delivery, args.snoop
+        folder, args.user[0], args.all, args.disposition, neutralize(args.delivery, 'filename'), args.snoop
 
 
 if __name__ == '__main__':
