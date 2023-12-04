@@ -570,7 +570,10 @@ nmh_init(const char *argv0, bool read_context, bool check_version)
                          mhdocdir);
                 print_intro (stdout, 1);
                 printf ("\nThis message will not be repeated until "
-                        "nmh is next updated.\n");
+                        "nmh is next updated.  To\n"
+                        "permanently suppress this message, add "
+                        "\"Welcome: disable\" to your\n"
+                        " ~/.mh_profile.\n");
                 printf ("==================================================="
                         "=====================\n\n");
 
