@@ -573,7 +573,7 @@ nmh_init(const char *argv0, bool read_context, bool check_version)
                         "nmh is next updated.  To\n"
                         "permanently suppress this message, add "
                         "\"Welcome: disable\" to your\n"
-                        "~/.mh_profile.\n");
+                        "profile (%s).\n", defpath);
                 printf ("==================================================="
                         "=====================\n\n");
 
