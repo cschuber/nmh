@@ -248,6 +248,23 @@ the offending library.
 releasing nmh
 -------------
 
+The release should be signed using a GPG key when uploading to
+Savannah.  To add your GPG key to the nmh-members public keyring:
+
+1. To create a new GPG key, if needed, run "gpg --generate-key"
+
+2. Log on to https://savannah.nongnu.org/my/admin/
+
+3. Click "Edit GPG Key"
+
+4. Export your key with "gpg --export --armor <key name>" and
+   copy to the clipboard for pasting below
+
+5. Under "Update your keys in this input area", paste your key
+
+6. Click "Update"
+
+
 To make a public release of nmh (we'll use version 1.5 as the example
 here; the convention for release candidates is to use something like
 "1.5-RC1"):
