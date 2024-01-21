@@ -295,6 +295,8 @@ else
     post_or_send=`$nmhbindir/mhparam postproc`
   else
     post_or_send="$nmhbindir/send"
+    #### Squash any -draftfolder switch that be in user's profile.
+    postsendargs="${postsendargs:+$postsendargs }-nodraftfolder"
   fi
 
   if "$post_or_send" $postsendargs "$tmpfile"; then

@@ -17,6 +17,5 @@ BUG FIXES
 ---------
 
 - Prevent repetition of nmh welcome message if a command fails.
-- mhbuild now folds header field bodies to avoid lines with more than 78 bytes.
-
-
+- mhbuild(1) now folds header field bodies to avoid lines with more than 78 bytes.
+- mhmail(1) -profile switch is now compatible with send: -draftfolder in profile.

@@ -702,7 +702,6 @@ From: sender23@localhost
 Date: Sat Jun 16 18:35:15 -0500
 
 please resend this message, 1'
-
 [ ${failed:-0} -eq 0 ] || exit ${failed:-0}
 
 # check -resent -profile, using stdin
@@ -732,7 +731,6 @@ From: sender24@localhost
 Date: Sat Jun 16 18:35:15 -0500
 
 please resend this message, 2'
-
 [ ${failed:-0} -eq 0 ] || exit ${failed:-0}
 
 
@@ -763,7 +761,6 @@ From: sender25@localhost
 Date: Sat Jun 16 18:35:15 -0500
 
 please resend this message, 3'
-
 [ ${failed:-0} -eq 0 ] || exit ${failed:-0}
 
 
@@ -788,7 +785,6 @@ EOF
 test_mhmail "$expected" \
   '-from sender26@example.com -headerfield User-Agent:nmh' \
   -b 'with added header field'
-
 [ ${failed:-0} -eq 0 ] || exit ${failed:-0}
 
 
@@ -817,7 +813,6 @@ test_mhmail "$expected" \
 -headerfield Content-Type:text/plain;charset=utf-8 \
 -headerfield Content-Transfer-Encoding:7bit" \
   -b 'with added header fields'
-
 [ ${failed:-0} -eq 0 ] || exit ${failed:-0}
 
 
@@ -858,7 +853,31 @@ EOF
 test_mhmail "$expected" \
   "-from sender28@example.com -attach ${srcdir}/test/mhmail/attachment.txt" \
   -b 'See how easy it is to add an attachment!'
+[ ${failed:-0} -eq 0 ] || exit ${failed:-0}
 
+
+# check -profile with send: -draftfolder in profile
+start_test "-profile with send: -draftfolder in profile"
+sed -e 's/^send: .*/send: -draftfolder drafts/' "$MH" >"$MH.new"
+mv -f "$MH.new" "$MH"
+
+cat > "$expected" <<EOF
+EHLO nosuchhost.example.com
+MAIL FROM:<sender29@localhost>
+RCPT TO:<recipient@example.com>
+DATA
+To: recipient@example.com
+From: sender29@localhost
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Date:
+
+message
+.
+QUIT
+EOF
+
+test_mhmail "$expected" '-from sender29@localhost -profile' '|' message
 [ ${failed:-0} -eq 0 ] || exit ${failed:-0}
 
 
