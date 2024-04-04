@@ -431,6 +431,7 @@ setup_test ()
 Path: ${MH_TEST_DIR}/Mail
 buildmimeproc: ${MH_INST_DIR}${bindir}/mhbuild
 fileproc: ${MH_INST_DIR}${bindir}/refile
+bindir: ${MH_INST_DIR}${bindir}
 libexecdir: ${MH_LIBEXEC_DIR}
 mhbuild: -nocontentid
 mhlproc: ${MH_LIBEXEC_DIR}/mhl

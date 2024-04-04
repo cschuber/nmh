@@ -36,18 +36,6 @@ usage='Usage: mhmail [-t(o)] addrs ... [switches]
   mhmail with no arguments is equivalent to inc'
 
 
-#### Find location of a program.  Bourne shell just puts the name in
-#### $0 if it's found from the PATH, so search that if necessary.
-finddir() {
-  case $1 in
-    */*) dirname "$1" ;;
-    *  ) IFS=:
-         for d in $PATH; do
-           [ -f "${d:=.}/$1"  -a  -x "$d/$1" ]  &&  printf %s "$d"  &&  break
-         done ;;
-  esac
-}
-
 help() {
   printf '%s\n' "$usage"
   #### Print the nmh intro text.
@@ -61,10 +49,9 @@ die() {
     exit 1
 }
 
+nmhbindir="`mhparam bindir`"
+nmhlibexecdir="`mhparam libexecdir`"
 
-bindir=`finddir $0`
-nmhbindir=`cd "$bindir" && pwd`
-nmhlibexecdir=`$nmhbindir/mhparam libexecdir`
 case `printf 'OK\n' | tail -n 1 2>&1` in
   OK) tail='tail -n ' ;;
   *)  tail='tail -' ;;
