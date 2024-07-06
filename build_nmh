@@ -195,7 +195,8 @@ exec 3>&1 4>&2 >"$tmpfile" 2>&1
 analyze=
 branch=master
 check=check
-config_opts=
+#### autoconf 2.71 on Fedora 40 insists on having a lex lib.
+config_opts="LEXLIB=''"
 debug=0
 install=0
 build_rpm=0
@@ -234,7 +235,7 @@ shift `expr $OPTIND - 1`
 
 echo "$invocation"
 
-if [ $have_configure_opts ]; then
+if [ $have_configure_opts -eq 1 ]; then
   #### Pass first -- option and all remaining options to configure.
   config_opts="$*"
   DISTCHECK_CONFIGURE_FLAGS="$*"
