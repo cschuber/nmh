@@ -201,7 +201,7 @@ post: re-format message and try again
 send: message not delivered to anyone
 EOF
 
-! test_sendmail sendmail/pipe 2>"${testname}.actual1"
+test_sendmail sendmail/pipe 2>"${testname}.actual1" || true
 check "${testname}.actual1" "${testname}.expected1"
 
 rm -f ${MHMTSCONF}

@@ -168,7 +168,8 @@ This is a test
 .
 QUIT
 EOF
-SMTPUTF8=1 test_post "${testname}.actual" "${testname}.expected"
+(SMTPUTF8=1; export SMTPUTF8
+test_post "${testname}.actual" "${testname}.expected")
 
 #
 # 8-bit with 8BITMIME support, inferred from content
@@ -202,7 +203,8 @@ This is a test, with a non-ascii character:  §
 .
 QUIT
 EOF
-SMTPUTF8=1 test_post "${testname}.actual" "${testname}.expected"
+(SMTPUTF8=1; export SMTPUTF8
+test_post "${testname}.actual" "${testname}.expected")
 
 #
 # binary content containing a NUL
@@ -238,7 +240,8 @@ This is a test, with a NUL character:  " "
 .
 QUIT
 "
-SMTPUTF8=1 test_post "${testname}.actual" "${testname}.expected"
+(SMTPUTF8=1; export SMTPUTF8
+test_post "${testname}.actual" "${testname}.expected")
 
 
 finish_test

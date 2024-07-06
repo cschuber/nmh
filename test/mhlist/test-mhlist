@@ -539,7 +539,6 @@ EOF
 run_prog mhlist last > $actual 2>&1
 check "$expected" "$actual"
 
-
 start_test 'quoted-printable message/rfc822'
 cat >"$expected" <<EOF
 mhlist: "message/rfc822" type in message 15 should be encoded in 7bit, 8bit, or binary continuing...
@@ -568,7 +567,7 @@ This is an RFC-822 message.
 ------- =_aaaaaaaaaa0--
 EOF
 
-! run_prog mhlist last > $actual 2>&1
+run_prog mhlist last > $actual 2>&1 || true
 check "$expected" "$actual"
 
 
@@ -601,7 +600,7 @@ This is an RFC-822 message.
 ------- =_aaaaaaaaaa0--
 EOF
 
-! run_prog mhlist last > $actual 2>&1
+run_prog mhlist last > $actual 2>&1 || true
 check "$expected" "$actual"
 
 

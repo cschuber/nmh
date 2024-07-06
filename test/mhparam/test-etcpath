@@ -33,7 +33,7 @@ nonexistent_file()
 {
     dir="$1"
     file="$dir/XXXX"
-    while test -e "$file"; do
+    while test -r "$file"; do
         file="${file}X"
     done
     printf %s "$file"
@@ -89,7 +89,7 @@ check "$expected_err" "$actual_err"
 
 # nonexistent user (exercise failed getpwnam(3) branch in etcpath())
 start_test 'nonexistent user'
-user=$(nonexistent_user)
+user=`nonexistent_user`
 cat >"$expected_err" <<EOF
 mhical: unable to open format file ~$user/mhical.24hour: No such file or directory
 EOF
@@ -102,7 +102,7 @@ check "$expected_err" "$actual_err"
 # nonexistent user without a file
 # This caused a seg fault with sbr/path.c commit cd2c6750fba54cd6d938106ecd122e8976792b6e.
 start_test 'nonexistent user without a file'
-user=$(nonexistent_user)
+user=`nonexistent_user`
 cat >"$expected_err" <<EOF
 mhical: unable to open format file ~$user: No such file or directory
 EOF
@@ -126,7 +126,7 @@ check "$expected_err" "$actual_err"
 # file in nmh etcdir
 # This only works if nmh was installed, so that `mhparam etcdir`/mhical.24hour
 # exists.  "make distcheck" installs nmh, so it will be used with that.
-if [ -e `mhparam etcdir`/mhical.24hour ]; then
+if [ -f `mhparam etcdir`/mhical.24hour ]; then
     start_test 'file in nmh etcdir'
     rm -f "${MH_TEST_DIR}/Mail/mhical.24hour"
     printf 'BEGIN:VCALENDAR\nEND:VCALENDAR\n' |
