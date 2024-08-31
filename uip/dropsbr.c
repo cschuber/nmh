@@ -230,7 +230,7 @@ mbx_copy (char *mailbox, int mbx_style, int md, int fd,
 			if (!(fp = strchr(ep + 1, ' ')))
 			    fp = strchr(ep + 1, '\n');
 			tp = dctime(dlocaltimenow());
-			snprintf (buffer, sizeof(buffer), "From %.*s  %s",
+			snprintf (buffer, sizeof(buffer), "From %.*s %s",
 				(int)(fp - ep), ep, tp);
 		    } else if (has_prefix(buffer, "X-Envelope-From:")) {
 			/*
@@ -245,7 +245,7 @@ mbx_copy (char *mailbox, int mbx_style, int md, int fd,
 			snprintf (buffer, sizeof(buffer), "From %s", ep);
 		    } else if (!has_prefix(buffer, "From ")) {
                         /* There is no "From " line; add one. */
-                        char from[] = "From nobody@nowhere\t";
+                        char from[] = "From nobody@nowhere ";
                         char prefixed[LEN(from) + DCTIME_SIZEOF - 1 + sizeof buffer];
                         snprintf(prefixed, sizeof prefixed, "%s%s%s",
                             from, dctime(dlocaltimenow()), buffer);

@@ -58,12 +58,16 @@ start_test "with no switches"
 rm -f msgbox
 run_prog packf <Mail/yes
 inc +inbox2 -file msgbox <Mail/yes >/dev/null
-rm -f msgbox
 for i in `pick +inbox`; do
   diff "`mhpath +inbox $i`" "`mhpath +inbox2 $i`"
 done
 run_test "printf $i" '10'
 rmm +inbox2 -unlink `pick +inbox2`
+
+# check From line format [Bug 765643], to use only single space instead of HT
+start_test "From line format [Bug 765643]"
+head -1 msgbox | grep -E -q '^From [^ \t]+ [^ \t]'
+rm -f msgbox
 
 # check +folder
 start_test "+folder"
