@@ -14,7 +14,7 @@
 #include "config.h"
 #include "m_rand.h"
 
-#if !HAVE_ARC4RANDOM
+#if !HAVE_ARC4RANDOM_BUF
 static bool seeded = false;
 #endif
 
@@ -22,7 +22,7 @@ static bool seeded = false;
 int
 m_rand (unsigned char *buf, size_t n)
 {
-#if HAVE_ARC4RANDOM
+#if HAVE_ARC4RANDOM_BUF
   arc4random_buf(buf, n);
 #else
   if (! seeded) {
