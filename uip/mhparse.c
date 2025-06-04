@@ -1832,10 +1832,7 @@ openBase64 (CT ct, char **file)
         }
     }
 
-    /* decodeBase64() requires null-terminated input. */
-    *cp = '\0';
-
-    if (decodeBase64 (buffer, &decoded, &decoded_len,
+    if (decodeBase64 (buffer, cp - buffer, &decoded, &decoded_len,
 		      ct->c_type == CT_TEXT) != OK)
         goto clean_up;
 

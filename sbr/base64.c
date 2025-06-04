@@ -248,21 +248,21 @@ static const unsigned char b642nib[0x80] = {
  *                skipped
  */
 int
-decodeBase64 (const char *encoded, unsigned char **decoded, size_t *len,
-	      int skip_crs)
+decodeBase64 (const char *encoded, size_t encoded_len,
+              unsigned char **decoded, size_t *len, int skip_crs)
 {
     const char *cp = encoded;
     int bitno, skip;
     uint32_t bits;
     /* Size the decoded string very conservatively. */
-    charstring_t decoded_c = charstring_create (strlen (encoded));
+    charstring_t decoded_c = charstring_create (encoded_len);
 
     bitno = 18;
     bits = 0L;
     skip = 0;
 
     bool self_delimiting = false;
-    for (; *cp; ++cp) {
+    for (; encoded_len > 0; --encoded_len, ++cp) {
         switch (*cp) {
             unsigned char value;
 
@@ -272,8 +272,9 @@ decodeBase64 (const char *encoded, unsigned char **decoded, size_t *len,
                 }
                 if (skip  ||  (((unsigned char) *cp) & 0x80)  ||
                     (value = b642nib[((unsigned char) *cp) & 0x7f]) > 0x3f) {
-                    inform("invalid base64 byte %#x: %.42s",
-                        *(unsigned char *)cp, cp);
+                    inform("invalid base64 byte %#x: %.*s",
+                           *(unsigned char *)cp, (int) min(encoded_len, 42),
+                           cp);
                     charstring_free (decoded_c);
                     *decoded = NULL;
 
@@ -317,8 +318,11 @@ test_end:
 
     if (! self_delimiting  &&  bitno != 18) {
         /* Show some context for the error. */
-        cp -= min(cp - encoded, 20);
-        inform("premature ending (bitno %d) near %s", bitno, cp);
+        int context = min(cp - encoded, 20);
+        cp -= context;
+        encoded_len += context;
+        inform("premature ending (bitno %d) near %.*s",
+               bitno, (int) encoded_len, cp);
         charstring_free (decoded_c);
         *decoded = NULL;
 
