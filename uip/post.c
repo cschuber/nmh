@@ -1283,7 +1283,7 @@ putadr (char *name, char *aka, struct mailname *mp, FILE *out,
 {
     int len;
     bool saveappend = false;
-    unsigned int shlen;
+    unsigned int shlen = 0;
     char *cp;
     char buffer[BUFSIZ];
 

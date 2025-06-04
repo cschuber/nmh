@@ -1918,7 +1918,7 @@ openQuoted (CT ct, char **file)
     char *bufp = NULL;
     size_t buflen;
     ssize_t gotlen;
-    unsigned char mask;
+    unsigned char mask = '\0';
     CE ce = &ct->c_cefile;
     /* sbeck -- handle suffixes */
     CI ci;
