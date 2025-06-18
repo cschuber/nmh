@@ -820,7 +820,7 @@ again: ;
 						 &errstr)) != NULL ; ) {
 
 	if (doingEHLO
-	        && has_prefix(buffer, "250")
+	        && has_prefix_len(buffer, buflen, "250")
 	        && (buffer[3] == '-' || doingEHLO == 2)
 	        && buffer[4]) {
 	    if (doingEHLO == 2) {
@@ -1046,7 +1046,7 @@ sm_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 	    return NOTOK;
 	}
 
-	if (!has_prefix(line, "334 ")) {
+	if (!has_prefix_len(line, len, "334 ")) {
 	    netsec_err(errstr, "Improper SASL protocol response: %s", line);
 	    return NOTOK;
 	}
@@ -1097,7 +1097,7 @@ sm_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 	if (line == NULL)
 	    return NOTOK;
 
-	if (!has_prefix(line, "235 ")) {
+	if (!has_prefix_len(line, len, "235 ")) {
 	    if (len > 4)
 		netsec_err(errstr, "Authentication failed: %s", line + 4);
 	    else

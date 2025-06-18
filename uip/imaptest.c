@@ -295,18 +295,20 @@ main (int argc, char **argv)
 	die("%s", errstr);
     }
 
-    if (has_prefix(cp, "* BYE")) {
+    if (has_prefix_len(cp, len, "* BYE")) {
 	fprintf(stderr, "Connection rejected: %s\n", cp + 5);
 	goto finish;
     }
 
-    if (!has_prefix(cp, "* OK") && !has_prefix(cp, "* PREAUTH")) {
+    if (!has_prefix_len(cp, len, "* OK") &&
+        !has_prefix_len(cp, len, "* PREAUTH")) {
 	fprintf(stderr, "Invalid server response: %s\n", cp);
 	goto finish;
     }
 
-    if ((p = strchr(cp + 2, ' ')) && *(p + 1) != '\0' &&
-	has_prefix(p + 1, "[CAPABILITY ")) {
+    if (len > 2 && (p = memrchr(cp + 2, ' ', len - 2)) &&
+	len > (unsigned long int) (p + 1 - cp) &&
+	has_prefix_len(p + 1, len - (p + 1 - cp), "[CAPABILITY ")) {
 	/*
 	 * Parse the capability list out to the end
 	 */
@@ -911,6 +913,7 @@ get_imap_response(netsec_context *nsc, const char *token, char **tokenresponse,
 		  char **status, bool condok, bool failerr, char **errstr)
 {
     char *line;
+    size_t len;
     struct imap_cmd *cmd;
     bool numerrs = false;
 
@@ -919,15 +922,16 @@ get_imap_response(netsec_context *nsc, const char *token, char **tokenresponse,
 
 getline:
     while (cmdqueue) {
-	if (!(line = netsec_readline(nsc, NULL, errstr)))
+	if (!(line = netsec_readline(nsc, &len, errstr)))
 	    return NOTOK;
-	if (has_prefix(line, "* ") && *(line + 2) != '\0') {
-	    if (token && tokenresponse && has_prefix(line + 2, token)) {
+	if (has_prefix_len(line, len, "* ")) {
+	    if (token && tokenresponse &&
+                has_prefix_len(line + 2, len - 2, token)) {
 		if (*tokenresponse)
 		    free(*tokenresponse);
 		*tokenresponse = getcpy(line + 2);
 	    }
-	} if (condok && has_prefix(line, "+")) {
+	} if (condok && has_prefix_len(line, len, "+")) {
 	    if (status) {
 		*status = getcpy(line);
 	    }
@@ -938,7 +942,7 @@ getline:
 	    return OK;
 	} else {
 
-	    if (has_prefix(line, cmdqueue->tag)) {
+	    if (has_prefix_len(line, len, cmdqueue->tag)) {
 		cmd = cmdqueue;
 		if (timestamp)
 		    ts_report(&cmd->start, "Command (%s) execution time",
@@ -947,7 +951,7 @@ getline:
 		free(cmd);
 	    } else {
 		for (cmd = cmdqueue; cmd->next != NULL; cmd = cmd->next) {
-		    if (has_prefix(line, cmd->next->tag)) {
+		    if (has_prefix_len(line, len, cmd->next->tag)) {
 		        struct imap_cmd *cmd2 = cmd->next;
 			cmd->next = cmd->next->next;
 			if (failerr && strncmp(line + strlen(cmd2->tag),

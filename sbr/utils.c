@@ -457,6 +457,21 @@ has_prefix(const char *s, const char *prefix)
 }
 
 
+/* has_prefix_len returns true if non-NULL s of length len
+ * starts with non-NULL prefix. */
+bool
+has_prefix_len(const char *s, size_t len, const char *prefix)
+{
+    while (len > 0 && *prefix && *s == *prefix) {
+        s++;
+        len--;
+        prefix++;
+    }
+
+    return *prefix == '\0';
+}
+
+
 /* has_suffix returns true if non-NULL s ends with non-NULL suffix. */
 bool
 has_suffix(const char *s, const char *suffix)

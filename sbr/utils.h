@@ -73,6 +73,7 @@ void abortcpy(char *, const char *, size_t);
 #define ABORTCPY(dest, src) abortcpy(dest, src, sizeof (dest))
 
 bool has_prefix(const char *, const char *) PURE;
+bool has_prefix_len(const char *, size_t, const char *) PURE;
 bool has_suffix(const char *, const char *) PURE;
 bool has_suffix_c(const char *, int) PURE;
 void trim_suffix_c(char *, int);

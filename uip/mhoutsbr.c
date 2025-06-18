@@ -347,7 +347,7 @@ writeQuoted (CT ct, FILE *out)
 	 * doesn't falsely match an mbox delimiter.
 	 */
 	cp = bufp;
-	if (gotlen >= 5 && has_prefix(cp, "From ")) {
+	if (has_prefix_len(cp, gotlen, "From ")) {
 	    fprintf(out, "=%02X", (unsigned)'F');
 	    cp++;
 	    n += 3;
