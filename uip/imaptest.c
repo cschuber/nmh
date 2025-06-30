@@ -644,7 +644,7 @@ imap_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 	if (line == NULL)
 	    return NOTOK;
 
-	if (len < 2 || (len == 2 && strcmp(line, "+ ") != 0)) {
+	if (!has_prefix_len(line, len, "+ ")) {
 	    netsec_err(errstr, "Invalid format for SASL response");
 	    return NOTOK;
 	}
