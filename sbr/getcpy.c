@@ -22,3 +22,14 @@ getcpy(const char *str)
 
     return mh_xcalloc(1, 1);
 }
+
+/* Return malloc'd copy of str of length len, or of "" if NULL,
+ * exit on failure. */
+char *
+getcpy_len(const char *str, size_t len)
+{
+    if (str)
+        return xmemtostr(str, len);
+
+    return mh_xcalloc(1, 1);
+}

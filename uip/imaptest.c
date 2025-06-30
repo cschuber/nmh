@@ -929,11 +929,11 @@ getline:
                 has_prefix_len(line + 2, len - 2, token)) {
 		if (*tokenresponse)
 		    free(*tokenresponse);
-		*tokenresponse = getcpy(line + 2);
+		*tokenresponse = getcpy_len(line + 2, len - 2);
 	    }
 	} if (condok && has_prefix_len(line, len, "+")) {
 	    if (status) {
-		*status = getcpy(line);
+		*status = getcpy_len(line, len);
 	    }
 	    /*
 	     * Special case; return now but don't dequeue the tag,
@@ -964,7 +964,7 @@ getline:
 				      "time", cmd2->prefix);
 			free(cmd2);
 			if (status)
-			    *status = getcpy(line);
+			    *status = getcpy_len(line, len);
 			goto getline;
 		    }
 		}
@@ -1068,8 +1068,7 @@ batchfile(const char *filename, char *afolder, bool queue)
 		    die("Unable to read next line for -afolder");
 		if (rc == 1)
 		    die("Folder name cannot be blank");
-		line[rc - 1] = '\0';
-		afolder = getcpy(line);
+		afolder = getcpy_len(line, rc - 1); /* -1 to skip newline */
 		afolder_alloc = true;
 		continue;
 
