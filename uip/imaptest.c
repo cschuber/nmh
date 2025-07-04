@@ -306,7 +306,7 @@ main (int argc, char **argv)
 	goto finish;
     }
 
-    if (len > 2 && (p = strchr(cp + 2, ' ')) &&
+    if (len > 2 && (p = memchr(cp + 2, ' ', len - 2)) &&
 	len > (unsigned long int) (p + 1 - cp) &&
 	has_prefix_len(p + 1, len - (p + 1 - cp), "[CAPABILITY ")) {
 	/*
