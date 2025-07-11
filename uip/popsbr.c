@@ -392,7 +392,7 @@ pop_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 		 * If the protocol is being followed correctly, should just
 		 * be a "+ ", nothing else.
 		 */
-		if (len != 2 || strcmp(line, "+ ") != 0) {
+		if (len != 2 || strncmp(line, "+ ", 2) != 0) {
 		    netsec_err(errstr, "Did not get expected blank response "
 			       "for initial challenge response");
 		    return NOTOK;
@@ -447,7 +447,7 @@ pop_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 	 */
 
 	if (has_prefix_len(line, len, "-ERR")) {
-	    netsec_err(errstr, "%s", line);
+	    netsec_err(errstr, "%.*s", (int) len, line);
 	    return NOTOK;
 	}
 
@@ -509,7 +509,7 @@ pop_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 	    return NOTOK;
 
 	if (!has_prefix_len(line, len, "+OK")) {
-	    netsec_err(errstr, "Authentication failed: %s", line);
+	    netsec_err(errstr, "Authentication failed: %.*s", (int) len, line);
 	    return NOTOK;
 	}
 	break;

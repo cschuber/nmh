@@ -820,12 +820,13 @@ again: ;
 						 &errstr)) != NULL ; ) {
 
 	if (doingEHLO
+	        && buflen > 4
 	        && has_prefix_len(buffer, buflen, "250")
-	        && (buffer[3] == '-' || doingEHLO == 2)
-	        && buffer[4]) {
+	        && (buffer[3] == '-' || doingEHLO == 2)) {
 	    if (doingEHLO == 2) {
-		if ((*ehlo = malloc ((size_t) (strlen (buffer + 4) + 1)))) {
-		    strcpy (*ehlo++, buffer + 4);
+		if ((*ehlo = malloc (buflen - 4 + 1))) {
+		    memcpy (*ehlo, buffer + 4, buflen - 4);
+		    *(*ehlo++ + buflen - 4) = '\0';
 		    *ehlo = NULL;
 		    if (ehlo >= EHLOkeys + MAXEHLO)
 			doingEHLO = 0;
@@ -841,8 +842,12 @@ again: ;
 	    continue;
 
 	cont = false;
-	code = atoi ((char *) bp);
-	bp += 3, buflen -= 3;
+	size_t len_limit = buflen < 3 ? 0 : buflen - 3;
+	for (code = 0;
+	     buflen > len_limit && isascii (*bp) && isdigit (*bp);
+	     bp++, buflen--) {
+	    code = code * 10 + (*bp - '0');
+	}
 	for (; buflen > 0 && isspace (*bp); bp++, buflen--)
 	    continue;
 	if (buflen > 0 && *bp == '-') {
@@ -880,7 +885,7 @@ again: ;
 	    continue;
 	if (sm_reply.code < 100) {
 	    if (sm_verbose) {
-		puts(sm_reply.text);
+		printf("%.*s\n", sm_reply.length, sm_reply.text);
 		fflush (stdout);
 	    }
 	    goto again;
@@ -1047,7 +1052,8 @@ sm_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 	}
 
 	if (!has_prefix_len(line, len, "334 ")) {
-	    netsec_err(errstr, "Improper SASL protocol response: %s", line);
+	    netsec_err(errstr, "Improper SASL protocol response: %.*s",
+	               (int) len, line);
 	    return NOTOK;
 	}
 
@@ -1099,9 +1105,11 @@ sm_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 
 	if (!has_prefix_len(line, len, "235 ")) {
 	    if (len > 4)
-		netsec_err(errstr, "Authentication failed: %s", line + 4);
+		netsec_err(errstr, "Authentication failed: %.*s",
+		           (int) len - 4, line + 4);
 	    else
-		netsec_err(errstr, "Authentication failed: %s", line);
+		netsec_err(errstr, "Authentication failed: %.*s",
+		           (int) len, line);
 	    return NOTOK;
 	}
 	break;
