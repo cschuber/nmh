@@ -296,13 +296,13 @@ main (int argc, char **argv)
     }
 
     if (has_prefix_len(cp, len, "* BYE")) {
-	fprintf(stderr, "Connection rejected: %s\n", cp + 5);
+	fprintf(stderr, "Connection rejected: %.*s\n", (int) len - 5, cp + 5);
 	goto finish;
     }
 
     if (!has_prefix_len(cp, len, "* OK") &&
         !has_prefix_len(cp, len, "* PREAUTH")) {
-	fprintf(stderr, "Invalid server response: %s\n", cp);
+	fprintf(stderr, "Invalid server response: %.*s\n", (int) len, cp);
 	goto finish;
     }
 
@@ -315,7 +315,7 @@ main (int argc, char **argv)
 	char *q;
 	p += 13;	/* 1 + [CAPABILITY + space */
 
-	if (!(q = strchr(p, ']'))) {
+	if (!(q = memchr(p, ']', len - (p - cp)))) {
 	    fprintf(stderr, "Cannot find end of CAPABILITY announcement\n");
 	    goto finish;
 	}
@@ -608,7 +608,7 @@ imap_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 		/*
 		 * We should get a "+ ", nothing else.
 		 */
-		if (len != 2 || strcmp(line, "+ ") != 0) {
+		if (len != 2 || strncmp(line, "+ ", 2) != 0) {
 		    netsec_err(errstr, "Did not get expected blank response "
 			       "for initial challenge response");
 		    return NOTOK;
@@ -954,10 +954,12 @@ getline:
 		    if (has_prefix_len(line, len, cmd->next->tag)) {
 		        struct imap_cmd *cmd2 = cmd->next;
 			cmd->next = cmd->next->next;
-			if (failerr && strncmp(line + strlen(cmd2->tag),
-							"OK ", 3) != 0) {
+			size_t taglen = strlen(cmd2->tag);
+			if (failerr && !has_prefix_len(line + taglen,
+			                               len - taglen, "OK ")) {
 			    numerrs = true;
-			    netsec_err(errstr, "%s", line + strlen(cmd2->tag));
+			    netsec_err(errstr, "%.*s", (int) (len - taglen),
+			               line + taglen);
 			}
 			if (timestamp)
 			    ts_report(&cmd2->start, "Command (%s) execution "
