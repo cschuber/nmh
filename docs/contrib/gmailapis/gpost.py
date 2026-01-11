@@ -115,8 +115,9 @@ def gpost(argv):
     except RefreshFailed:
         print('{}: refresh error, please log in using glogin.py as {} and retry'.format(progname, user), file=sys.stderr)
         return 1
-    except Exception:
+    except Exception as e:
         print('{}: unhandled exception when getting service'.format(progname), file=sys.stderr)
+        print(e)
         return 1
     encoded_msg = {'raw' : base64.urlsafe_b64encode(msg_contents.encode()).decode()}
     try:
@@ -124,8 +125,9 @@ def gpost(argv):
         if gpost_config.snoop():
             print('sent message {}'.format(message['id']), file=sys.stderr)
         store_fccs(gpost_config.progname(), msg_contents, fccs, get_message_info(service, message['id']))
-    except Exception:
+    except Exception as e:
         print('{}: unhandled exception when attempting to send message'.format(progname), file=sys.stderr)
+        print(e)
         return 1
 
 
