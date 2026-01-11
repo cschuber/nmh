@@ -24,7 +24,7 @@ version="Version: nmh-${MH_VERSION}"
 
 # Removing Version will trigger the welcome message.  (setup_test
 # inserted it so that other tests wouldn't show it.)
-grep -v Version "${context}" > "${context}.NEW"
+grep -v Version "${context}" >"${context}.NEW"
 mv -f "${context}.NEW" "${context}"
 
 
@@ -32,13 +32,13 @@ start_test 'mhparam skips the welcome message'
 run_without_input "${actual}" mhparam path
 grep 'Welcome to nmh version ' "${actual}" >/dev/null  &&  false
 # Make sure that version wasn't added to context.
-grep "^${version}$" "${MH_TEST_DIR}/Mail/context" >/dev/null  &&  false
+grep "^${version}$" "${context}" >/dev/null  &&  false
 rm "${actual}"
 
 
 start_test 'Welcome: disable in profile skips the welcome message'
 cp "${MH}" "${MH}-welcome"
-printf 'Welcome: disable\n' >> "${MH}-welcome"
+printf 'Welcome: disable\n' >>"${MH}-welcome"
 # Run the function in subshell instead of augmenting the environment
 # for a single command, so that the environment does not retain the
 # MH setting.  That can happen when run under distcheck, depending
@@ -47,7 +47,7 @@ printf 'Welcome: disable\n' >> "${MH}-welcome"
 rm "${MH}-welcome"
 grep 'Welcome to nmh version ' "${actual}" >/dev/null  &&  false
 # Make sure that version wasn't added to context.
-grep "^${version}$" "${MH_TEST_DIR}/Mail/context" >/dev/null  &&  false
+grep "^${version}$" "${context}" >/dev/null  &&  false
 rm "${actual}"
 
 
@@ -55,9 +55,8 @@ start_test 'with welcome message'
 run_without_input "${actual}" pick last
 grep 'Welcome to nmh version ' "${actual}" >/dev/null
 # Make sure that version was added to context.
-grep "^${version}$" "${MH_TEST_DIR}/Mail/context" >/dev/null
+grep "^${version}$" "${context}" >/dev/null
 rm "${actual}"
-
 
 start_test 'without welcome message'
 # After running the previous test, this one should not have
@@ -65,7 +64,17 @@ start_test 'without welcome message'
 run_without_input "${actual}" pick last
 grep 'Welcome to nmh version ' "${actual}" >/dev/null  &&  false
 # Make sure that version is still in context.
-grep "^${version}$" "${MH_TEST_DIR}/Mail/context" >/dev/null
+grep "^${version}$" "${context}" >/dev/null
+rm "${actual}"
+
+
+start_test 'add version even if command fails'
+grep -v Version "${context}" >"${context}.NEW"
+mv -f "${context}.NEW" "${context}"
+run_without_input "${actual}" pick invalid
+grep 'Welcome to nmh version ' "${actual}" >/dev/null
+# Make sure that version was added to context.
+grep "^${version}$" "${context}" >/dev/null
 rm "${actual}"
 
 
@@ -92,6 +101,15 @@ start_test 'with MHCONTEXT but no version, no welcome and update'
 printf '' >"${MHCONTEXT}"
 run_without_input "${actual}" pick last
 grep 'Welcome to nmh version ' "${actual}" >/dev/null  &&  false
+# And make sure that version did get updated in context.
+grep "^${version}$" "${MHCONTEXT}" >/dev/null
+rm "${actual}"
+
+
+start_test 'with MHCONTEXT, update version even if command fails'
+printf 'Version: nmh-1.5\n' >"${MHCONTEXT}"
+run_without_input "${actual}" pick invalid
+grep 'Welcome to nmh version ' "${actual}" >/dev/null
 # And make sure that version did get updated in context.
 grep "^${version}$" "${MHCONTEXT}" >/dev/null
 rm "${actual}"

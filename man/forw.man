@@ -1,4 +1,4 @@
-.TH FORW %manext1% 2022-12-22 "%nmhversion%"
+.TH FORW %manext1% 2025-01-14 "%nmhversion%"
 .
 .\" %nmhwarning%
 .
@@ -256,8 +256,8 @@ switch.  This directs
 .B forw
 to generate an
 .B mhbuild
-composition file.  Note that
-.B nmh
+composition file.  Note that, with the default nmh configuration,
+.B forw
 will not invoke
 .B mhbuild
 automatically; you must specifically give the command
@@ -268,7 +268,20 @@ What now? mime
 .fi
 .RE
 .PP
-prior to sending the draft.
+prior to sending the draft.  Alternatively, to have
+.B forw
+invoke
+.B mhbuild
+automatically, first,
+add
+.B mhbuild\-next: $EDITOR
+to your profile, as described in the
+.B mhbuild
+man page.  Second, add
+.B \-editor mhbuild
+to your
+.B forw \-mime
+invocation.
 .PP
 The
 .B \-draftfolder

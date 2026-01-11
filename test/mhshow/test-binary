@@ -19,6 +19,8 @@ setup_test
 actual="$MH_TEST_DIR/test-binary$$.actual"
 expected="$MH_TEST_DIR/test-binary$$.expected"
 
+#### Use the printf to output the NUL byte so that this
+#### file (test-binary) doesn't need to be a binary file.
 printf '%s\000%s' >"${expected}" \
 "[ Message inbox:11 ]
 To:      recipient@example.edu

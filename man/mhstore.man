@@ -466,7 +466,7 @@ mhfixmsg -outfile - | mhstore -auto -clobber ask -file -
 .RE
 .PP
 The
-.BI \-clobber ask
+.BI "\-clobber " ask
 is not necessary, though recommended to avoid silently overwriting an existing
 file.
 .SH FILES

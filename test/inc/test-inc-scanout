@@ -391,6 +391,7 @@ rm -f "$MH_TEST_DIR/mess"
 
 # check scan and inc of mbox with multiple messages
 start_test "scan and inc of mbox with multiple messages"
+rm -f "$MH_TEST_DIR/msgbox"
 echo y | packf -file "$MH_TEST_DIR/msgbox"
 run_test "scan -width 80 -file $MH_TEST_DIR/msgbox" \
 '   1  09/29 Test1              Testing message 1<<This is message number 1 >>

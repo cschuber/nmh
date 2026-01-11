@@ -73,6 +73,7 @@ void abortcpy(char *, const char *, size_t);
 #define ABORTCPY(dest, src) abortcpy(dest, src, sizeof (dest))
 
 bool has_prefix(const char *, const char *) PURE;
+bool has_prefix_len(const char *, size_t, const char *) PURE;
 bool has_suffix(const char *, const char *) PURE;
 bool has_suffix_c(const char *, int) PURE;
 void trim_suffix_c(char *, int);
@@ -81,7 +82,7 @@ void to_lower(char *);
 void to_upper(char *);
 
 int nmh_init(const char *, bool, bool);
-int nmh_version_changed(int);
+int nmh_version_changed(bool);
 
 bool contains8bit(const char *, const char *);
 int scan_input(int, bool *);

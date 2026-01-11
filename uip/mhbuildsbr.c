@@ -1962,9 +1962,7 @@ update_text_encoding (CT ct, size_t maxunencoded)
         if (ct->c_encoding == CE_8BIT  ||  ct->c_encoding == CE_7BIT) {
             /* This function can only be called with autobuild. */
             if (scan_content (ct, maxunencoded, true, false) == OK) {
-                if (previous_encoding == ct->c_encoding) {
-                    status = NOTOK;
-                } else {
+                if (previous_encoding != ct->c_encoding) {
                     update_cte (ct, ct->c_encoding);
                 }
             } else {

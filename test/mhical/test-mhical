@@ -1108,7 +1108,7 @@ check "$expected" "$actual"
 # exercise ~/ branch in etcpath()
 start_test 'exercise ~/ branch in etcpath()'
 file='~/mhical.file_that_does_not_exist'
-if test -e $file 2>/dev/null; then
+if test -r $file 2>/dev/null; then
     echo "$0: file $file exists, cannot run this test"
     exit 1
 fi

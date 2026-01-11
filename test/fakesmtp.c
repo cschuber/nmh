@@ -35,12 +35,13 @@ enum {
 	SMTP_XOAUTH_ERR
 };
 
-static int getsmtp(int, char *);
+static ssize_t getsmtp(int, char *);
 
 int
 main(int argc, char *argv[])
 {
-	int rc, conn, smtp_state;
+	ssize_t rc;
+	int conn, smtp_state;
 	FILE *f;
 	const char *xoauth = getenv("XOAUTH");
 	const char *smtputf8 = getenv("SMTPUTF8");
@@ -73,8 +74,8 @@ main(int argc, char *argv[])
 		if (rc == -1)
 			break;	/* EOF */
 
-                fputs(line, f);
-                putc('\n', f);
+		fwrite(line, rc, 1, f);
+		fwrite("\n", 1, 1, f);
 
 		switch (smtp_state) {
 		case SMTP_DATA:
@@ -143,32 +144,56 @@ main(int argc, char *argv[])
  * Read a line (up to the \r\n)
  */
 
-static int
+static ssize_t
 getsmtp(int socket, char *data)
 {
-	int cc;
-	static unsigned int bytesinbuf = 0;
-	static char buffer[LINESIZE * 2], *p;
+	static size_t bytesinbuf = 0;
+	static char buffer[LINESIZE * 2];
+	ssize_t cc = min(bytesinbuf, LINESIZE);
 
 	for (;;) {
-		/*
-		 * Find our \r\n
-		 */
+		ssize_t cr_pos = -1;
+		ssize_t nl_pos = -1;
 
-		if (bytesinbuf > 0 && (p = strchr(buffer, '\r')) &&
-							*(p + 1) == '\n') {
-			*p = '\0';
-			cc = strlen(buffer);
-			memcpy(data, buffer, min(cc + 1, LINESIZE));
-			data[LINESIZE - 1] = '\0';
-
+		if (bytesinbuf > 0) {
 			/*
-			 * Shuffle leftover bytes back to the beginning
+			 * Find our \r\n
 			 */
+			for (ssize_t i = 0; i < LINESIZE * 2 && i < cc; ++i) {
+				if (buffer[i] == '\r') {
+					cr_pos = i;
+				} else if (cr_pos == i - 1  &&	buffer[i] == '\n') {
+					nl_pos = i;
+					break;
+				}
+			}
 
-			bytesinbuf -= cc + 2;	/* Don't forget \r\n */
-			if (bytesinbuf > 0) {
-				memmove(buffer, buffer + cc + 2, bytesinbuf);
+			if (cr_pos > -1 && nl_pos > -1) {
+				cc = cr_pos;
+				buffer[cc] = '\0';
+				memcpy(data, buffer, min(cc + 1, LINESIZE));
+				data[LINESIZE - 1] = '\0';
+
+				/*
+				 * Shuffle leftover bytes back to the beginning
+				 */
+
+				bytesinbuf -= cc + 2;	/* Don't forget \r\n */
+				if (bytesinbuf > 0) {
+					memmove(buffer, buffer + cc + 2, bytesinbuf);
+				}
+			} else {
+				/* No CR LF.  Copy all of the data. */
+				memcpy(data, buffer, min(cc, LINESIZE));
+
+				/*
+				 * Shuffle leftover bytes back to the beginning
+				 */
+
+				bytesinbuf -= cc;
+				if (bytesinbuf > 0) {
+					memmove(buffer, buffer + cc, bytesinbuf);
+				}
 			}
 			return cc;
 		}

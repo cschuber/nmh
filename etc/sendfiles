@@ -43,10 +43,8 @@ die() {
   exit 1
 }
 
-bindir=`finddir $0`
-nmhbindir=`cd "$bindir" && pwd`
-nmhlibexecdir=`$nmhbindir/mhparam libexecdir`
-
+nmhbindir="`mhparam bindir`"
+nmhlibexecdir="`mhparam libexecdir`"
 
 #### Process switches.
 compress=                   ## compress method

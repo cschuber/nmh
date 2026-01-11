@@ -13,6 +13,7 @@
 #include "context_foil.h"
 #include "context_replace.h"
 #include "context_read.h"
+#include "context_save.h"
 #include "context_find.h"
 #include "print_help.h"
 #include "error.h"
@@ -456,6 +457,21 @@ has_prefix(const char *s, const char *prefix)
 }
 
 
+/* has_prefix_len returns true if non-NULL s of length len
+ * starts with non-NULL prefix. */
+bool
+has_prefix_len(const char *s, size_t len, const char *prefix)
+{
+    while (len > 0 && *prefix && *s == *prefix) {
+        s++;
+        len--;
+        prefix++;
+    }
+
+    return *prefix == '\0';
+}
+
+
 /* has_suffix returns true if non-NULL s ends with non-NULL suffix. */
 bool
 has_suffix(const char *s, const char *suffix)
@@ -561,7 +577,7 @@ nmh_init(const char *argv0, bool read_context, bool check_version)
            if so. */
         if (allow_version_check  &&  isatty (fileno (stdin))  &&
             isatty (fileno (stdout))  &&  isatty (fileno (stderr))) {
-            if (nmh_version_changed (check_older_version)) {
+            if (nmh_version_changed (check_older_version) == NOTOK) {
                 printf ("==================================================="
                         "=====================\n");
                 printf ("Welcome to nmh version %s\n\n", VERSION);
@@ -569,7 +585,10 @@ nmh_init(const char *argv0, bool read_context, bool check_version)
                          mhdocdir);
                 print_intro (stdout, 1);
                 printf ("\nThis message will not be repeated until "
-                        "nmh is next updated.\n");
+                        "nmh is next updated.  To\n"
+                        "permanently suppress this message, add "
+                        "\"Welcome: disable\" to your\n"
+                        "profile (%s).\n", defpath);
                 printf ("==================================================="
                         "=====================\n\n");
 
@@ -600,14 +619,15 @@ nmh_init(const char *argv0, bool read_context, bool check_version)
 
 
 /*
- * Check stored version, and return 1 if out-of-date or non-existent.
+ * Check stored version, and return NOTOK if out-of-date or non-existent.
  * Because the output of "mhparam version" is prefixed with "nmh-",
  * use that prefix here.
  *
- * older        - 0 for difference comparison, 1 for only if older
+ * older - false for difference comparison, true for only if version
+ *         stored in context, if any, is older than version of this build.
  */
 int
-nmh_version_changed (int older)
+nmh_version_changed (bool older)
 {
     const char *const context_version = context_find("Version");
 
@@ -622,17 +642,19 @@ nmh_version_changed (int older)
 
         if (context_version == NULL  ||  old_version < current_version) {
             context_replace ("Version", "nmh-" VERSION);
+            context_save ();
         }
 
-        return old_version < current_version;
+        return old_version < current_version ? NOTOK : OK;
     }
 
     if (context_version == NULL  ||  strcmp(context_version, "nmh-" VERSION) != 0) {
         context_replace ("Version", "nmh-" VERSION);
-        return 1;
+        context_save ();
+        return NOTOK;
     }
 
-    return 0;
+    return OK;
 }
 
 

@@ -17,6 +17,8 @@
 #include "h/mhparse.h"
 #include "mhoutsbr.h"
 #include "sbr/base64.h"
+#include "sbr/charstring.h"
+#include "sbr/fold.h"
 
 
 /*
@@ -199,12 +201,15 @@ static void
 output_headers (CT ct, FILE *out)
 {
     HF hp;
+    charstring_t body = charstring_create(0);
 
     hp = ct->c_first_hf;
     while (hp) {
-	fprintf (out, "%s:%s", hp->name, hp->value);
+	fold (body, strlen(hp->name), hp->value);
+	fprintf (out, "%s:%s", hp->name, charstring_buffer(body));
 	hp = hp->next;
     }
+    charstring_free(body);
 }
 
 
@@ -342,7 +347,7 @@ writeQuoted (CT ct, FILE *out)
 	 * doesn't falsely match an mbox delimiter.
 	 */
 	cp = bufp;
-	if (gotlen >= 5 && has_prefix(cp, "From ")) {
+	if (has_prefix_len(cp, gotlen, "From ")) {
 	    fprintf(out, "=%02X", (unsigned)'F');
 	    cp++;
 	    n += 3;

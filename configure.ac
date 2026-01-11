@@ -98,7 +98,7 @@ AC_CHECK_HEADER([sys/ptem.h], AC_DEFINE(WINSIZE_IN_PTEM,1,
 dnl ---------------
 dnl CHECK FUNCTIONS
 dnl ---------------
-AC_CHECK_FUNCS([wcwidth mbtowc getutxent arc4random mkstemps])
+AC_CHECK_FUNCS([wcwidth mbtowc getutxent arc4random_buf mkstemps])
 
 dnl Use custom getline for platforms that don't have it.
 AC_CONFIG_LIBOBJ_DIR([sbr])

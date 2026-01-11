@@ -392,7 +392,7 @@ pop_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 		 * If the protocol is being followed correctly, should just
 		 * be a "+ ", nothing else.
 		 */
-		if (len != 2 || strcmp(line, "+ ") != 0) {
+		if (len != 2 || strncmp(line, "+ ", 2) != 0) {
 		    netsec_err(errstr, "Did not get expected blank response "
 			       "for initial challenge response");
 		    return NOTOK;
@@ -446,8 +446,8 @@ pop_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 	 * If we get an -ERR reply, bubble that back up
 	 */
 
-	if (has_prefix(line, "-ERR")) {
-	    netsec_err(errstr, "%s", line);
+	if (has_prefix_len(line, len, "-ERR")) {
+	    netsec_err(errstr, "%.*s", (int) len, line);
 	    return NOTOK;
 	}
 
@@ -455,7 +455,7 @@ pop_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 	 * Make sure we get someting back a valid response
 	 */
 
-	if (!has_prefix(line, "+ ")) {
+	if (!has_prefix_len(line, len, "+ ")) {
 	    netsec_err(errstr, "Invalid format for SASL response");
 	    return NOTOK;
 	}
@@ -464,7 +464,7 @@ pop_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 	    *outdata = NULL;
 	    *outdatalen = 0;
 	} else {
-	    rc = decodeBase64(line + 2, outdata, &len, 0);
+	    rc = decodeBase64(line + 2, len - 2, outdata, &len, 0);
 	    *outdatalen = len;
 	    if (rc != OK) {
 		netsec_err(errstr, "Unable to decode base64 response");
@@ -508,8 +508,8 @@ pop_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 	if (line == NULL)
 	    return NOTOK;
 
-	if (!has_prefix(line, "+OK")) {
-	    netsec_err(errstr, "Authentication failed: %s", line);
+	if (!has_prefix_len(line, len, "+OK")) {
+	    netsec_err(errstr, "Authentication failed: %.*s", (int) len, line);
 	    return NOTOK;
 	}
 	break;

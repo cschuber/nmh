@@ -3045,7 +3045,7 @@ decode_field_body (const char *name, char **value, const char *dest_charset,
                 *cp = '\0';
                 *value = mh_xrealloc (*value, len + 2);
                 strncpy (*value, buffer, len + 2);
-                ++message_mods;
+                ++*message_mods;
             }
         } else {
             char *val = cpytrim (*value);

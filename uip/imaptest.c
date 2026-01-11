@@ -295,25 +295,27 @@ main (int argc, char **argv)
 	die("%s", errstr);
     }
 
-    if (has_prefix(cp, "* BYE")) {
-	fprintf(stderr, "Connection rejected: %s\n", cp + 5);
+    if (has_prefix_len(cp, len, "* BYE")) {
+	fprintf(stderr, "Connection rejected: %.*s\n", (int) len - 5, cp + 5);
 	goto finish;
     }
 
-    if (!has_prefix(cp, "* OK") && !has_prefix(cp, "* PREAUTH")) {
-	fprintf(stderr, "Invalid server response: %s\n", cp);
+    if (!has_prefix_len(cp, len, "* OK") &&
+        !has_prefix_len(cp, len, "* PREAUTH")) {
+	fprintf(stderr, "Invalid server response: %.*s\n", (int) len, cp);
 	goto finish;
     }
 
-    if ((p = strchr(cp + 2, ' ')) && *(p + 1) != '\0' &&
-	has_prefix(p + 1, "[CAPABILITY ")) {
+    if (len > 2 && (p = memchr(cp + 2, ' ', len - 2)) &&
+	len > (unsigned long int) (p + 1 - cp) &&
+	has_prefix_len(p + 1, len - (p + 1 - cp), "[CAPABILITY ")) {
 	/*
 	 * Parse the capability list out to the end
 	 */
 	char *q;
 	p += 13;	/* 1 + [CAPABILITY + space */
 
-	if (!(q = strchr(p, ']'))) {
+	if (!(q = memchr(p, ']', len - (p - cp)))) {
 	    fprintf(stderr, "Cannot find end of CAPABILITY announcement\n");
 	    goto finish;
 	}
@@ -606,7 +608,7 @@ imap_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 		/*
 		 * We should get a "+ ", nothing else.
 		 */
-		if (len != 2 || strcmp(line, "+ ") != 0) {
+		if (len != 2 || strncmp(line, "+ ", 2) != 0) {
 		    netsec_err(errstr, "Did not get expected blank response "
 			       "for initial challenge response");
 		    return NOTOK;
@@ -642,7 +644,7 @@ imap_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 	if (line == NULL)
 	    return NOTOK;
 
-	if (len < 2 || (len == 2 && strcmp(line, "+ ") != 0)) {
+	if (!has_prefix_len(line, len, "+ ")) {
 	    netsec_err(errstr, "Invalid format for SASL response");
 	    return NOTOK;
 	}
@@ -651,7 +653,7 @@ imap_sasl_callback(enum sasl_message_type mtype, unsigned const char *indata,
 	    *outdata = NULL;
 	    *outdatalen = 0;
 	} else {
-	    rc = decodeBase64(line + 2, outdata, &len, 0);
+	    rc = decodeBase64(line + 2, len - 2, outdata, &len, 0);
 	    *outdatalen = len;
 	    if (rc != OK) {
 		netsec_err(errstr, "Unable to decode base64 response");
@@ -911,6 +913,7 @@ get_imap_response(netsec_context *nsc, const char *token, char **tokenresponse,
 		  char **status, bool condok, bool failerr, char **errstr)
 {
     char *line;
+    size_t len;
     struct imap_cmd *cmd;
     bool numerrs = false;
 
@@ -919,17 +922,18 @@ get_imap_response(netsec_context *nsc, const char *token, char **tokenresponse,
 
 getline:
     while (cmdqueue) {
-	if (!(line = netsec_readline(nsc, NULL, errstr)))
+	if (!(line = netsec_readline(nsc, &len, errstr)))
 	    return NOTOK;
-	if (has_prefix(line, "* ") && *(line + 2) != '\0') {
-	    if (token && tokenresponse && has_prefix(line + 2, token)) {
+	if (has_prefix_len(line, len, "* ")) {
+	    if (token && tokenresponse &&
+                has_prefix_len(line + 2, len - 2, token)) {
 		if (*tokenresponse)
 		    free(*tokenresponse);
-		*tokenresponse = getcpy(line + 2);
+		*tokenresponse = getcpy_len(line + 2, len - 2);
 	    }
-	} if (condok && has_prefix(line, "+")) {
+	} if (condok && has_prefix_len(line, len, "+")) {
 	    if (status) {
-		*status = getcpy(line);
+		*status = getcpy_len(line, len);
 	    }
 	    /*
 	     * Special case; return now but don't dequeue the tag,
@@ -938,7 +942,7 @@ getline:
 	    return OK;
 	} else {
 
-	    if (has_prefix(line, cmdqueue->tag)) {
+	    if (has_prefix_len(line, len, cmdqueue->tag)) {
 		cmd = cmdqueue;
 		if (timestamp)
 		    ts_report(&cmd->start, "Command (%s) execution time",
@@ -947,20 +951,22 @@ getline:
 		free(cmd);
 	    } else {
 		for (cmd = cmdqueue; cmd->next != NULL; cmd = cmd->next) {
-		    if (has_prefix(line, cmd->next->tag)) {
+		    if (has_prefix_len(line, len, cmd->next->tag)) {
 		        struct imap_cmd *cmd2 = cmd->next;
 			cmd->next = cmd->next->next;
-			if (failerr && strncmp(line + strlen(cmd2->tag),
-							"OK ", 3) != 0) {
+			size_t taglen = strlen(cmd2->tag);
+			if (failerr && !has_prefix_len(line + taglen,
+			                               len - taglen, "OK ")) {
 			    numerrs = true;
-			    netsec_err(errstr, "%s", line + strlen(cmd2->tag));
+			    netsec_err(errstr, "%.*s", (int) (len - taglen),
+			               line + taglen);
 			}
 			if (timestamp)
 			    ts_report(&cmd2->start, "Command (%s) execution "
 				      "time", cmd2->prefix);
 			free(cmd2);
 			if (status)
-			    *status = getcpy(line);
+			    *status = getcpy_len(line, len);
 			goto getline;
 		    }
 		}
@@ -1064,8 +1070,7 @@ batchfile(const char *filename, char *afolder, bool queue)
 		    die("Unable to read next line for -afolder");
 		if (rc == 1)
 		    die("Folder name cannot be blank");
-		line[rc - 1] = '\0';
-		afolder = getcpy(line);
+		afolder = getcpy_len(line, rc - 1); /* -1 to skip newline */
 		afolder_alloc = true;
 		continue;
 

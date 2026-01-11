@@ -10,3 +10,8 @@
 
 /* Return malloc'd copy of str, or of "" if NULL, exit on failure. */
 char *getcpy(const char *str);
+
+/* Return malloc'd copy of str of length len, or of "" if NULL,
+ * exit on failure.
+ * See comment at xmemtostr about strings containing a NUL byte. */
+char *getcpy_len(const char *str, size_t len);

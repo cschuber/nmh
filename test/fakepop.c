@@ -213,7 +213,7 @@ main(int argc, char *argv[])
 }
 
 /*
- * Put one big buffer to the POP server.  Should have already had the line
+ * Put one big buffer to the POP client.  Should have already had the line
  * endings set up and dot-stuffed if necessary.
  */
 
@@ -228,7 +228,7 @@ putpopbulk(int socket, char *data)
 }
 
 /*
- * Get one line from the POP server.  We don't do any buffering here.
+ * Get one line from the POP client.  We don't do any buffering here.
  */
 
 static int
@@ -268,6 +268,7 @@ getpop(int socket, char *data, ssize_t len)
 		if (used + new > size - 1) { \
 			buf = realloc(buf, size += BUFALLOC); \
 		} \
+		used += new; \
 	} while (0)
 	
 /*

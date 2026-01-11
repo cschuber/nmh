@@ -236,6 +236,7 @@ check "${expected}" "${actual}"
 
 
 # check repl to RFC 2047-encoded header with Re:
+start_test 'repl to RFC 2047-encoded header with Re:'
 cat >`mhpath new` <<EOF
 From: Mr Foo Bar <foobar@example.com>
 To: Somebody <somebody@example.com>
@@ -256,6 +257,34 @@ EOF
 
 run_prog repl -form "${form}" -nowhatnowproc last
 check $expected $actual
+
+
+require_locale $en_locales
+# check that repl+mhbuild on raw UTF-8 header uses RFC 2047 encoding
+start_test 'repl+mhbuild on raw UTF-8 header'
+cat >`mhpath new` <<EOF
+From: foobar@example.com
+To: somebody@example.com
+Subject: Test with a UTF-8 encoded character (̂̂e)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+
+This is a test
+EOF
+
+cat >$expected <<EOF
+From: sender@example.com
+To: foobar@example.com
+Fcc:
+Subject: =?UTF-8?Q?Re:_Test_with_a_UTF-8_encoded_character_(=CC=82=CC=82e)?=
+MIME-Version: 1.0
+Content-Type: text/plain
+EOF
+
+run_prog repl -form "${form}" -nowhatnowproc last
+mhbuild $actual
+check $expected $actual
+
 
 test "${failed:-0}" -eq 0 && rm "${form}"
 

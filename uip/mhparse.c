@@ -1832,10 +1832,7 @@ openBase64 (CT ct, char **file)
         }
     }
 
-    /* decodeBase64() requires null-terminated input. */
-    *cp = '\0';
-
-    if (decodeBase64 (buffer, &decoded, &decoded_len,
+    if (decodeBase64 (buffer, cp - buffer, &decoded, &decoded_len,
 		      ct->c_type == CT_TEXT) != OK)
         goto clean_up;
 
@@ -1921,7 +1918,7 @@ openQuoted (CT ct, char **file)
     char *bufp = NULL;
     size_t buflen;
     ssize_t gotlen;
-    unsigned char mask;
+    unsigned char mask = '\0';
     CE ce = &ct->c_cefile;
     /* sbeck -- handle suffixes */
     CI ci;

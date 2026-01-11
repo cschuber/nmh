@@ -16,3 +16,7 @@ DEPRECATED FEATURES
 BUG FIXES
 ---------
 
+- Prevent repetition of nmh welcome message if a command fails.
+- mhbuild(1) now folds header field bodies to avoid lines with more than 78 bytes.
+- mhmail(1) -profile switch is now compatible with send: -draftfolder in profile.
+- Fixed packf to produce RFC4155-compliant From headers [Bug #65643]

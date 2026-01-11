@@ -221,7 +221,7 @@ main (int argc, char **argv)
 			break;
 
 		    default:
-			die("scan() botch (%d)", state);
+			die("scan() botch (%d) attempting to read `%s'", state, fnp);
 
 		    case SCNEOF:
 			inform("message %d: empty", msgnum);
@@ -344,7 +344,7 @@ main (int argc, char **argv)
 		    break;
 
 		default:
-		    die("scan() botch (%d)", state);
+		    die("scan() botch (%d) attempting to read `%d'", state, msgnum);
 
 		case SCNEOF:
 		    inform("message %d: empty", msgnum);
