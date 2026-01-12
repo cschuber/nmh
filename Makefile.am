@@ -561,7 +561,6 @@ dist_docs_contrib_SCRIPTS = \
 
 dist_docs_contrib_DATA = docs/contrib/replaliases
 
-## for now, until this app is approved by Google
 docs_gmailapisdir = $(docdir)/contrib/gmailapis
 dist_docs_gmailapis_SCRIPTS = \
     docs/contrib/gmailapis/ginc.py \
