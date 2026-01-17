@@ -4,6 +4,8 @@ Things to add to the release notes for the next full release:
 NEW FEATURES
 ------------
 
+- Contrib support for Gmail API access merged from branch to master.
+
 -----------------
 OBSOLETE FEATURES
 -----------------
