@@ -36,6 +36,7 @@ Usage: sortm [+folder] [msgs] [switches]
   -[no]verbose
   -[no]all
   -[no]check
+  -[no]empty
   -version
   -help
 EOF
@@ -464,6 +465,27 @@ modification time"
 scan -width 80 >"$actual"
 check "$expected" "$actual"
 
+# check -empty
+start_test "-empty"
+cat >"$expected" <<EOF
+EOF
+
+folder -create +tsortmz
+run_prog sortm -empty >"$actual" 2>&1
+check "$expected" "$actual"
+
+
+# check -noempty
+start_test "-noempty"
+cat >"$expected" <<EOF
+sortm: no messages in tsortmz
+EOF
+
+folder -create +tsortmz
+set +e
+run_prog sortm -noempty >"$actual" 2>&1
+set -e
+check "$expected" "$actual"
 
 finish_test
 exit ${failed:-0}

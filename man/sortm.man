@@ -22,6 +22,7 @@ sortm \- sort nmh messages
 .IR days ]
 .RB [ \-nolimit ]
 .RB [ \-check " | " \-nocheck ]
+.RB [ \-empty " | " \-noempty ]
 .RB [ \-verbose " | " \-noverbose ]
 .ad
 .SH DESCRIPTION
@@ -112,6 +113,15 @@ messages, and exits with non-zero status.  With the default of
 .B sortm
 sorts messages with a missing or invalid
 \*(lqDate:\*(rq field using their file modification times.
+.PP
+When asked to sort an empty sequence,
+.B sortm
+reports an error by default and exits with nonzero status. With the
+.B \-empty
+switch, no error is reported in this case and the exit status is 0.
+The default behavior may also be requested explicitly using the
+.B \-noempty
+switch.
 .PP
 When ordering messages based on their dates, if they have the same
 dates, their original message order is preserved.

@@ -47,6 +47,8 @@
     X("noall", 0, NALLMSGS) \
     X("check", 0, CHECKSW) \
     X("nocheck", 0, NCHECKSW) \
+    X("empty", 0, EMPTYSW) \
+    X("noempty", 0, NEMPTYSW) \
     X("version", 0, VERSIONSW) \
     X("help", 0, HELPSW) \
 
@@ -100,6 +102,7 @@ main (int argc, char **argv)
     struct msgs *mp;
     struct smsg **dlist;
     bool checksw = false;
+    bool emptysw = false;
 
     if (nmh_init(argv[0], true, true)) { return 1; }
 
@@ -186,6 +189,13 @@ main (int argc, char **argv)
 	    case NCHECKSW:
 		checksw = false;
 		continue;
+
+	    case EMPTYSW:
+		emptysw = true;
+		continue;
+	    case NEMPTYSW:
+		emptysw = false;
+		continue;
 	    }
 	}
 	if (*cp == '+' || *cp == '@') {
@@ -219,8 +229,11 @@ main (int argc, char **argv)
 	die("unable to read folder %s", folder);
 
     /* check for empty folder */
-    if (mp->nummsg == 0)
-	die("no messages in %s", folder);
+    if (mp->nummsg == 0) {
+      if (emptysw)
+        done (0);
+      die("no messages in %s", folder);
+    }
 
     /* parse all the message ranges/sequences and set SELECTED */
     for (msgnum = 0; msgnum < msgs.size; msgnum++)
@@ -228,8 +241,11 @@ main (int argc, char **argv)
 	    done (1);
     seq_setprev (mp);	/* set the previous sequence */
 
-    if ((nmsgs = read_hdrs (mp, datesw)) <= 0)
-	die("no messages to sort");
+    if ((nmsgs = read_hdrs (mp, datesw)) <= 0) {
+      if (emptysw)
+        done (0);
+      die("no messages to sort");
+    }
 
     if (checksw  &&  check_failed) {
 	die("errors found, no messages sorted");

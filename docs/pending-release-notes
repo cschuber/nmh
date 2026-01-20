@@ -4,6 +4,7 @@ Things to add to the release notes for the next full release:
 NEW FEATURES
 ------------
 
+- sortm(1) accepts -empty switch to permit sorting empty sequences without error.
 - Contrib support for Gmail API access merged from branch to master.
 
 -----------------
