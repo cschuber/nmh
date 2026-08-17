@@ -352,7 +352,7 @@ format_datetime (tzdesc_t timezones, const contentline *node)
     int dst = 0;
     struct tws tws[2]; /* [standard, daylight] */
     tzdesc_t tz;
-    char *tp_std, *tp_dst, *tp_dt;
+    const char *tp_std, *tp_dst, *tp_dt;
 
     /* Extract the timezone, if specified (RFC 5545 Sec. 3.3.5 Form #3). */
     for (p = node->params; p && p->param_name; p = p->next) {
