@@ -28,7 +28,7 @@ char *
 mime_type(const char *filename)
 {
     char *content_type = NULL;  /* mime content type */
-    char *p;
+    const char *p;
 
 #ifdef MIMETYPEPROC
     char *mimetype;
