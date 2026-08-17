@@ -154,11 +154,9 @@ int
 mbx_copy (char *mailbox, int mbx_style, int md, int fd,
           char *text)
 {
-    int i, j, size;
-    char *cp, buffer[BUFSIZ + 1];   /* Space for NUL. */
+    int i, j;
+    char buffer[BUFSIZ + 1];   /* Space for NUL. */
     FILE *fp;
-
-    size = 0;
 
     switch (mbx_style) {
 	case MMDF_FORMAT: 
@@ -171,9 +169,6 @@ mbx_copy (char *mailbox, int mbx_style, int md, int fd,
 		i = strlen (text);
 		if (write (md, text, i) != i)
 		    return NOTOK;
-		for (cp = text; *cp++; size++)
-		    if (*cp == '\n')
-			size++;
 	    }
 		    
 	    while ((i = read (fd, buffer, sizeof buffer - 1)) > 0) {
@@ -206,9 +201,6 @@ mbx_copy (char *mailbox, int mbx_style, int md, int fd,
 		i = strlen (text);
 		if (write (md, text, i) != i)
 		    return NOTOK;
-		for (cp = text; *cp++; size++)
-		    if (*cp == '\n')
-			size++;
 	    }
 		    
 	    for (j = 0; fgets (buffer, sizeof(buffer), fp) != NULL; j++) {
@@ -261,7 +253,6 @@ mbx_copy (char *mailbox, int mbx_style, int md, int fd,
 		    if (write (md, ">", 1) < 0) {
 			advise (mailbox, "write");
 		    }
-		    size++;
 		}
 		i = strlen (buffer);
 		if (write (md, buffer, i) != i) {
