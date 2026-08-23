@@ -143,6 +143,7 @@ static void
 compath (char *f)
 {
     char *cp, *dp;
+    size_t len;
 
     if (*f != '/')
 	return;
@@ -162,7 +163,8 @@ compath (char *f)
             case '/':
                 for (dp = cp; *dp == '/'; dp++)
                     continue;
-                strcpy (cp--, dp);
+                len = strlen(dp) + 1;
+                memmove (cp--, dp, len);
                 continue;
 
             case '.':
@@ -187,12 +189,14 @@ compath (char *f)
                             break;
                     if (dp <= f)
                         dp = f;
-                    strcpy (dp, cp + LEN(PWD) - 1);
+                    len = strlen(cp + LEN(PWD) - 1) + 1;
+                    memmove (dp, cp + LEN(PWD) - 1, len);
                     cp = dp;
                     continue;
                 }
                 if (has_prefix(cp, CWD)) {
-                    strcpy (cp - 1, cp + LEN(CWD) - 1);
+                    len = strlen(cp + LEN(CWD) - 1) + 1;
+                    memmove (cp - 1, cp + LEN(CWD) - 1, len);
                     cp--;
                     continue;
                 }
